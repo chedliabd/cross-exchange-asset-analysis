@@ -4,6 +4,9 @@
 
 from pathlib import Path
 import pandas as pd
+from types import SimpleNamespace
+import re
+from typing import Dict
 
 REQUIRED_COLUMNS = ["Date", "Open", "High", "Low", "Close", "Adj Close", "Volume"]
 
@@ -54,12 +57,7 @@ def print_basic_info(name: str, df: pd.DataFrame):
         print(f"date range: {df['Date'].min()}  ->  {df['Date'].max()}")
     if "Symbol" in df.columns:
         print(f"symbols: {df['Symbol'].nunique()}")
-        # quick per-symbol row count (top 10)
-        counts = (df.groupby('Symbol').size()
-                    .sort_values(ascending=False)
-                    .head(10))
-        print("\nTop 10 symbols by rows:")
-        print(counts.to_string())
+        
 
 def describe_symbols(df: pd.DataFrame, top_n: int = 10):
     """Per-symbol coverage (rows + min/max date)."""
@@ -85,3 +83,62 @@ def describe_missing(df: pd.DataFrame):
           .sort_values("AdjClose_missing_%", ascending=False)
     )
     return overall, by_symbol  # tuple of dataframes (no printing here)
+
+# ---------- Direct per-file loading ----------
+
+
+def load_each_csv(folder: str | Path) -> Dict[str, pd.DataFrame]:
+    """
+    Read every CSV in the given folder and return a dict: {symbol -> DataFrame}.
+    Each file is assumed to follow the Yahoo Finance format.
+    """
+    folder = Path(folder)
+    data: Dict[str, pd.DataFrame] = {}
+
+    for p in sorted(folder.glob("*.csv")):
+        try:
+            df = _read_one_price_csv(p, p.stem)
+            data[p.stem] = df
+        except Exception as e:
+            print(f"⚠️ Skipping {p.name}: {e}")
+
+    return data
+
+
+def _sanitize_name(name: str) -> str:
+    """Make a valid Python variable name from a symbol (e.g. BRK.B → BRK_B)."""
+    s = re.sub(r"\W+", "_", str(name))
+    if re.match(r"^\d", s):
+        s = "_" + s
+    return s
+
+
+def create_symbol_dfs_from_folder(
+    folder: str | Path,
+    prefix: str = "stock_",
+    scope: dict | None = None,
+    max_vars: int | None = None,
+) -> SimpleNamespace:
+    """
+    Load each CSV in a folder and create a variable per symbol in the notebook.
+    - prefix: 'stock_' or 'etf_' (will be prepended to symbol)
+    - scope: usually globals() when called from Jupyter
+    - max_vars: optional cap on number of variables
+    Returns a SimpleNamespace with all DataFrames as attributes.
+    """
+    scope = scope if scope is not None else globals()
+    data = load_each_csv(folder)
+    ns_dict = {}
+
+    items = list(data.items())
+    if max_vars is not None:
+        items = items[:max_vars]
+
+    for sym, df in items:
+        var_name = f"{prefix}{_sanitize_name(sym)}"
+        scope[var_name] = df
+        ns_dict[var_name] = df
+
+    print(f"✅ Created {len(items)} DataFrames from {folder}")
+    return SimpleNamespace(**ns_dict)
+
