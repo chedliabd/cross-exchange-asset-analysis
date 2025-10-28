@@ -149,7 +149,7 @@ def plot_start_date_distribution(all_stocks, date_column="Date", bins=60, print_
     # histogram with more bins
     plt.figure(figsize=(8, 4))
     plt.hist(rows, bins=bins, edgecolor="black")
-    plt.title("Distribution of Stock Start Dates")
+    plt.title("Distribution of Symbols Start Dates")
     plt.xlabel("Start Date")
     plt.ylabel("Number of Stocks")
     plt.grid(True, alpha=0.3)
