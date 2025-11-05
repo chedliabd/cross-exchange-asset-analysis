@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 def dates_in_increasing_order(df, date_column="Date"):
     """
@@ -26,50 +27,53 @@ def get_date_range(df, date_column="Date"):
     return dates.min(), dates.max()
 
 
-def show_date_ranges(all_stocks, date_column="Date"):
+def show_date_ranges(data_dict, label, date_column="Date"):
     """
-    Prints the first and last date available for each stock.
+    Prints the first and last date available for each stock/ETF.
     """
-    print("\n📅 Date ranges for all stocks:\n")
-    for symbol, df in all_stocks.items():
+    print(f"\n Date ranges for all {label}:\n")
+    for symbol, df in data_dict.items():
         first, last = get_date_range(df, date_column)
         if first and last:
             print(f"{symbol}: from {first.date()} → {last.date()}")
         else:
             print(f"{symbol}: ⚠️ No valid dates found.")
+
             
             
 
 
-def ends_before(all_stocks, cutoff_date="2020-04-01", date_column="Date"):
+def ends_before(data_dict, label, cutoff_date="2020-04-01", date_column="Date"):
     """
-    Checks which stocks end before a given cutoff date.
+    Checks which stocks/ETFs end before a given cutoff date.
 
     Parameters:
-        all_stocks (dict): Dictionary of {symbol: DataFrame}.
+        data_dict (dict): Dictionary of {symbol: DataFrame}.
+        label (str): Label describing the dataset (e.g., "stocks" or "ETFs").
         cutoff_date (str): The cutoff date (YYYY-MM-DD).
         date_column (str): Name of the date column.
 
     Returns:
-        list: List of stock symbols that end before the cutoff date.
+        list: List of symbols that end before the cutoff date.
     """
     cutoff = pd.to_datetime(cutoff_date)
     ended_early = []
 
-    for symbol, df in all_stocks.items():
+    for symbol, df in data_dict.items():
         dates = pd.to_datetime(df[date_column], errors="coerce").dropna()
         if not dates.empty and dates.max() < cutoff:
             ended_early.append(symbol)
 
     # Print results
     if ended_early:
-        print(f"⚠️ The following stocks end before {cutoff.date()}:")
+        print(f" The following {label} end before {cutoff.date()}:")
         for s in ended_early:
             print(f"  - {s}")
     else:
-        print(f"✅ All stocks extend at least until {cutoff.date()}.")
+        print(f" All {label} extend at least until {cutoff.date()}.")
 
     return ended_early
+
 
 
 
@@ -85,109 +89,43 @@ def get_start_dates(all_stocks, date_column="Date"):
             rows.append({"symbol": symbol, "start_date": dates.min()})
     return pd.DataFrame(rows)
 
-def plot_start_date_distribution(all_stocks, date_column="Date"):
-    """
-    Plots the distribution (histogram) of stock start dates.
-    """
-    rows = []
-    for symbol, df in all_stocks.items():
-        dates = pd.to_datetime(df[date_column], errors="coerce").dropna()
-        if not dates.empty:
-            rows.append(dates.min())
 
-    if not rows:
-        print("⚠️ No valid start dates found.")
-        return
 
-    plt.figure(figsize=(8, 4))
-    plt.hist(rows, bins=20, edgecolor="black")
-    plt.title("Distribution of Stock Start Dates")
-    plt.xlabel("Start Date")
-    plt.ylabel("Number of Stocks")
-    plt.grid(True, alpha=0.3)
-    plt.show()
+
     
     
-import pandas as pd
-import matplotlib.pyplot as plt
 
-def start_date_counts(all_stocks, date_column="Date"):
+
+def start_date_counts(data_dict, label, date_column="Date"):
     """
-    Return a Series indexed by exact start date (YYYY-MM-DD) with counts of stocks.
-    Sorted by date ascending.
+    Return a Series indexed by exact start date (YYYY-MM-DD)
+    with counts of stocks/ETFs, sorted by date ascending.
+
+    Parameters:
+        data_dict (dict): Dictionary of {symbol: DataFrame}.
+        label (str): Label describing the dataset (e.g., "stocks" or "ETFs").
+        date_column (str): Name of the date column.
+
+    Returns:
+        pd.Series: Counts of {label} per start date.
     """
     starts = []
-    for symbol, df in all_stocks.items():
+    for symbol, df in data_dict.items():
         dates = pd.to_datetime(df[date_column], errors="coerce").dropna()
         if not dates.empty:
             starts.append(dates.min().normalize())  # exact date at midnight
 
     if not starts:
+        print(f" No valid start dates found for {label}.")
         return pd.Series(dtype="int64")
 
     s = pd.Series(starts)
     s = s.dt.date.value_counts().sort_index()  # index: datetime.date
+    print(f" Start date counts for {label}:")
     return s
 
 
-def plot_start_date_distribution(all_stocks, date_column="Date", bins=60, print_per_date=True):
-    """
-    Plot histogram of start dates with more bins,
-    and optionally print counts per exact start date.
-    """
-    # collect start dates
-    rows = []
-    for symbol, df in all_stocks.items():
-        dates = pd.to_datetime(df[date_column], errors="coerce").dropna()
-        if not dates.empty:
-            rows.append(dates.min().normalize())
 
-    if not rows:
-        print("⚠️ No valid start dates found.")
-        return
-
-    # histogram with more bins
-    plt.figure(figsize=(8, 4))
-    plt.hist(rows, bins=bins, edgecolor="black")
-    plt.title("Distribution of Symbols Start Dates")
-    plt.xlabel("Start Date")
-    plt.ylabel("Number of Stocks")
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.show()
-
-    # print exact-date counts
-    if print_per_date:
-        counts = pd.Series(rows).dt.date.value_counts().sort_index()
-        print("\n📅 Stocks starting on each exact date:\n")
-        for d, c in counts.items():
-            print(f"{d}: {c} stock(s)")
-        return counts  # handy if you want to reuse it
-    
-    
-# src/utils/metadata.py  (add this below load_nasdaq_metadata)
-import pandas as pd
-
-def missing_values_summary(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Return a summary of missing (NaN) values per column in the metadata DataFrame.
-
-    Columns:
-      - column: name of the column
-      - missing_count: number of missing (NaN) entries
-      - missing_percentage: % of missing values relative to total rows
-    """
-    total_rows = len(df)
-    missing_counts = df.isna().sum()
-    missing_perc = (missing_counts / total_rows) * 100
-
-    summary = pd.DataFrame({
-        "column": missing_counts.index,
-        "missing_count": missing_counts.values,
-        "missing_percentage": missing_perc.round(2)
-    })
-
-    return summary
 
 
 
@@ -235,9 +173,6 @@ def missing_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataF
     return per_symbol, overall
 
 
-import pandas as pd
-import numpy as np
-
 def zero_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compute 0.0 value rates per column for each symbol,
@@ -283,6 +218,89 @@ def zero_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFram
     overall = (total_zeros / total_rows * 100).to_frame("Total Zero Rate (%)")
 
     return per_symbol, overall
+
+
+def get_symbols_with_zeros(all_data: dict[str, pd.DataFrame], column: str):
+    """
+    Return a list of symbols that have at least one 0.0 or NaN value
+    in the specified column.
+
+    Parameters
+    ----------
+    all_data : dict[str, pd.DataFrame]
+        Dictionary where key = symbol, value = DataFrame of that symbol.
+    column : str
+        Column name to check.
+
+    Returns
+    -------
+    list[str]
+        List of symbols with 0.0 or NaN values in the given column.
+    """
+    symbols_with_issues = []
+
+    for symbol, df in all_data.items():
+        if column not in df.columns:
+            continue
+
+        series = df[column]
+
+        if not pd.api.types.is_numeric_dtype(series):
+            continue
+
+        if (series == 0).any():
+            symbols_with_issues.append(symbol)
+
+    return symbols_with_issues
+
+
+def get_symbols_with_zeros_or_nans(all_data: dict[str, pd.DataFrame], column: str):
+    """
+    Return a list of symbols that have at least one 0.0 or NaN value
+    in the specified column.
+
+    Parameters
+    ----------
+    all_data : dict[str, pd.DataFrame]
+        Dictionary where key = symbol, value = DataFrame of that symbol.
+    column : str
+        Column name to check for 0.0 or NaN values.
+
+    Returns
+    -------
+    list[str]
+        List of symbols that contain 0.0 or NaN values in the given column.
+    """
+    symbols_with_issues = []
+
+    for symbol, df in all_data.items():
+        # Skip symbols missing the target column
+        if column not in df.columns:
+            continue
+
+        # Select the column
+        series = df[column]
+
+        # Skip non-numeric columns (e.g., strings or dates)
+        if not pd.api.types.is_numeric_dtype(series):
+            continue
+
+        # Check for any 0.0 or NaN values
+        if (series == 0).any() or series.isna().any():
+            symbols_with_issues.append(symbol)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
