@@ -4,29 +4,50 @@ import numpy as np
 
 
 
-def plot_start_date_distribution(data_dict, label, date_column="Date", bins=60, print_per_date=True):
+def plot_start_date_distribution(
+    data_dict,
+    label,
+    date_column="Date",
+    bins=60,
+    return_counts=False,
+):
     """
-    Plot histogram of start dates with more bins,
-    and optionally print counts per exact start date.
+    For a dict {symbol: DataFrame}, get the start date of each symbol
+    and plot the distribution of these start dates.
 
-    Parameters:
-        data_dict (dict): Dictionary of {symbol: DataFrame}.
-        label (str): Label describing the dataset (e.g., "stocks" or "ETFs").
-        date_column (str): Name of the date column.
-        bins (int): Number of histogram bins.
-        print_per_date (bool): Whether to print counts for each exact date.
+    Parameters
+    ----------
+    data_dict : dict
+        Dictionary of {symbol: DataFrame}.
+    label : str
+        Label describing the dataset (e.g., "stocks" or "ETFs").
+    date_column : str, default "Date"
+        Name of the date column in each DataFrame.
+    bins : int, default 60
+        Number of bins for the histogram.
+    return_counts : bool, default False
+        If True, returns a Series with counts per exact start date.
+
+    Returns
+    -------
+    pandas.Series or None
+        Series of counts per exact start date (if return_counts=True),
+        otherwise None.
     """
-    # collect start dates
-    rows = []
+    # 1) collect start dates
+    start_dates = []
     for symbol, df in data_dict.items():
         dates = pd.to_datetime(df[date_column], errors="coerce").dropna()
         if not dates.empty:
-            rows.append(dates.min().normalize())
+            start_dates.append(dates.min().normalize())  # exact date at midnight
 
+    if not start_dates:
+        print(f"No valid start dates found for {label}.")
+        return None
 
-    # histogram with more bins
+    # 2) plot histogram of start dates
     plt.figure(figsize=(8, 4))
-    plt.hist(rows, bins=bins, edgecolor="black")
+    plt.hist(start_dates, bins=bins, edgecolor="black")
     plt.title(f"Distribution of {label} Start Dates")
     plt.xlabel("Start Date")
     plt.ylabel(f"Number of {label}")
@@ -34,13 +55,10 @@ def plot_start_date_distribution(data_dict, label, date_column="Date", bins=60, 
     plt.tight_layout()
     plt.show()
 
-    # print exact-date counts
-    if print_per_date:
-        counts = pd.Series(rows).dt.date.value_counts().sort_index()
-        print(f"\n📅 {label.capitalize()} starting on each exact date:\n")
-        for d, c in counts.items():
-            print(f"{d}: {c} {label[:-1] if label.endswith('s') else label}(s)")
-        return counts  # handy if you want to reuse it
+    # 3) optional exact-date counts
+    if return_counts:
+        counts = pd.Series(start_dates).dt.date.value_counts().sort_index()
+        return counts
 
     
 

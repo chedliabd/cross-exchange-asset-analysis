@@ -20,10 +20,7 @@ def remove_symbols(all_data: dict[str, pd.DataFrame], symbols_to_remove: list[st
     return {symbol: df for symbol, df in all_data.items() if symbol not in symbols_to_remove}
 
 
-def fill_adj_close_nans(all_data: dict[str, pd.DataFrame]):
-    for symbol, df in all_data.items():
-        if "Adj Close" in df.columns:
-            df["Adj Close"] = df["Adj Close"].ffill().bfill()
+
             
             
             

@@ -92,41 +92,6 @@ def get_start_dates(all_stocks, date_column="Date"):
 
 
 
-    
-    
-
-
-def start_date_counts(data_dict, label, date_column="Date"):
-    """
-    Return a Series indexed by exact start date (YYYY-MM-DD)
-    with counts of stocks/ETFs, sorted by date ascending.
-
-    Parameters:
-        data_dict (dict): Dictionary of {symbol: DataFrame}.
-        label (str): Label describing the dataset (e.g., "stocks" or "ETFs").
-        date_column (str): Name of the date column.
-
-    Returns:
-        pd.Series: Counts of {label} per start date.
-    """
-    starts = []
-    for symbol, df in data_dict.items():
-        dates = pd.to_datetime(df[date_column], errors="coerce").dropna()
-        if not dates.empty:
-            starts.append(dates.min().normalize())  # exact date at midnight
-
-    if not starts:
-        print(f" No valid start dates found for {label}.")
-        return pd.Series(dtype="int64")
-
-    s = pd.Series(starts)
-    s = s.dt.date.value_counts().sort_index()  # index: datetime.date
-    print(f" Start date counts for {label}:")
-    return s
-
-
-
-
 
 
 def missing_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, pd.DataFrame]:
