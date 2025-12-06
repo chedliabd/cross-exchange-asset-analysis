@@ -1,3 +1,6 @@
 data/
 .DS_Store
 __pycache__stocks_dict.pkl
+__pycache__/
+*.pyc
+
