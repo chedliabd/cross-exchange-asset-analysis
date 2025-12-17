@@ -3,4 +3,8 @@ data/
 __pycache__stocks_dict.pkl
 __pycache__/
 *.pyc
+data_cleaned/
+data_processed/
+spy.csv
+stocks_dict.pkl
 

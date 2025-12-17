@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markets, Decoded</title>
+  <meta name="description" content="A sector-investing decision toolkit: correlations, representativeness, ETF vs DIY, regimes, and investor-ready allocation." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav__brand">
+      <span class="logo">MD</span>
+      <span class="brand">Markets, Decoded</span>
+    </div>
+    <nav class="nav__links">
+      <a href="#mission">Mission</a>
+      <a href="#map">Roadmap</a>
+      <a href="#analysis">Chapters</a>
+      <a href="#strategy">Strategy</a>
+    </nav>
+    <div class="nav__cta">
+      <a class="btn btn--ghost" href="#strategy">Open Strategy Picker</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero" id="top">
+      <div class="hero__content">
+        <p class="kicker">Sector Investing, Made Practical</p>
+        <h1>Stop guessing. Discover which market features truly drive returns and risk.</h1>
+        <p class="subtitle">
+          We turn raw market behavior into a decision toolkit:
+          <strong>diversification of sectors</strong> → <strong>influence of regimes</strong> → <strong>representative stocks</strong> →
+          <strong>ETF vs DIY</strong> → a final <strong>strategy picker</strong>.
+        </p>
+        <div class="hero__actions">
+          <a class="btn" href="#mission">Start the story</a>
+          <a class="btn btn--ghost" href="#analysis">Jump to the 5 chapters</a>representative stocks
+        </div>
+
+        <div class="hero__stats">
+          <div class="stat">
+            <div class="stat__label">Goal</div>
+            <div class="stat__value">Less effort, more clarity</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Core lens</div>
+            <div class="stat__value">Volume-weighted returns</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Output</div>
+            <div class="stat__value">Actionable allocation</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__viz">
+        <div class="card">
+          <div class="card__header">
+            <h3>Live Preview</h3>
+            <p>Quick hooks: co-movement + how it changes through time.</p>
+          </div>
+          <div class="card__body">
+            <div class="viz" id="viz_hero_heatmap" aria-label="Correlation heatmap preview"></div>
+            <div class="viz" id="viz_hero_corr_line" aria-label="Rolling correlation preview"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="section" id="mission">
+      <div class="section__header">
+        <h2>Motivation</h2>
+        <p>
+          Investors often diversify across <strong>sectors without knowing when this diversification truly works. During market 
+          stress, correlations and volatility shift, and sectors that usually behave differently can suddenly move together. 
+          Our goal is to turn complex market behavior into clear, data-driven insights. By studying sector correlations, 
+          clustering, <strong>regime dependence (bull, bear, neutral), and <strong>intra-sector structure, we build a practical
+          guide that helps investors understand <strong>risk, avoid false diversification, and adapt their strategy to changing 
+          market conditions.
+        </p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>The investor problem</h3>
+          <p>
+            Portfolios often look diversified on paper — until stress hits.
+            Correlations spike, “different sectors” move together, and you discover you were holding one big bet.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Our promise</h3>
+          <p>
+            We move in a clean sequence: first <strong>structure</strong> (correlation + clusters),
+            then <strong>implementation</strong> (one stock? basket? ETF?),
+            then <strong>context</strong> (bull/bear regimes),
+            then <strong>final guidance</strong> (an investor-ready strategy picker).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="section" id="map">
+      <div class="section__header">
+        <h2>Roadmap: 5 chapters</h2>
+        <p>
+          Same fintech layout, but now the story is cleaner: five big chapters, each with subparts.
+          You can read it top-to-bottom like a product guide.
+        </p>
+      </div>
+
+      <div class="card">
+        <ol class="roadmap">
+          <li><a href="#c1">Chapter 1 — Sector Diversification (Correlation + Structure)</a></li>
+          <li><a href="#c2">Chapter 2 — Influence Of The Regimes On the Sectors</a></li>
+          <li><a href="#c3">Chapter 3 — ETF vs DIY Basket</a></li>
+          <li><a href="#c4">Chapter 4 — Inside a Sector (Proxy Stock vs Basket)</a></li>
+          <li><a href="#c5">Chapter 5 — Investor Profile Mapping (Final Synthesis)</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Chapters -->
+    <section class="section" id="analysis">
+      <div class="section__header">
+        <h2>Chapters</h2>
+        <p>
+          Each chapter has subparts: (1) what we show, (2) why it matters, and (3) chart placeholders you’ll fill from <code>script.js</code>.
+        </p>
+      </div>
+
+      <!-- CHAPTER 1 -->
+      <section class="block" id="c1">
+        <div class="block__title">
+          <h3>Chapter 1) Sector Diversification (Correlation + Structure)</h3>
+          <p class="muted">
+            Start with the foundation: which sectors truly diversify each other — and when that breaks.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <div class="card">
+            <h4>Subparts</h4>
+            <ul>
+              <li><strong>1.1 Correlation heatmaps</strong> — full sample vs last 20y vs last 5y</li>
+              <li><strong>1.2 Rolling correlations</strong> — 60d vs 120d, so “diversification failure” is visible</li>
+              <li><strong>1.3 Sector map (UMAP)</strong> — sectors close together behave similarly (often redundant)</li>
+            </ul>
+            <h4>Why it matters</h4>
+            <ul>
+              <li>Stops “fake diversification” early</li>
+              <li>Shows regime dependence (correlations often rise in stress)</li>
+              <li>Gives a clean structure you build on later</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="viz" id="viz_c1_heatmap" aria-label="Sector correlation heatmap"></div>
+            <div class="viz" id="viz_c1_rollcorr" aria-label="Rolling correlation lines"></div>
+            <div class="viz" id="viz_c1_umap" aria-label="UMAP sector map"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 2 -->
+      <section class="block" id="c2">
+        <div class="block__title">
+          <h3>Chapter 2) Influence Of The Regimes On the Sectors' Returns And Volatilities</h3>
+          <p class="muted">
+            Question: do sectors behave the same way in bull, neutral, and bear markets — or does the regime reshape everything?
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <!-- LEFT: narrative -->
+          <div class="card">
+            <h4>Introduction</h4>
+            <p>
+              In this chapter, we study how market regimes influence sector behaviour.
+              Instead of assuming sectors have “stable” risk and return patterns, we condition everything on the regime
+              (Static / Bear / Neutral / Bull) and compare what changes.
+            </p>
+
+            <h4>What we plot</h4>
+            <ul>
+              <li><strong>Correlation structure</strong> — how sectors co-move inside each regime</li>
+              <li><strong>Average correlation</strong> — a compact summary of systemic risk / diversification</li>
+              <li><strong>(Later)</strong> returns and volatilities per sector, per regime</li>
+            </ul>
+
+            <h4>Why these plots</h4>
+            <ul>
+              <li>To show that diversification is <strong>regime-dependent</strong></li>
+              <li>To highlight that “safe” sectors can still become risky in stress regimes</li>
+              <li>To motivate regime-aware allocation and risk control later in the project</li>
+            </ul>
+
+            <h4>Mini conclusion</h4>
+            <p>
+              The same sector map can look very different depending on the regime.
+              This is why static assumptions can break when the market environment changes.
+            </p>
+          </div>
+
+          <!-- RIGHT: toggle + regime content -->
+          <div class="card">
+            <h4>Explore by regime</h4>
+
+            <div class="toggle" role="tablist" aria-label="Regime selector">
+              <button class="toggle__btn is-active" data-regime="static" type="button">Static (no regime)</button>
+              <button class="toggle__btn" data-regime="bear" type="button">Bear</button>
+              <button class="toggle__btn" data-regime="neutral" type="button">Neutral</button>
+              <button class="toggle__btn" data-regime="bull" type="button">Bull</button>
+            </div>
+
+            <!-- STATIC -->
+            <div class="regime-panel" id="regime_static">
+              <div class="viz">
+                <img src="static_corr_chap4.png" alt="Static sector correlation heatmap" />
+              </div>
+              <div class="viz">
+                <img src="aver_corr_chap4.png" alt="Average correlation over time (static)" />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>
+                  In the static view, we get a “global” picture of sector co-movement.
+                  This is useful as a baseline, but it can hide big differences that appear once we condition on regimes.
+                </p>
+              </div>
+            </div>
+
+            <!-- BEAR -->
+            <div class="regime-panel hidden" id="regime_bear">
+              <div class="note">
+                <p><strong>Bear (coming soon)</strong></p>
+                <p>Plots + interpretation will appear here when ready.</p>
+              </div>
+            </div>
+
+            <!-- NEUTRAL -->
+            <div class="regime-panel hidden" id="regime_neutral">
+              <div class="note">
+                <p><strong>Neutral (coming soon)</strong></p>
+                <p>Plots + interpretation will appear here when ready.</p>
+              </div>
+            </div>
+
+            <!-- BULL -->
+            <div class="regime-panel hidden" id="regime_bull">
+              <div class="note">
+                <p><strong>Bull (coming soon)</strong></p>
+                <p>Plots + interpretation will appear here when ready.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- CHAPTER 3 -->
+      <section class="block" id="c3">
+        <div class="block__title">
+          <h3>Chapter 3) ETF vs DIY Basket</h3>
+          <p class="muted">
+            The practical question: should you buy the sector ETF, or recreate exposure yourself?
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <!-- LEFT: TEXT -->
+          <div class="card">
+            <h4>Intro</h4>
+            <p>
+              This section compares a <strong>sector ETF</strong> (e.g., XLK) with a <strong>DIY sector proxy (“basket”)</strong>
+              built from the sector’s underlying stocks using a <strong>volume-weighted</strong> construction. The goal is to check
+              whether the ETF delivers exposure that is <strong>similar</strong> to what you would get from a transparent, rules-based
+              basket—and to see how their risk evolves through time.
+            </p>
+
+            <hr />
+
+            <h4>Plot 1 — Performance (Index = 100)</h4>
+
+            <p class="muted"><strong>What the plot shows</strong></p>
+            <p>
+              Both series are rebased to <strong>100 on the same start date</strong>, so the chart is comparing
+              <strong>growth paths</strong>, not absolute prices.
+            </p>
+            <ul>
+              <li><strong>ETF</strong>: the sector ETF.</li>
+              <li><strong>Basket</strong>: a DIY proxy built from the sector’s stocks using <strong>volume-weighted</strong> weights.</li>
+            </ul>
+
+            <p class="muted"><strong>How to interpret it</strong></p>
+            <ul>
+              <li>
+                If the two lines <strong>track closely</strong>, the ETF and the basket provide <strong>similar exposure</strong>
+                (at least in aggregate).
+              </li>
+              <li>
+                If the lines <strong>drift apart</strong>, the ETF and the basket are capturing <strong>different exposure</strong>,
+                typically due to:
+                <ul>
+                  <li>differences in <strong>constituents</strong> (inclusions/exclusions),</li>
+                  <li>differences in <strong>weighting rules</strong> (cap-weighted vs your volume-weighted method),</li>
+                  <li>caps/constraints that change concentration.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <hr />
+
+            <h4>Plot 2 — Volatility (Rolling, Annualized)</h4>
+
+            <p class="muted"><strong>What the plot shows</strong></p>
+            <p>
+              Rolling annualized <strong>volatility</strong> summarizes “how wild the ride is” (risk) and how that risk changes over time.
+            </p>
+            <p>It answers:</p>
+            <ul>
+              <li><strong>When</strong> was the sector risky?</li>
+              <li>Did ETF and basket risk spike at the <strong>same times</strong>?</li>
+              <li>Is one consistently smoother or more explosive during stress?</li>
+            </ul>
+
+            <p class="muted"><strong>How to interpret it</strong></p>
+            <ul>
+              <li>
+                Volatility and performance are related but not the same:
+                <ul>
+                  <li><strong>Similar performance, different volatility</strong>: one path is smoother, the other bumpier.</li>
+                  <li><strong>Similar volatility, different performance</strong>: they take different bets and drift apart.</li>
+                  <li>
+                    <strong>Different regimes</strong>: one may react more strongly in crises even if long-run growth is similar.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+            <hr />
+
+            <h4>Method note</h4>
+            <ul>
+              <li>We compute <strong>daily log returns</strong>.</li>
+              <li>ETF and basket are <strong>aligned on identical trading dates</strong>.</li>
+            </ul>
+
+            <hr />
+
+            <h4>Small conclusion</h4>
+            <p>
+              Overall, the <strong>DIY stock basket</strong> tends to <strong>outperform</strong> the sector ETF in this demo.
+              The main exception is the <strong>housing market</strong>, where the ETF performs better than the basket. In terms of risk,
+              the <strong>ETFs are generally less volatile</strong> than the stock baskets, meaning the ETF path is typically smoother even
+              when long-run performance is similar or lower. This points to a trade-off: the basket often delivers higher returns, but the
+              ETF usually provides a less bumpy ride.
+            </p>
+          </div>
+
+          <!-- RIGHT: PLOTS -->
+          <div class="card" id="c3_right">
+            <h4>Choose a sector</h4>
+
+            <div class="toggle" role="tablist" aria-label="Sector selector (Chapter 3)">
+              <button class="toggle__btn is-active" data-sector="basic_materials" type="button">basic_materials</button>
+              <button class="toggle__btn" data-sector="communication_services" type="button">communication_services</button>
+              <button class="toggle__btn" data-sector="consumer_cyclical" type="button">consumer_cyclical</button>
+              <button class="toggle__btn" data-sector="consumer_defensive" type="button">consumer_defensive</button>
+              <button class="toggle__btn" data-sector="energy" type="button">energy</button>
+              <button class="toggle__btn" data-sector="financial_services" type="button">financial_services</button>
+              <button class="toggle__btn" data-sector="healthcare" type="button">healthcare</button>
+              <button class="toggle__btn" data-sector="industrials" type="button">industrials</button>
+              <button class="toggle__btn" data-sector="real_estate" type="button">real_estate</button>
+              <button class="toggle__btn" data-sector="technology" type="button">technology</button>
+              <button class="toggle__btn" data-sector="utilities" type="button">utilities</button>
+            </div>
+
+            <!-- basic_materials -->
+            <div class="sector-panel" id="c3_sector_basic_materials">
+              <div class="viz" aria-label="basic_materials performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/basic_materials.png"
+                  alt="basic_materials — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="basic_materials volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/basic_materials_vol60.png"
+                  alt="basic_materials — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>basic_materials</strong>.</p>
+              </div>
+            </div>
+
+            <!-- communication_services -->
+            <div class="sector-panel hidden" id="c3_sector_communication_services">
+              <div class="viz" aria-label="communication_services performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/communication_services.png"
+                  alt="communication_services — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="communication_services volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/communication_services_vol60.png"
+                  alt="communication_services — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>communication_services</strong>.</p>
+              </div>
+            </div>
+
+            <!-- consumer_cyclical -->
+            <div class="sector-panel hidden" id="c3_sector_consumer_cyclical">
+              <div class="viz" aria-label="consumer_cyclical performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/consumer_cyclical.png"
+                  alt="consumer_cyclical — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="consumer_cyclical volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/consumer_cyclical_vol60.png"
+                  alt="consumer_cyclical — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>consumer_cyclical</strong>.</p>
+              </div>
+            </div>
+
+            <!-- consumer_defensive -->
+            <div class="sector-panel hidden" id="c3_sector_consumer_defensive">
+              <div class="viz" aria-label="consumer_defensive performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/consumer_defensive.png"
+                  alt="consumer_defensive — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="consumer_defensive volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/consumer_defensive_vol60.png"
+                  alt="consumer_defensive — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>consumer_defensive</strong>.</p>
+              </div>
+            </div>
+
+            <!-- energy -->
+            <div class="sector-panel hidden" id="c3_sector_energy">
+              <div class="viz" aria-label="energy performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/energy.png"
+                  alt="energy — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="energy volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/energy_vol60.png"
+                  alt="energy — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>energy</strong>.</p>
+              </div>
+            </div>
+
+            <!-- financial_services -->
+            <div class="sector-panel hidden" id="c3_sector_financial_services">
+              <div class="viz" aria-label="financial_services performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/financial_services.png"
+                  alt="financial_services — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="financial_services volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/financial_services_vol60.png"
+                  alt="financial_services — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>financial_services</strong>.</p>
+              </div>
+            </div>
+
+            <!-- healthcare -->
+            <div class="sector-panel hidden" id="c3_sector_healthcare">
+              <div class="viz" aria-label="healthcare performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/healthcare.png"
+                  alt="healthcare — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="healthcare volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/healthcare_vol60.png"
+                  alt="healthcare — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>healthcare</strong>.</p>
+              </div>
+            </div>
+
+            <!-- industrials -->
+            <div class="sector-panel hidden" id="c3_sector_industrials">
+              <div class="viz" aria-label="industrials performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/industrials.png"
+                  alt="industrials — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="industrials volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/industrials_vol60.png"
+                  alt="industrials — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>industrials</strong>.</p>
+              </div>
+            </div>
+
+            <!-- real_estate -->
+            <div class="sector-panel hidden" id="c3_sector_real_estate">
+              <div class="viz" aria-label="real_estate performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/real_estate.png"
+                  alt="real_estate — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="real_estate volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/real_estate_vol60.png"
+                  alt="real_estate — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>real_estate</strong>.</p>
+              </div>
+            </div>
+
+            <!-- technology -->
+            <div class="sector-panel hidden" id="c3_sector_technology">
+              <div class="viz" aria-label="technology performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/technology.png"
+                  alt="technology — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="technology volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/technology_vol60.png"
+                  alt="technology — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>technology</strong>.</p>
+              </div>
+            </div>
+
+            <!-- utilities -->
+            <div class="sector-panel hidden" id="c3_sector_utilities">
+              <div class="viz" aria-label="utilities performance">
+                <img
+                  src="chapter3_sector_png_split_pretty/performance/utilities.png"
+                  alt="utilities — Performance (Index = 100)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="viz" aria-label="utilities volatility">
+                <img
+                  src="chapter3_sector_png_split_pretty/volatility/utilities_vol60.png"
+                  alt="utilities — Volatility (Rolling, Annualized)"
+                  style="width:100%; height:auto;"
+                />
+              </div>
+
+              <div class="note">
+                <p><strong>Interpretation (placeholder):</strong></p>
+                <p>Interpretation not ready for sector <strong>utilities</strong>.</p>
+              </div>
+            </div>
+          </div>
+
+
+
+
+      <!-- CHAPTER 4 -->
+      <section class="block" id="c4">
+        <div class="block__title">
+          <h3>Chapter 4) Regime Analysis (Bull / Bear / Neutral)</h3>
+          <p class="muted">
+            Markets change. We label regimes and recompute sector behavior inside each one.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <div class="card">
+            <h4>Subparts</h4>
+            <ul>
+              <li><strong>4.1 Market index with regime shading</strong> — when bull/bear happens</li>
+              <li><strong>4.2 Winners/losers by regime</strong> — which sectors hold up in bear markets</li>
+            </ul>
+            <h4>Why it matters</h4>
+            <ul>
+              <li>Explains why diversification fails when it matters most</li>
+              <li>Identifies defensive sectors empirically</li>
+              <li>Feeds directly into the strategy picker</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="viz" id="viz_c4_spy_regimes" aria-label="SPY index with regime shading"></div>
+            <div class="viz" id="viz_c4_winners" aria-label="Regime winners/losers chart"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 5 -->
+      <section class="block" id="c5">
+        <div class="block__title">
+          <h3>Chapter 5) Investor Profile Mapping (Final Synthesis)</h3>
+          <p class="muted">
+            Convert everything into a simple framework: what to buy depends on your risk tolerance and the current regime.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <div class="card">
+            <h4>Subparts</h4>
+            <ul>
+              <li><strong>5.1 Profiles</strong> — conservative / balanced / aggressive</li>
+              <li><strong>5.2 Regime-aware choices</strong> — bull vs bear changes what “sensible” means</li>
+              <li><strong>5.3 Final output</strong> — strategy picker chooses between ETF vs basket vs category</li>
+            </ul>
+            <h4>Why it matters</h4>
+            <ul>
+              <li>Turns analysis into a product</li>
+              <li>Gives a clear decision rule, not a long report</li>
+              <li>Lets you tailor recommendations to the user</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="viz" id="viz_c5_risk_spectrum" aria-label="Risk spectrum chart"></div>
+            <div class="viz" id="viz_c5_scenario_table" aria-label="Scenario table (profile × regime)"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Final interactive -->
+    <section class="section" id="strategy">
+      <div class="section__header">
+        <h2>Interactive Strategy Picker</h2>
+        <p>
+          Choose your profile, regime assumption, and preferred instrument:
+          <strong>ETFs</strong> vs <strong>sector baskets</strong> vs <strong>market category</strong>.
+          Instantly see expected <strong>returns</strong> and <strong>volatility</strong>.
+        </p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Controls</h3>
+          <div class="controls">
+            <label class="control">
+              <span>Investor profile</span>
+              <select id="ctl_profile">
+                <option value="conservative">Conservative</option>
+                <option value="balanced" selected>Balanced</option>
+                <option value="aggressive">Aggressive</option>
+              </select>
+            </label>
+
+            <label class="control">
+              <span>Market regime</span>
+              <select id="ctl_regime">
+                <option value="neutral" selected>Neutral</option>
+                <option value="bull">Bull</option>
+                <option value="bear">Bear</option>
+              </select>
+            </label>
+
+            <label class="control">
+              <span>Exposure type</span>
+              <select id="ctl_exposure">
+                <option value="etf" selected>ETF</option>
+                <option value="sector_basket">Sector basket</option>
+                <option value="market_category">Market category</option>
+              </select>
+            </label>
+
+            <button class="btn" id="btn_run">Generate allocation</button>
+          </div>
+
+          <div class="note">
+            <p class="muted">
+              This is the “product” moment: the site becomes a decision tool.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Output</h3>
+          <div class="grid grid--2">
+            <div class="metric">
+              <div class="metric__label">Expected return</div>
+              <div class="metric__value" id="out_return">—</div>
+            </div>
+            <div class="metric">
+              <div class="metric__label">Expected volatility</div>
+              <div class="metric__value" id="out_vol">—</div>
+            </div>
+          </div>
+          <div class="viz" id="viz_strategy_weights" aria-label="Recommended weights"></div>
+          <div class="viz" id="viz_strategy_perf" aria-label="Simulated performance"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer__left">
+        <div class="brandline">
+          <span class="logo">MD</span>
+          <span>Markets, Decoded</span>
+        </div>
+        <p class="muted">Sector decision toolkit — built from empirical market structure.</p>
+      </div>
+
+      <div class="footer__right">
+        <a href="#top">Back to top</a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
