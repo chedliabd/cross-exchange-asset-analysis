@@ -30,7 +30,7 @@
   <main>
     <section class="hero" id="top">
       <div class="hero__content">
-        <p class="kicker">Sector Investing, Made Practical</p>
+        <p class="kicker">Understanding Investing, Made Practical</p>
         <h1>Stop guessing. Discover which market features truly drive returns and risk.</h1>
         <p class="subtitle">
           We turn raw market behavior into a decision toolkit:
@@ -39,34 +39,18 @@
         </p>
         <div class="hero__actions">
           <a class="btn" href="#mission">Start the story</a>
-          <a class="btn btn--ghost" href="#analysis">Jump to the 5 chapters</a>representative stocks
-        </div>
-
-        <div class="hero__stats">
-          <div class="stat">
-            <div class="stat__label">Goal</div>
-            <div class="stat__value">Less effort, more clarity</div>
-          </div>
-          <div class="stat">
-            <div class="stat__label">Core lens</div>
-            <div class="stat__value">Volume-weighted returns</div>
-          </div>
-          <div class="stat">
-            <div class="stat__label">Output</div>
-            <div class="stat__value">Actionable allocation</div>
-          </div>
+          <a class="btn btn--ghost" href="#analysis">Jump to the 5 chapters</a>
         </div>
       </div>
 
       <div class="hero__viz">
         <div class="card">
           <div class="card__header">
-            <h3>Live Preview</h3>
-            <p>Quick hooks: co-movement + how it changes through time.</p>
+            <h3>One chart, may look simple,</h3>
+            <p>Until you ask what lies beneath. </p>
           </div>
           <div class="card__body">
-            <div class="viz" id="viz_hero_heatmap" aria-label="Correlation heatmap preview"></div>
-            <div class="viz" id="viz_hero_corr_line" aria-label="Rolling correlation preview"></div>
+            <img src="header_plots/spy.png" aria-label="SPY Returns" />
           </div>
         </div>
       </div>
@@ -77,12 +61,16 @@
       <div class="section__header">
         <h2>Motivation</h2>
         <p>
-          Investors often diversify across <strong>sectors without knowing when this diversification truly works. During market 
-          stress, correlations and volatility shift, and sectors that usually behave differently can suddenly move together. 
-          Our goal is to turn complex market behavior into clear, data-driven insights. By studying sector correlations, 
-          clustering, <strong>regime dependence (bull, bear, neutral), and <strong>intra-sector structure, we build a practical
-          guide that helps investors understand <strong>risk, avoid false diversification, and adapt their strategy to changing 
-          market conditions.
+          Financial markets are often explained with <b>narratives</b>, <b>intuition</b>, or isolated indicators, yet investors 
+          ultimately face a structural question:
+          <b>What truly drives returns and risk</b>?
+          We are motivated by the need to move beyond <b>guesswork</b> and systematically identify the <b>market 
+          features</b> that shape performance.
+          By analyzing <b>sectors</b>, <b>volatility</b>, <b>correlations</b>, and <b>market regimes</b> extracted from real 
+          data, we aim to reveal how <b>risk and return</b> reorganize across different market conditions.
+          Rather than <b>predicting prices</b>, the goal is to provide an <b>interpretable framework</b> that helps investors 
+          understand when certain <b>exposures</b> perform well, when <b>diversification</b> breaks down, and how <b>market 
+          structure</b> evolves over time.
         </p>
       </div>
 
@@ -90,18 +78,18 @@
         <div class="card">
           <h3>The investor problem</h3>
           <p>
-            Portfolios often look diversified on paper — until stress hits.
-            Correlations spike, “different sectors” move together, and you discover you were holding one big bet.
+            Investors face a market driven by multiple interacting forces, yet decisions are often made by focusing on a 
+            single dimension at a time. Sectors, volatility, correlations, and market conditions are typically analyzed in 
+            isolation, making it difficult to understand <b>what truly matters</b> for returns and risk.
           </p>
         </div>
 
         <div class="card">
           <h3>Our promise</h3>
           <p>
-            We move in a clean sequence: first <strong>structure</strong> (correlation + clusters),
-            then <strong>implementation</strong> (one stock? basket? ETF?),
-            then <strong>context</strong> (bull/bear regimes),
-            then <strong>final guidance</strong> (an investor-ready strategy picker).
+            We offer a <b>feature-driven view of the market</b>. By jointly analyzing sectors, risk, correlations, and regimes, 
+            we identify the <b>structural drivers</b> of performance. The goal is not prediction, but clarity: 
+            helping investors understand which features shape outcomes and how their influence changes across market conditions.
           </p>
         </div>
       </div>
@@ -173,42 +161,73 @@
       <!-- CHAPTER 2 -->
       <section class="block" id="c2">
         <div class="block__title">
-          <h3>Chapter 2) Influence Of The Regimes On the Sectors' Returns And Volatilities</h3>
+          <h3>Chapter 2: Influence Of The Regimes On the Sectors' Returns And Volatilities</h3>
           <p class="muted">
-            Question: do sectors behave the same way in bull, neutral, and bear markets — or does the regime reshape everything?
+            Do sectors behave the same way in bull, neutral, and bear markets — or does the regime reshape everything?
           </p>
         </div>
 
         <div class="grid grid--2">
           <!-- LEFT: narrative -->
           <div class="card">
-            <h4>Introduction</h4>
-            <p>
-              In this chapter, we study how market regimes influence sector behaviour.
-              Instead of assuming sectors have “stable” risk and return patterns, we condition everything on the regime
-              (Static / Bear / Neutral / Bull) and compare what changes.
+            <p> 
+              In the previous chapter, we focused on sectors themselves, treating the market environment as fixed 
+              and comparing returns, volatility, and co-movement across sectors in a static way. 
+              While this approach highlights structural differences between sectors, it implicitly assumes that 
+              these relationships remain stable over time.
             </p>
 
-            <h4>What we plot</h4>
-            <ul>
-              <li><strong>Correlation structure</strong> — how sectors co-move inside each regime</li>
-              <li><strong>Average correlation</strong> — a compact summary of systemic risk / diversification</li>
-              <li><strong>(Later)</strong> returns and volatilities per sector, per regime</li>
-            </ul>
-
-            <h4>Why these plots</h4>
-            <ul>
-              <li>To show that diversification is <strong>regime-dependent</strong></li>
-              <li>To highlight that “safe” sectors can still become risky in stress regimes</li>
-              <li>To motivate regime-aware allocation and risk control later in the project</li>
-            </ul>
-
-            <h4>Mini conclusion</h4>
             <p>
-              The same sector map can look very different depending on the regime.
-              This is why static assumptions can break when the market environment changes.
+              In reality, market conditions change. Periods of stress, recovery, and expansion do not affect all 
+              sectors in the same way, nor do they preserve the same levels of risk or diversification. 
+              Ignoring these shifts can lead to misleading conclusions about sector performance and risk exposure.
+            </p>
+
+            <p>
+              In this chapter, we introduce market regimes as a way to capture these changing conditions. 
+              Using the S&amp;P 500 index (SPY) as a proxy for the overall market, each point in time is classified 
+              into one of three regimes: Bear, Neutral, or Bull. Sector returns, correlations, and volatilities are 
+              then analyzed conditionally on the prevailing regime, allowing us to observe how sector behavior 
+              adapts to different market environments.
+            </p>
+
+            <p>
+              By moving from a static sector view to a regime-aware perspective, this chapter explores how the same 
+              sectors can exhibit very different risk and return profiles depending on the broader market context.
+            </p>
+
+            <p>
+              Bear markets are marked by high correlations and elevated volatility, which strongly limit diversification 
+              benefits. Risk tends to concentrate in tightly correlated cyclical sectors, amplifying market stress. While some 
+              sectors still achieve positive returns, higher performance is usually associated with higher volatility. Sectors 
+              combining positive returns with lower volatility and weaker correlations appear more resilient during this regime.
+            </p>
+
+            <p>
+              Neutral markets are characterized by positive returns for most sectors and lower overall volatility compared to 
+              Bear regimes. Correlations remain high, but risk is less concentrated, allowing clearer differentiation between 
+              stable and cyclical sectors. Sectors that combine strong returns with lower volatility and looser correlation to 
+              the cyclical core appear best positioned, while highly volatile sectors remain sensitive despite the absence of 
+              strong market stress.
+            </p>
+
+            <p>
+              Bull markets are characterized by broad-based positive returns and strong sector co-movement. Correlations are 
+              high, reflecting a unified upward market dynamic, while volatility is relatively contained compared to Bear 
+              regimes. Performance differences are driven more by sector exposure to growth than by risk isolation. In this 
+              environment, sectors aligned with expansion benefit the most, while diversification across sectors provides 
+              limited additional protection.
+            </p>
+
+            <p>
+              Across all regimes, one key insight stands out: there is no universally “best” sector in absolute terms. Sector 
+              attractiveness depends on the market environment, and a sector that performs well in one regime can underperform 
+              or become excessively risky in another. By defining regimes using market-wide information and conditioning sector 
+              analysis on those regimes, this framework provides a structured way to think about risk, return, and 
+              diversification dynamically rather than statically. Overall, regimes play a key role in your strategy.
             </p>
           </div>
+
 
           <!-- RIGHT: toggle + regime content -->
           <div class="card">
@@ -224,42 +243,125 @@
             <!-- STATIC -->
             <div class="regime-panel" id="regime_static">
               <div class="viz">
-                <img src="static_corr_chap4.png" alt="Static sector correlation heatmap" />
+                <img src="chapter_2_plots/corr_static.png" alt="Static sector correlation heatmap" />
               </div>
               <div class="viz">
-                <img src="aver_corr_chap4.png" alt="Average correlation over time (static)" />
+                <img src="chapter_2_plots/avg_corr_rol.png" alt="Average correlation over time (static)" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/sect_vola_regimes.png" alt="Sectors volatility acroos regimes" />
               </div>
 
               <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
                 <p>
-                  In the static view, we get a “global” picture of sector co-movement.
-                  This is useful as a baseline, but it can hide big differences that appear once we condition on regimes.
+                  Sector behavior varies over time, with noticeable changes in both co-movement and risk. Periods of stronger 
+                  alignment between sectors alternate with phases where diversification is more effective. At the same time, 
+                  overall sector volatility shifts across market environments, with some regimes exhibiting consistently higher 
+                  risk than others. These patterns suggest that both returns and volatility respond differently depending on the
+                  prevailing market regime
                 </p>
               </div>
             </div>
 
             <!-- BEAR -->
-            <div class="regime-panel hidden" id="regime_bear">
+            <div class="regime-panel" id="regime_bear">
+              <div class="viz">
+                <img src="chapter_2_plots/sect_return_bear.png" alt="Sectors returns Bear regime" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/sect_corr_bear.png" alt="Clustered sectors correlation Bear regime" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/volat_bear.png" alt="Most volatile sectors during Bear markets" />
+              </div>
+
               <div class="note">
-                <p><strong>Bear (coming soon)</strong></p>
-                <p>Plots + interpretation will appear here when ready.</p>
+                <p>                    
+                  During the Bear regime, sector performance is very uneven. Consumer Cyclical delivers the highest average 
+                  returns by a large margin, followed by Communication Services. Healthcare and Basic Materials also remain 
+                  positive, while Energy, Technology, Real Estate, and Financial Services hover close to zero. Consumer 
+                  Defensive and Utilities are the only sectors with clearly negative returns. Volatility is high overall, 
+                  but not evenly distributed. Financial Services is the most volatile sector, followed by Real Estate and Basic 
+                  Materials. Consumer Cyclical also shows elevated volatility, meaning its strong returns come with substantial 
+                  risk. Communication Services offers a better balance, combining relatively high returns with lower volatility 
+                  than most cyclical sectors. Healthcare stands out with positive returns and among the lowest volatility levels 
+                  in this regime. Correlations between sectors are strong during Bear markets. Most sectors move together, 
+                  especially Financial Services, Real Estate, Technology, Consumer Cyclical, Industrials, and Basic Materials, 
+                  forming a tightly correlated high-risk cluster. Energy is strongly linked to this group as well. Healthcare 
+                  and Communication Services remain positively correlated but slightly less tightly, which helps explain their 
+                  more stable behavior. Defensive sectors sit at the edge of the correlation structure but do not fully decouple 
+                  from the market.
+                </p>
               </div>
             </div>
+                
 
             <!-- NEUTRAL -->
-            <div class="regime-panel hidden" id="regime_neutral">
+            <div class="regime-panel" id="regime_neutral">
+              <div class="viz">
+                <img src="chapter_2_plots/sect_return_neutral.png" alt="Sectors returns Neutral regime" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/sect_corr_neutral.png" alt="Clustered sectors correlation Neutral regime" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/volat_neutral.png" alt="Most volatile sectors during Neutral markets" />
+              </div>
+
               <div class="note">
-                <p><strong>Neutral (coming soon)</strong></p>
-                <p>Plots + interpretation will appear here when ready.</p>
+                <p>                    
+                  In the Neutral regime, sector returns are more balanced, but clear leaders still emerge. Healthcare delivers 
+                  the highest average return, followed by Basic Materials and Energy. Consumer Defensive also performs well, 
+                  while Communication Services sits in the middle with moderate positive returns. Utilities, Technology, and 
+                  Real Estate show smaller but still positive returns. Industrials and Financial Services are close to zero, 
+                  while Consumer Cyclical is the only sector with clearly negative average returns in this regime. Volatility is 
+                  lower than in Bear markets but remains differentiated across sectors. Basic Materials is the most volatile 
+                  sector, followed by Energy and Consumer Cyclical. Communication Services and Technology show moderate 
+                  volatility, while Healthcare, Financial Services, and Consumer Defensive are among the least volatile sectors. 
+                  This places Healthcare and Consumer Defensive in a favorable position, combining strong or moderate returns 
+                  with relatively low risk. Correlations remain high across sectors, but the structure is more organized than 
+                  in Bear markets. Most sectors are positively correlated, forming a broad common cluster. Cyclical sectors 
+                  such as Basic Materials, Energy, Industrials, Consumer Cyclical, Financial Services, and Real Estate are 
+                  tightly linked, indicating shared dynamics. Healthcare, Consumer Defensive, and Utilities are still positively 
+                  correlated with the rest of the market but sit slightly apart from the cyclical core, suggesting more stable 
+                  behavior. The sectors offering the best risk-return profiles, notably Healthcare, are also less exposed to 
+                  the most volatile correlation clusters.
+                </p>
               </div>
             </div>
 
+
             <!-- BULL -->
-            <div class="regime-panel hidden" id="regime_bull">
+            <div class="regime-panel" id="regime_bull">
+              <div class="viz">
+                <img src="chapter_2_plots/sect_return_bull.png" alt="Sectors returns Bull regime" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/sect_corr_bull.png" alt="Clustered sectors correlation Bull regime" />
+              </div>
+              <div class="viz">
+                <img src="chapter_2_plots/volat_bull.png" alt="Most volatile sectors during Bull markets" />
+              </div>
+
               <div class="note">
-                <p><strong>Bull (coming soon)</strong></p>
-                <p>Plots + interpretation will appear here when ready.</p>
+                <p>                    
+                  In the Bull regime, all sectors deliver positive average returns, but leadership is very clear. Healthcare 
+                  dominates by a wide margin, showing the highest returns in this regime. Technology and Communication Services 
+                  follow, both with strong positive performance. Industrials also perform well, while Real Estate, Basic 
+                  Materials, and Financial Services form a middle group with moderate returns. Consumer Cyclical, Utilities, 
+                  Energy, and Consumer Defensive lag behind but still remain positive. Volatility is generally lower and more 
+                  evenly distributed than in Bear markets. Healthcare and Basic Materials are the most volatile sectors, 
+                  followed by Energy and Consumer Cyclical. Technology and Communication Services show moderate volatility, 
+                  while Consumer Defensive and Financial Services are among the least volatile sectors. This means that some of 
+                  the strongest performers, such as Healthcare, also carry higher risk, while others like Technology offer a 
+                  more balanced return–volatility profile. Correlations remain high across sectors in the Bull regime, 
+                  indicating a strong common market driver. Cyclical and growth-oriented sectors such as Technology, Financial 
+                  Services, Energy, Basic Materials, and Consumer Cyclical are tightly correlated, forming a coherent expansion
+                  cluster. Defensive sectors like Healthcare and Consumer Defensive remain positively correlated with the rest 
+                  of the market but are slightly less embedded in the core cyclical cluster. The highest-return sectors tend to 
+                  remain strongly correlated with the broader market, meaning performance is driven by overall market strength 
+                  rather than isolated sector behavior.
+                </p>
               </div>
             </div>
           </div>
