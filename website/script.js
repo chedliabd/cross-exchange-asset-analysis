@@ -380,4 +380,89 @@
       show('basic_materials');
     })();
 
+    // ----------------------------
+// Chapter 3: sector toggle + interpretation load
+// ----------------------------
+let c3Writeups = null;
+
+async function c3LoadWriteups() {
+  // Adjust path if you place the JSON elsewhere
+  const res = await fetch("content/chapter3_writeups.json");
+  if (!res.ok) {
+    throw new Error(`Failed to load chapter3_writeups.json (${res.status})`);
+  }
+  c3Writeups = await res.json();
+}
+
+function c3SetInterpretation(sector) {
+  const box = document.getElementById("c3_interpretation");
+  if (!box) return;
+
+  const entry = c3Writeups && c3Writeups[sector];
+
+  if (entry && entry.html) {
+    // Your JSON contains HTML already (converted from markdown)
+    box.innerHTML = `
+      <p><strong>Interpretation:</strong></p>
+      ${entry.html}
+    `;
+  } else {
+    box.innerHTML = `
+      <p><strong>Interpretation:</strong></p>
+      <p>Interpretation not ready for sector <strong>${sector}</strong>.</p>
+    `;
+  }
+}
+
+function c3ShowSector(sector) {
+  // Toggle panels
+  document.querySelectorAll("#c3 .sector-panel").forEach((p) => p.classList.add("hidden"));
+  const panel = document.getElementById(`c3_sector_${sector}`);
+  if (panel) panel.classList.remove("hidden");
+
+  // Update interpretation text
+  c3SetInterpretation(sector);
+}
+
+function c3WireButtons() {
+  const root = document.getElementById("c3");
+  if (!root) return;
+
+  const buttons = root.querySelectorAll(".toggle__btn[data-sector]");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const sector = btn.getAttribute("data-sector");
+      if (!sector) return;
+
+      // active button state
+      buttons.forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+
+      c3ShowSector(sector);
+    });
+  });
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+  // Wire toggles immediately (works even if writeups fail to load)
+  c3WireButtons();
+
+  // Default sector = currently active button (fallback: first button)
+  const activeBtn =
+    document.querySelector("#c3 .toggle__btn.is-active") ||
+    document.querySelector("#c3 .toggle__btn[data-sector]");
+  const defaultSector = activeBtn ? activeBtn.getAttribute("data-sector") : null;
+
+  // Load writeups + render
+  try {
+    await c3LoadWriteups();
+  } catch (err) {
+    console.error(err);
+    // still allow showing panels; interpretation will fall back to placeholder
+  }
+
+  if (defaultSector) c3ShowSector(defaultSector);
+});
+
+
   

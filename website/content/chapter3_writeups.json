@@ -1,0 +1,56 @@
+{
+  "basic_materials": {
+    "sector_name": "Basic Materials",
+    "html": "<h3>Basic Materials </h3>\n\n<p>\n  Basic Materials is a <strong>commodity + global growth</strong> story: demand rises with construction/manufacturing cycles (often tied to China/global PMIs), while prices swing with supply shocks. In the plots, ETF vs basket typically move in the same direction, but drift happens when your basket over/underweights a few high-beta producers compared with the ETF’s index construction.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want simple materials beta with less single-name risk → use the <strong>ETF</strong>.</li>\n  <li>Want a stronger cyclicality tilt (more upside in booms, more pain in busts) → use the <strong>DIY basket</strong>, but size smaller.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If volatility spikes while ETF–basket tracking widens, treat it as a risk-on/off regime shift and prefer the ETF until tracking stabilizes.\n</p>\n"
+  },
+
+  "communication_services": {
+    "sector_name": "Communication Services",
+    "html": "<h3>Communication Services </h3>\n\n<p>\n  Communication Services is a <strong>platform + advertising + sentiment</strong> story: returns are driven by growth expectations, ad cycles, and a few mega names. Your plots show that ETF and basket can look similar in calm markets but diverge under stress when concentration and dispersion jump.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want liquid exposure and less “single-name shock” risk → use the <strong>ETF</strong>.</li>\n  <li>Use the <strong>DIY basket</strong> only if you intentionally want a different concentration than the ETF (and accept tracking error).</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  When drawdowns begin, if the basket falls faster and volatility gaps up, cut DIY risk and rotate to the ETF.\n</p>\n"
+  },
+
+  "consumer_cyclical": {
+    "sector_name": "Consumer Cyclical",
+    "html": "<h3>Consumer Cyclical </h3>\n\n<p>\n  Consumer Cyclical is a <strong>jobs + credit + confidence</strong> story: it tends to lead in expansions and suffer most when growth slows or financing costs rise. In your plots, ETF vs basket should share the same cycle, but drift signals your basket is taking a different bet (often more concentrated in winners/large retailers or high-beta discretionary names).\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want broad discretionary exposure through the cycle → use the <strong>ETF</strong>.</li>\n  <li>Want a higher-octane tilt in strong expansions → use the <strong>DIY basket</strong>, but manage downside tightly.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If volatility trends up and performance diverges, treat DIY as a tactical position (smaller size), otherwise prefer ETF for stability.\n</p>\n"
+  },
+
+  "consumer_defensive": {
+    "sector_name": "Consumer Defensive",
+    "html": "<h3>Consumer Defensive </h3>\n\n<p>\n  Consumer Defensive is a <strong>cash-flow stability</strong> story: staples hold up when growth disappoints, but they can lag when risk appetite is strong. If your basket outperforms, it often means you’re overweighting higher-growth staples or specific winners; the ETF tends to be the cleaner “defensive beta” baseline.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>For a hedge/low-drama allocation → use the <strong>ETF</strong>.</li>\n  <li>Use the <strong>DIY basket</strong> only if you know your tilt (quality vs value, concentration, etc.).</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If the DIY basket becomes noticeably more volatile than the ETF, you’ve likely lost the defensive profile—reduce DIY and revert to the ETF.\n</p>\n"
+  },
+
+  "energy": {
+    "sector_name": "Energy",
+    "html": "<h3>Energy </h3>\n\n<p>\n  Energy is a <strong>oil + supply discipline</strong> story: big moves come from crude price shocks, OPEC decisions, geopolitics, and demand slowdowns. Your plots should show shared regimes, but the DIY basket can amplify moves if it concentrates into higher-beta producers versus the ETF.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want straightforward oil-sensitive exposure with diversification → use the <strong>ETF</strong>.</li>\n  <li>Want more torque to oil rallies (and accept sharper drawdowns) → use the <strong>DIY basket</strong> with smaller sizing.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  When volatility jumps (oil shock), prioritize survivability: reduce DIY and prefer ETF until volatility mean-reverts.\n</p>\n"
+  },
+
+  "financial_services": {
+    "sector_name": "Financial Services",
+    "html": "<h3>Financial Services </h3>\n\n<p>\n  Financials are a <strong>rates + credit</strong> story: higher (and stable) rates can help margins, but credit stress and recessions hit hard. In the plots, ETF vs basket divergence usually means your basket is taking different bank/insurer concentration or credit sensitivity than the ETF.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want broad “financial conditions” exposure and liquidity → use the <strong>ETF</strong>.</li>\n  <li>DIY only if you intentionally want more/less exposure to banks (vs insurers/asset managers) and can handle tracking error.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If volatility spikes during risk-off and the basket underperforms, rotate to ETF (or cut) until stress fades.\n</p>\n"
+  },
+
+  "healthcare": {
+    "sector_name": "Healthcare",
+    "html": "<h3>Healthcare  </h3>\n\n<p>\n  Healthcare is a <strong>defensive growth + policy</strong> story: it can hold up in slowdowns but is sensitive to regulation, drug-cycle narratives, and specific large constituents. If your basket diverges, it often reflects different weight on pharma vs biotech vs medtech compared to the ETF.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want stable sector exposure with diversification → use the <strong>ETF</strong>.</li>\n  <li>DIY only if you want a clear tilt (e.g., more biotech risk) and accept higher volatility/tracking error.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If tracking error increases around event risk (policy/earnings) and volatility rises, cut DIY risk and stick to ETF.\n</p>\n"
+  },
+
+  "industrials": {
+    "sector_name": "Industrials",
+    "html": "<h3>Industrials  </h3>\n\n<p>\n  Industrials are a <strong>PMI + capex + cycle</strong> story: they do well when growth accelerates and orders rise, and struggle when activity rolls over. ETF vs basket drift often means your basket is more concentrated in higher-beta sub-industries (transport, machinery) than the ETF benchmark.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>For broad cyclicals exposure with liquidity → use the <strong>ETF</strong>.</li>\n  <li>DIY is a tactical “high beta” version—use smaller size and be quick to cut in downturns.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If volatility starts trending up and performance gaps open, treat DIY as risk-on only; otherwise default to ETF.\n</p>\n"
+  },
+
+  "real_estate": {
+    "sector_name": "Real Estate",
+    "html": "<h3>Real Estate  </h3>\n\n<p>\n  Real Estate is a <strong>rates + refinancing</strong> story: REITs are highly sensitive to yields and credit conditions. In the plots, calm-period tracking can look fine, but stress periods often reveal whether your basket is accidentally concentrated in the most rate-sensitive or most leveraged names compared to the ETF.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want diversified REIT exposure and simpler risk → use the <strong>ETF</strong>.</li>\n  <li>DIY only if you deliberately control interest-rate sensitivity (subsector mix) and accept tail risk.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  When yields rise fast and volatility spikes, reduce DIY first; keep exposure via ETF (or step aside) until rates stabilize.\n</p>\n"
+  },
+
+  "utilities": {
+    "sector_name": "Utilities",
+    "html": "<h3>Utilities  </h3>\n\n<p>\n  Utilities are a <strong>bond-proxy + defensiveness</strong> story: they prefer stable growth and falling yields, and they can struggle when rates rise. If the DIY basket is materially more volatile, it usually means your basket is less diversified or tilted toward higher-beta utilities than the ETF.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>For steady defensive exposure → use the <strong>ETF</strong>.</li>\n  <li>DIY only if you intentionally want extra yield/volatility and can tolerate tracking error.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If volatility rises alongside ETF–basket divergence, your DIY is no longer “defensive”—reduce and revert to ETF.\n</p>\n"
+  },
+
+  "technology": {
+    "sector_name": "Technology",
+    "html": "<h3>Technology </h3>\n\n<p>\n  Tech is mainly a <strong>growth + rates</strong> story: when real yields fall and risk appetite improves,\n  tech tends to rerate up; when yields rise or liquidity tightens, it usually sells off. In the plots,\n  the ETF and DIY basket mostly express the same theme, but they can drift because the ETF is\n  <strong>cap-weighted</strong> (mega-caps dominate) while the DIY basket spreads weight differently.\n  The ETF also tends to look <strong>smoother</strong> in volatility, while the DIY basket can be bumpier.\n</p>\n\n<p><strong>Trading takeaway</strong></p>\n<ul>\n  <li>Want clean, liquid “tech beta” → use the <strong>ETF</strong>.</li>\n  <li>Want a deliberate tilt away from mega-caps (or toward mid-caps) → use the <strong>DIY basket</strong>, but size smaller.</li>\n</ul>\n\n<p><strong>Rule-of-thumb</strong></p>\n<p>\n  If ETF–basket tracking worsens while volatility rises, switch/reduce DIY; divergence matters most in stress.\n</p>\n"
+  }
+}

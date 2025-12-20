@@ -370,388 +370,267 @@
 
 
 
-      <!-- CHAPTER 3 -->
-      <section class="block" id="c3">
-        <div class="block__title">
-          <h3>Chapter 3) ETF vs DIY Basket</h3>
-          <p class="muted">
-            The practical question: should you buy the sector ETF, or recreate exposure yourself?
-          </p>
+<!-- CHAPTER 3 -->
+<section class="block" id="c3">
+  <div class="block__title">
+    <h3>Chapter 3) ETF vs DIY Basket</h3>
+    <p class="muted">
+      The practical question: should you buy the sector ETF, or recreate exposure yourself?
+    </p>
+  </div>
+
+  <div class="grid grid--2">
+    <!-- LEFT: TEXT (static) -->
+    <div class="card">
+      <h4>Intro</h4>
+      <p>
+        This section compares a <strong>sector ETF</strong> (e.g., XLK) with a <strong>DIY sector proxy (“basket”)</strong>
+        built from the sector’s underlying stocks using a <strong>volume-weighted</strong> construction. The goal is to check
+        whether the ETF delivers exposure that is <strong>similar</strong> to what you would get from a transparent, rules-based
+        basket, and to see how their risk evolves through time.
+      </p>
+
+      <hr />
+
+      <div class="note" id="c3_interpretation">
+        <p><strong>Interpretation:</strong></p>
+        <p>Loading…</p>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: PLOTS + SECTOR WRITEUP -->
+    <div class="card" id="c3_right">
+      <h4>Choose a sector</h4>
+
+      <div class="toggle" role="tablist" aria-label="Sector selector (Chapter 3)">
+        <button class="toggle__btn is-active" data-sector="basic_materials" type="button">Basic Materials</button>
+        <button class="toggle__btn" data-sector="communication_services" type="button">Communication Services</button>
+        <button class="toggle__btn" data-sector="consumer_cyclical" type="button">Consumer Cyclical</button>
+        <button class="toggle__btn" data-sector="consumer_defensive" type="button">Consumer Defensive</button>
+        <button class="toggle__btn" data-sector="energy" type="button">Energy</button>
+        <button class="toggle__btn" data-sector="financial_services" type="button">Financial Services</button>
+        <button class="toggle__btn" data-sector="healthcare" type="button">Healthcare</button>
+        <button class="toggle__btn" data-sector="industrials" type="button">Industrials</button>
+        <button class="toggle__btn" data-sector="real_estate" type="button">Real Estate</button>
+        <button class="toggle__btn" data-sector="technology" type="button">Technology</button>
+        <button class="toggle__btn" data-sector="utilities" type="button">Utilities</button>
+      </div>
+
+      <!-- basic_materials -->
+      <div class="sector-panel" id="c3_sector_basic_materials">
+        <div class="viz" aria-label="basic_materials performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/basic_materials.png"
+            alt="basic_materials — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
         </div>
 
-        <div class="grid grid--2">
-          <!-- LEFT: TEXT -->
-          <div class="card">
-            <h4>Intro</h4>
-            <p>
-              This section compares a <strong>sector ETF</strong> (e.g., XLK) with a <strong>DIY sector proxy (“basket”)</strong>
-              built from the sector’s underlying stocks using a <strong>volume-weighted</strong> construction. The goal is to check
-              whether the ETF delivers exposure that is <strong>similar</strong> to what you would get from a transparent, rules-based
-              basket—and to see how their risk evolves through time.
-            </p>
+        <div class="viz" aria-label="basic_materials volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/basic_materials_vol60.png"
+            alt="basic_materials — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <hr />
+      <!-- communication_services -->
+      <div class="sector-panel hidden" id="c3_sector_communication_services">
+        <div class="viz" aria-label="communication_services performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/communication_services.png"
+            alt="communication_services — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <h4>Plot 1 — Performance (Index = 100)</h4>
+        <div class="viz" aria-label="communication_services volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/communication_services_vol60.png"
+            alt="communication_services — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <p class="muted"><strong>What the plot shows</strong></p>
-            <p>
-              Both series are rebased to <strong>100 on the same start date</strong>, so the chart is comparing
-              <strong>growth paths</strong>, not absolute prices.
-            </p>
-            <ul>
-              <li><strong>ETF</strong>: the sector ETF.</li>
-              <li><strong>Basket</strong>: a DIY proxy built from the sector’s stocks using <strong>volume-weighted</strong> weights.</li>
-            </ul>
+      <!-- consumer_cyclical -->
+      <div class="sector-panel hidden" id="c3_sector_consumer_cyclical">
+        <div class="viz" aria-label="consumer_cyclical performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/consumer_cyclical.png"
+            alt="consumer_cyclical — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <p class="muted"><strong>How to interpret it</strong></p>
-            <ul>
-              <li>
-                If the two lines <strong>track closely</strong>, the ETF and the basket provide <strong>similar exposure</strong>
-                (at least in aggregate).
-              </li>
-              <li>
-                If the lines <strong>drift apart</strong>, the ETF and the basket are capturing <strong>different exposure</strong>,
-                typically due to:
-                <ul>
-                  <li>differences in <strong>constituents</strong> (inclusions/exclusions),</li>
-                  <li>differences in <strong>weighting rules</strong> (cap-weighted vs your volume-weighted method),</li>
-                  <li>caps/constraints that change concentration.</li>
-                </ul>
-              </li>
-            </ul>
+        <div class="viz" aria-label="consumer_cyclical volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/consumer_cyclical_vol60.png"
+            alt="consumer_cyclical — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <hr />
+      <!-- consumer_defensive -->
+      <div class="sector-panel hidden" id="c3_sector_consumer_defensive">
+        <div class="viz" aria-label="consumer_defensive performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/consumer_defensive.png"
+            alt="consumer_defensive — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <h4>Plot 2 — Volatility (Rolling, Annualized)</h4>
+        <div class="viz" aria-label="consumer_defensive volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/consumer_defensive_vol60.png"
+            alt="consumer_defensive — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <p class="muted"><strong>What the plot shows</strong></p>
-            <p>
-              Rolling annualized <strong>volatility</strong> summarizes “how wild the ride is” (risk) and how that risk changes over time.
-            </p>
-            <p>It answers:</p>
-            <ul>
-              <li><strong>When</strong> was the sector risky?</li>
-              <li>Did ETF and basket risk spike at the <strong>same times</strong>?</li>
-              <li>Is one consistently smoother or more explosive during stress?</li>
-            </ul>
+      <!-- energy -->
+      <div class="sector-panel hidden" id="c3_sector_energy">
+        <div class="viz" aria-label="energy performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/energy.png"
+            alt="energy — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <p class="muted"><strong>How to interpret it</strong></p>
-            <ul>
-              <li>
-                Volatility and performance are related but not the same:
-                <ul>
-                  <li><strong>Similar performance, different volatility</strong>: one path is smoother, the other bumpier.</li>
-                  <li><strong>Similar volatility, different performance</strong>: they take different bets and drift apart.</li>
-                  <li>
-                    <strong>Different regimes</strong>: one may react more strongly in crises even if long-run growth is similar.
-                  </li>
-                </ul>
-              </li>
-            </ul>
+        <div class="viz" aria-label="energy volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/energy_vol60.png"
+            alt="energy — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <hr />
+      <!-- financial_services -->
+      <div class="sector-panel hidden" id="c3_sector_financial_services">
+        <div class="viz" aria-label="financial_services performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/financial_services.png"
+            alt="financial_services — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <h4>Method note</h4>
-            <ul>
-              <li>We compute <strong>daily log returns</strong>.</li>
-              <li>ETF and basket are <strong>aligned on identical trading dates</strong>.</li>
-            </ul>
+        <div class="viz" aria-label="financial_services volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/financial_services_vol60.png"
+            alt="financial_services — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <hr />
+      <!-- healthcare -->
+      <div class="sector-panel hidden" id="c3_sector_healthcare">
+        <div class="viz" aria-label="healthcare performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/healthcare.png"
+            alt="healthcare — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <h4>Small conclusion</h4>
-            <p>
-              Overall, the <strong>DIY stock basket</strong> tends to <strong>outperform</strong> the sector ETF in this demo.
-              The main exception is the <strong>housing market</strong>, where the ETF performs better than the basket. In terms of risk,
-              the <strong>ETFs are generally less volatile</strong> than the stock baskets, meaning the ETF path is typically smoother even
-              when long-run performance is similar or lower. This points to a trade-off: the basket often delivers higher returns, but the
-              ETF usually provides a less bumpy ride.
-            </p>
-          </div>
+        <div class="viz" aria-label="healthcare volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/healthcare_vol60.png"
+            alt="healthcare — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-          <!-- RIGHT: PLOTS -->
-          <div class="card" id="c3_right">
-            <h4>Choose a sector</h4>
+      <!-- industrials -->
+      <div class="sector-panel hidden" id="c3_sector_industrials">
+        <div class="viz" aria-label="industrials performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/industrials.png"
+            alt="industrials — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <div class="toggle" role="tablist" aria-label="Sector selector (Chapter 3)">
-              <button class="toggle__btn is-active" data-sector="basic_materials" type="button">basic_materials</button>
-              <button class="toggle__btn" data-sector="communication_services" type="button">communication_services</button>
-              <button class="toggle__btn" data-sector="consumer_cyclical" type="button">consumer_cyclical</button>
-              <button class="toggle__btn" data-sector="consumer_defensive" type="button">consumer_defensive</button>
-              <button class="toggle__btn" data-sector="energy" type="button">energy</button>
-              <button class="toggle__btn" data-sector="financial_services" type="button">financial_services</button>
-              <button class="toggle__btn" data-sector="healthcare" type="button">healthcare</button>
-              <button class="toggle__btn" data-sector="industrials" type="button">industrials</button>
-              <button class="toggle__btn" data-sector="real_estate" type="button">real_estate</button>
-              <button class="toggle__btn" data-sector="technology" type="button">technology</button>
-              <button class="toggle__btn" data-sector="utilities" type="button">utilities</button>
-            </div>
+        <div class="viz" aria-label="industrials volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/industrials_vol60.png"
+            alt="industrials — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <!-- basic_materials -->
-            <div class="sector-panel" id="c3_sector_basic_materials">
-              <div class="viz" aria-label="basic_materials performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/basic_materials.png"
-                  alt="basic_materials — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
+      <!-- real_estate -->
+      <div class="sector-panel hidden" id="c3_sector_real_estate">
+        <div class="viz" aria-label="real_estate performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/real_estate.png"
+            alt="real_estate — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-              <div class="viz" aria-label="basic_materials volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/basic_materials_vol60.png"
-                  alt="basic_materials — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
+        <div class="viz" aria-label="real_estate volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/real_estate_vol60.png"
+            alt="real_estate — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>basic_materials</strong>.</p>
-              </div>
-            </div>
+      <!-- technology -->
+      <div class="sector-panel hidden" id="c3_sector_technology">
+        <div class="viz" aria-label="technology performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/technology.png"
+            alt="technology — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-            <!-- communication_services -->
-            <div class="sector-panel hidden" id="c3_sector_communication_services">
-              <div class="viz" aria-label="communication_services performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/communication_services.png"
-                  alt="communication_services — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
+        <div class="viz" aria-label="technology volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/technology_vol60.png"
+            alt="technology — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-              <div class="viz" aria-label="communication_services volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/communication_services_vol60.png"
-                  alt="communication_services — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
+      <!-- utilities -->
+      <div class="sector-panel hidden" id="c3_sector_utilities">
+        <div class="viz" aria-label="utilities performance">
+          <img
+            src="chapter3_sector_png_split_pretty/performance/utilities.png"
+            alt="utilities — Performance (Index = 100)"
+            style="width:100%; height:auto;"
+          />
+        </div>
 
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>communication_services</strong>.</p>
-              </div>
-            </div>
+        <div class="viz" aria-label="utilities volatility">
+          <img
+            src="chapter3_sector_png_split_pretty/volatility/utilities_vol60.png"
+            alt="utilities — Volatility (Rolling, Annualized)"
+            style="width:100%; height:auto;"
+          />
+        </div>
+      </div>
 
-            <!-- consumer_cyclical -->
-            <div class="sector-panel hidden" id="c3_sector_consumer_cyclical">
-              <div class="viz" aria-label="consumer_cyclical performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/consumer_cyclical.png"
-                  alt="consumer_cyclical — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="consumer_cyclical volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/consumer_cyclical_vol60.png"
-                  alt="consumer_cyclical — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>consumer_cyclical</strong>.</p>
-              </div>
-            </div>
-
-            <!-- consumer_defensive -->
-            <div class="sector-panel hidden" id="c3_sector_consumer_defensive">
-              <div class="viz" aria-label="consumer_defensive performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/consumer_defensive.png"
-                  alt="consumer_defensive — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="consumer_defensive volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/consumer_defensive_vol60.png"
-                  alt="consumer_defensive — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>consumer_defensive</strong>.</p>
-              </div>
-            </div>
-
-            <!-- energy -->
-            <div class="sector-panel hidden" id="c3_sector_energy">
-              <div class="viz" aria-label="energy performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/energy.png"
-                  alt="energy — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="energy volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/energy_vol60.png"
-                  alt="energy — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>energy</strong>.</p>
-              </div>
-            </div>
-
-            <!-- financial_services -->
-            <div class="sector-panel hidden" id="c3_sector_financial_services">
-              <div class="viz" aria-label="financial_services performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/financial_services.png"
-                  alt="financial_services — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="financial_services volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/financial_services_vol60.png"
-                  alt="financial_services — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>financial_services</strong>.</p>
-              </div>
-            </div>
-
-            <!-- healthcare -->
-            <div class="sector-panel hidden" id="c3_sector_healthcare">
-              <div class="viz" aria-label="healthcare performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/healthcare.png"
-                  alt="healthcare — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="healthcare volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/healthcare_vol60.png"
-                  alt="healthcare — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>healthcare</strong>.</p>
-              </div>
-            </div>
-
-            <!-- industrials -->
-            <div class="sector-panel hidden" id="c3_sector_industrials">
-              <div class="viz" aria-label="industrials performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/industrials.png"
-                  alt="industrials — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="industrials volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/industrials_vol60.png"
-                  alt="industrials — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>industrials</strong>.</p>
-              </div>
-            </div>
-
-            <!-- real_estate -->
-            <div class="sector-panel hidden" id="c3_sector_real_estate">
-              <div class="viz" aria-label="real_estate performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/real_estate.png"
-                  alt="real_estate — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="real_estate volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/real_estate_vol60.png"
-                  alt="real_estate — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>real_estate</strong>.</p>
-              </div>
-            </div>
-
-            <!-- technology -->
-            <div class="sector-panel hidden" id="c3_sector_technology">
-              <div class="viz" aria-label="technology performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/technology.png"
-                  alt="technology — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="technology volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/technology_vol60.png"
-                  alt="technology — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>technology</strong>.</p>
-              </div>
-            </div>
-
-            <!-- utilities -->
-            <div class="sector-panel hidden" id="c3_sector_utilities">
-              <div class="viz" aria-label="utilities performance">
-                <img
-                  src="chapter3_sector_png_split_pretty/performance/utilities.png"
-                  alt="utilities — Performance (Index = 100)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="viz" aria-label="utilities volatility">
-                <img
-                  src="chapter3_sector_png_split_pretty/volatility/utilities_vol60.png"
-                  alt="utilities — Volatility (Rolling, Annualized)"
-                  style="width:100%; height:auto;"
-                />
-              </div>
-
-              <div class="note">
-                <p><strong>Interpretation (placeholder):</strong></p>
-                <p>Interpretation not ready for sector <strong>utilities</strong>.</p>
-              </div>
-            </div>
-          </div>
+      <!-- ONE shared interpretation box (dynamic) -->
+    
+    </div>
+  </div>
+</section>
 
 
 
