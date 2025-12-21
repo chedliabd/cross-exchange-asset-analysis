@@ -1,149 +1,137 @@
-# ada-2025-project-thedatacollectors
 
-# Exploring Market Dynamics: Time-Based Comparisons and Strategy Design from OHLCV Data
+# An Investor’s Guide to Building a Smarter Portfolio
+
+Data Story : put the link 
 
 ## Abstract
 
-In this project, we perform a large-scale comparative analysis of financial assets over time, focusing on both **stocks** and **ETFs**.  
-Our objective is to identify **structural and behavioral differences** across multiple market dimensions — such as listing exchange, NASDAQ market category, and economic sector.
+This project is built around one practical goal: help investors get the biggest market understanding and risk control with the least effort. Instead of giving abstract statistics, we build a step-by-step guide that answers real portfolio questions:
 
-We analyze how these differences **evolve through time** using key indicators like **returns, volatility, and trading volume**, leveraging historical **OHLCV** (Open, High, Low, Close, Volume) data.  
-The goal is to uncover consistent market behaviors and test whether they can be **exploited for predictive or investment purposes** through quantitative modeling and backtesting.
+- Do sectors actually diversify each other, or is it fake diversification?
+- Within a sector, is one representative stock enough, or do you need a basket?
+- Should you buy the sector ETF, or is it worth recreating the exposure yourself?
+- How do all of these answers change in bull vs bear markets?
+- Given my risk tolerance, what is a sensible way to allocate today?
 
----
+
+To do that, our analysis follows a logical pipeline: sector relationships, market regimes, sector representation (single stocks vs baskets), ETF versus DIY exposure, and finally investor-specific portfolio guidance. The website will be a portfolio decision toolkit. The objective is to make sector investing more transparent, avoid misleading shortcuts, and provide investors with a simple way to choose between market exposure, sector exposure, ETFs, or DIY baskets, depending on both their risk tolerance and the market environment.
 
 ## Research Questions
 
-1. Do industries that share similar volatility and volume dynamics correspond to the same NASDAQ market categories (Global Select, Global Market, Capital Market)?
-2. Which indicator — volatility or trading volume — better differentiates industries in terms of market behavior and clustering?
-3. Does volatility contain predictive information about short-term future returns within or across market categories?
-4. How do mismatches between industry-based clusters and official market categories reflect market efficiency or investor perception?
-5. Do data-driven volatility/volume clusters align with traditional sector classifications (Tech, Biotech, Utilities, etc.)?
-6. Which indicators are most influential in defining behavioral clusters across industries?
-7. How stable are industry-level volatility regimes over time? Are transitions linked to macroeconomic or stress events?
-8. Does past volatility or trading activity predict short-term (1–5 day) return direction or magnitude?
-9. Do financially weaker firms exhibit stronger volatility or liquidity anomalies compared to stable ones?
-10. Do stocks in the same sectors move similarly, or are their price dynamics independent from sector membership?
+1. How can investors truly diversify their portfolio across sectors in the short term and the long term ?
+2. Is investing in one stock enough to represent a sector, or do investors need to diversify among multiple stocks within the same sector to reduce risk?
+3. Should an investor buy the sector ETF, or construct a sector basket manually to obtain similar exposure with better cost/precision?
+4. When do bull/bear/neutral regimes occur, and which sectors perform best (or worst) inside each regime?
+5. Given my risk tolerance and today’s market conditions, what exposure should I take: market-wide, sector rotation, ETFs, or a DIY basket?
 
----
+
 
 ## Additional Datasets
 
 - **NASDAQ Metadata:** Market category enrichment for NASDAQ-traded symbols (Global Select, Global Market, Capital Market).  
 - **Sector Classification Data:** Sector and industry tags for each ticker retrieved from Yahoo Finance.
 
----
 
-## Methods
 
-### 1. Data Cleaning
+## Data Cleaning and Preprocessing 
 
-**Goal:** Ensure continuous, consistent, and interpretable OHLCV series with a strong emphasis on the reliability of `Adj Close`.
+## Methods 
 
-- **Adjusted Close (`Adj Close`):**
-  - Drop tickers with all-zero `Adj Close` (corrupted or incomplete data).
-  - Fill isolated NaN or short gaps via **bidirectional interpolation** (mean between previous and next valid values).
-  - Apply **forward fill** for single-day NaNs to maintain continuity.
-  - This affects less than **0.002%** of rows and preserves temporal structure.
+We combine financial econometrics, unsupervised learning, and risk analysis:
 
-- **Open Prices:**
-  - Impute missing or zero values using the **previous day’s `Adj Close`** to ensure day-to-day consistency.
+- Volume-weighted sector log returns
+- Pearson and rolling correlations
+- Rolling volatility
+- Clustering
+- PCA
 
-- **Volume:**
-  - Zero volumes (non-trading days, suspensions) are **retained and flagged** for potential weighting or later handling.
 
-- **Constant (Stale) Ranges:**
-  - Periods with constant prices/volumes are **flagged**, not removed.
-  - They may reflect market suspensions, corporate actions, or placeholder imputations.
-  - These can later be **down-weighted or smoothed** in modeling.
+## Project Structure & Analysis Pipeline
 
----
+### Chapter 1 — Sector-Sector Structure
+- Sector–sector correlation 
+- Volatility correlation
+- Rolling correlations 
+- Sector clustering 
 
-### 2. Data Preprocessing
+### Chapter 2 — Market Regimes
+- Identification of bull, bear, and neutral regimes
+- Analysis of sector behavior conditional on regimes
 
-- Merge **industry and sector metadata** with OHLCV data.
-- Merge **NASDAQ market category** information.
-- Compute **daily log returns** from `Adj Close`.
-- Compute **rolling volatility** (30-day window) to capture short-term risk and stability patterns.
+### Chapter 3 — Market Categories
+- Comparison of sector behavior across market categories
+- Cross-category correlation and volatility analysis
 
----
+### Chapter 4 — Sector Proxy
+- Evaluation of single-stock representativeness for sectors
+- Tracking error and intra-sector heterogeneity analysis
 
-### 3. Exploratory Analysis
+### Chapter 5 — ETF vs Sector Basket
+- Comparison of sector ETFs with DIY sector baskets
+- Performance, correlation, and tracking error assessment
 
-- **Volatility and Volume Patterns:**  
-  Scatterplots, rolling correlations, and cross-sector mean/standard deviation tracking.  
-  Highlight outlier sectors with error bars (mean ± std).
+### Chapter 6 — Investor Profile Mapping
+- Mapping analytical results to investor risk profiles
+- Regime-aware exposure and implementation recommendations
 
-- **Category Comparisons:**  
-  Compare distributions (histograms, KDEs, boxplots) of returns and volatilities across NASDAQ categories and sectors.
 
-- **Collinearity Checks:**  
-  Compute pairwise correlations between main features.
+## Repository Structure 
 
-- **Market Breadth & Regimes:**  
-  Visualize cross-sectional volatility and the percentage of advancing/declining assets over time (heatmaps).
+ada-2025-project-thedatacollectors/
+├── data/                     # Raw and processed datasets
+│   ├── raw/
+│   └── processed/
+│
+├── src/
+│   ├── preprocessing/        # Data cleaning & alignment (we should add the preparing_*.ipynb files here i guess and make them py files)
+│   ├── chapter1/             # Sector–sector analysis
+│   ├── chapter2/             # Market regime analysis
+│   ├── chapter3/             # Market category & sector behavior
+│   ├── chapter4/             # Sector proxy (single stock vs basket)
+│   ├── chapter5/             # ETF vs DIY sector basket
+│   └── chapter6/             # Investor profile mapping
+│
+├── plots/                    # Folder for plots (will contain the plots generated by the scripts 
+│                             # and used in the data story when generated by the results notebook)
+├── results.ipynb             # Main analysis notebook
+├── requirements.txt          # Required packages
+├── README.md                 # Project description and instructions
+└── results.ipynb             # Jupyter notebook with the results
+├── .gitignore
+└── README.md
 
----
+## How to execute the code
 
-### 4. Clustering Analysis
+### 1. Clone the repository
 
-We cluster stocks using their **correlation structure of log returns** to study sectoral co-movement.
+git clone https://github.com/epfl-ada/ada-2024-project-ooohfada.git 
+cd ada-2024-project-ooohfada
 
-- Build a **correlation matrix** and convert it into a **k-nearest-neighbor graph**.  
-- Apply **Louvain** and **Leiden** community detection algorithms to find clusters that maximize modularity.  
-- Compare cluster outputs with known sector and market classifications to assess alignment between data-driven and fundamental groupings.
+## 2. Create/activate a virtual environment and install the requirements
 
----
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
-### 5. Hypothesis Testing & Regression
+## 3. Dowload the dataset from https://www.kaggle.com/datasets/jacksoncrow/stock-market-dataset and place it in the data/raw folder 
 
-Hypotheses to evaluate:
+## 4. Run preprocessing 
 
-- **H1:** Higher relative volume → higher realized volatility.  
-- **H2:** Volume shocks predict next-day volatility.  
-- **H3:** After extreme volume/range spikes → mean reversion in returns.  
-- **H4:** Momentum vs. mean reversion patterns differ by NASDAQ category (Q/G/S).  
-- **H5:** IPO cohorts show distinct volatility/liquidity and weaker predictability.
+Run the preprocessing pipeline from the project root with:
 
-Analytical approach:
-- Run regressions, decile sorts, and out-of-sample validation.
-- Visualize results via **forest plots**, **bar charts**, and **violin plots**.
+python src/preprocessing/preparing_dataset.py
 
----
+## 5. Run the results.ipynb notebook to generate all the results and plots
 
-### 6. Trading Strategy & Backtesting
 
-Develop and evaluate trading strategies based on volatility and volume signals:
+## Contributions within the team
 
-- **Signal Types:**
-  - Relative Volume–Shock Reversal  
-  - Range–Breakout  
-  - Cross-Sectional Momentum (12–1)  
-  - ETF vs. Basket Hedge (optional)
+Chedly: Worked on initial data cleaning and preprocessing; worked on Chapter 2 (Market Regimes) and Chapter 3 (Market Categories).
 
-- **Backtesting Metrics:**
-  - Daily and monthly backtests  
-  - Performance measured via **PnL**, **Sharpe ratio**, and **maximum drawdown**  
-  - Compare signal performance across market categories and asset types (stocks vs ETFs)
+İrem: Contributed to data preprocessing and worked on Chapter 1, focusing on sector–sector relationships.
 
----
+Efe: Worked on Chapter 4 (ETF analysis) and contributed to data preprocessing.
 
-## Draft Timeline
+Hugo: Worked on Chapter 5, analyzing sector proxy representativeness and contributed to data preprocessing.
 
-| Date | Milestone |
-|------|------------|
-| 17/11 | Exploratory Analysis |
-| 24/11 | Clustering |
-| 01/12 | Hypothesis Testing & Regression |
-| 08/12 | Trading & Backtesting |
-| 17/12 | Final Review & Submission |
-
----
-
-## Team Organization
-
-- **Efe:** Correlation & Clustering  
-- **Hugo:** Data Cleaning, Preprocessing, and Exploratory Analysis  
-- **Irem:** Hypothesis Testing, Regression, and Backtesting  
-- **Ozan:** Visualization, Reporting, and Results Integration, Data Augmentation with sectors
-- **Chedly:** Visualization, Reporting, Data Cleaning, Results Integration, Data Augmentation with market categories
+Ozan: Worked on Chapter 6, developing the interactive investor profile mapping, and contributed to data preprocessing.
