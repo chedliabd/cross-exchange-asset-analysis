@@ -1389,57 +1389,44 @@
     <!-- Final interactive -->
     <section class="section" id="strategy">
       <div class="section__header">
-        <h2>Interactive Strategy Picker</h2>
+        <h2>Strategy Picker</h2>
         <p>
-          Choose your profile, regime assumption, and preferred instrument:
-          <strong>ETFs</strong> vs <strong>sector baskets</strong> vs <strong>market category</strong>.
-          Instantly see expected <strong>returns</strong> and <strong>volatility</strong>.
+          Pick <strong>sector</strong>, <strong>type</strong> and <strong>market category</strong>. See expected <strong>return</strong>, <strong>volatility</strong>, and your risk-return profile.
         </p>
       </div>
 
       <div class="grid grid--2">
+        <!-- Controls -->
         <div class="card">
           <h3>Controls</h3>
+
           <div class="controls">
             <label class="control">
-              <span>Investor profile</span>
-              <select id="ctl_profile">
-                <option value="conservative">Conservative</option>
-                <option value="balanced" selected>Balanced</option>
-                <option value="aggressive">Aggressive</option>
-              </select>
+              <span>Sector</span>
+              <select id="ctl_sector"></select>
             </label>
 
             <label class="control">
-              <span>Market regime</span>
-              <select id="ctl_regime">
-                <option value="neutral" selected>Neutral</option>
-                <option value="bull">Bull</option>
-                <option value="bear">Bear</option>
-              </select>
+              <span>Type</span>
+              <select id="ctl_type"></select>
             </label>
 
             <label class="control">
-              <span>Exposure type</span>
-              <select id="ctl_exposure">
-                <option value="etf" selected>ETF</option>
-                <option value="sector_basket">Sector basket</option>
-                <option value="market_category">Market category</option>
-              </select>
+              <span>Market category</span>
+              <select id="ctl_market_category"></select>
+              <select style="display: none;" id="ctl_regime"></select>
             </label>
-
-            <button class="btn" id="btn_run">Generate allocation</button>
           </div>
 
           <div class="note">
-            <p class="muted">
-              This is the “product” moment: the site becomes a decision tool.
-            </p>
+            <p class="muted" id="out_status"></p>
           </div>
         </div>
 
+        <!-- Output -->
         <div class="card">
           <h3>Output</h3>
+
           <div class="grid grid--2">
             <div class="metric">
               <div class="metric__label">Expected return</div>
@@ -1450,11 +1437,171 @@
               <div class="metric__value" id="out_vol">—</div>
             </div>
           </div>
-          <div class="viz" id="viz_strategy_weights" aria-label="Recommended weights"></div>
-          <div class="viz" id="viz_strategy_perf" aria-label="Simulated performance"></div>
+
+          <div class="metric metric--full" style="margin-top:12px;">
+            <div class="metric__label">Risk-return profile</div>
+            <div class="metric__value" id="out_profile">—</div>
+            <div class="muted" id="out_profile_desc" style="margin-top:6px;">&nbsp;</div>
+          </div>
         </div>
       </div>
     </section>
+
+    <script>
+      /**
+      * Files expected:
+      * 1) /data/strategy_stats.json
+      *    [
+      *      { "sector":"Basic Materials", "type":"top5", "market_category":"Q", "regime":"all",
+      *        "avg_yearly_return":0.13583, "avg_yearly_volatility":2.20749, "profile":"champion", "n_days":14663 },
+      *      ...
+      *    ]
+      *
+      * 2) /data/profiles.json
+      *    { "genius":"...", "champion":"...", ... }
+      */
+
+      const $ = (id) => document.getElementById(id);
+      const uniq = (arr) => Array.from(new Set(arr)).filter(v => v !== null && v !== undefined && v !== "").sort();
+
+      // Heuristic formatter:
+      // - returns often stored as fractions (0.10 => 10%)
+      // - volatility in your screenshot looked already percent-like (9.10 => 9.10%)
+      function formatReturn(x) {
+        if (x === null || x === undefined || Number.isNaN(Number(x))) return "—";
+        return `${(Number(x) * 100).toFixed(2)}%`;
+      }
+
+      function formatVolatility(x) {
+        if (x === null || x === undefined || Number.isNaN(Number(x))) return "—";
+        return `${Number(x).toFixed(2)}%`;
+      }
+
+
+      function titleCaseOneWord(w) {
+        if (!w) return "—";
+        const s = String(w).trim();
+        return s ? s.charAt(0).toUpperCase() + s.slice(1) : "—";
+      }
+
+      function populateSelect(selectEl, values, preferredValue) {
+        const current = selectEl.value;
+        selectEl.innerHTML = "";
+
+        for (const v of values) {
+          const opt = document.createElement("option");
+          opt.value = v;
+          opt.textContent = v;
+          selectEl.appendChild(opt);
+        }
+
+        const final =
+          values.includes(current) ? current :
+          (preferredValue && values.includes(preferredValue)) ? preferredValue :
+          (values[0] ?? "");
+
+        selectEl.value = final;
+      }
+
+      function buildIndex(rows) {
+        const idx = new Map();
+        for (const r of rows) {
+          const key = `${r.sector}|||${r.type}|||${r.market_category}|||${r.regime}`;
+          idx.set(key, r);
+        }
+        return idx;
+      }
+
+      let ROWS = [];
+      let INDEX = new Map();
+      let PROFILE_TEXT = {}; // loaded from profiles.json
+
+      function selectedKey() {
+        return `${$("ctl_sector").value}|||${$("ctl_type").value}|||${$("ctl_market_category").value}|||${$("ctl_regime").value}`;
+      }
+
+      function setEmptyOutput(message) {
+        $("out_return").textContent = "—";
+        $("out_vol").textContent = "—";
+        $("out_profile").textContent = "—";
+        $("out_profile_desc").innerHTML = "&nbsp;";
+        $("out_status").textContent = message || "";
+      }
+
+      function updateOutputs() {
+        const row = INDEX.get(selectedKey());
+
+        if (!row) {
+          setEmptyOutput("No exact match for that combination.");
+          return;
+        }
+
+        $("out_return").textContent = formatReturn(row.avg_yearly_return);
+        $("out_vol").textContent = formatVolatility(row.avg_yearly_volatility);
+
+        const p = (row.profile ?? "").toString().trim().toLowerCase();
+        $("out_profile").textContent = p ? titleCaseOneWord(p) : "—";
+
+        const desc = (p && PROFILE_TEXT && PROFILE_TEXT[p]) ? PROFILE_TEXT[p] : "";
+        $("out_profile_desc").textContent = desc || "";
+
+        const n = row.n_days ?? null;
+        $("out_status").textContent = n ? `Sample size: ${n} trading days` : "";
+      }
+
+      function initDropdowns() {
+        const sectors = uniq(ROWS.map(r => r.sector));
+        const types = uniq(ROWS.map(r => r.type));
+        const markets = uniq(ROWS.map(r => r.market_category));
+        const regimes = uniq(ROWS.map(r => r.regime));
+
+        populateSelect($("ctl_sector"), sectors);
+        populateSelect($("ctl_type"), types);
+        populateSelect($("ctl_market_category"), markets);
+        populateSelect($("ctl_regime"), regimes, "all");
+      }
+
+      async function fetchJson(path) {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load ${path} (HTTP ${res.status})`);
+        return await res.json();
+      }
+
+      async function initStrategyPicker() {
+        try {
+          $("out_status").textContent = "Loading…";
+
+          // Load both datasets in parallel
+          const [rows, profiles] = await Promise.all([
+            fetchJson("content/strategy_stats.json"),
+            fetchJson("content/profiles.json"),
+          ]);
+
+          ROWS = rows;
+          PROFILE_TEXT = profiles || {};
+          INDEX = buildIndex(ROWS);
+
+          if (!ROWS.length) {
+            setEmptyOutput("No strategy data found.");
+            return;
+          }
+
+          initDropdowns();
+
+          // Update instantly on changes
+          for (const id of ["ctl_sector", "ctl_type", "ctl_market_category", "ctl_regime"]) {
+            $(id).addEventListener("change", updateOutputs);
+          }
+
+          updateOutputs();
+        } catch (e) {
+          console.error(e);
+          setEmptyOutput("Couldn’t load data. Check JSON paths and console.");
+        }
+      }
+
+      initStrategyPicker();
+    </script>
 
 
 
