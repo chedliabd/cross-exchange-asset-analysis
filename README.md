@@ -76,7 +76,7 @@ We combine financial econometrics, unsupervised learning, and risk analysis:
 
 
 ## Repository Structure 
-
+```console
 ada-2025-project-thedatacollectors/
 ├── data/                     # Raw and processed datasets
 │   ├── raw/
@@ -99,28 +99,28 @@ ada-2025-project-thedatacollectors/
 └── results.ipynb             # Jupyter notebook with the results
 ├── .gitignore
 └── README.md
-
+```
 ## How to execute the code
 
 ### 1. Clone the repository
-
+```console
 git clone https://github.com/epfl-ada/ada-2024-project-ooohfada.git 
 cd ada-2024-project-ooohfada
-
+```
 ## 2. Create/activate a virtual environment and install the requirements
-
+```console
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
+```
 ## 3. Dowload the dataset from https://www.kaggle.com/datasets/jacksoncrow/stock-market-dataset and place it in the data/raw folder 
 
 ## 4. Run preprocessing 
 
 Run the preprocessing pipeline from the project root with:
-
+```console
 python src/preprocessing/preparing_dataset.py
-
+```
 ## 5. Run the results.ipynb notebook to generate all the results and plots
 
 
