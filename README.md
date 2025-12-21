@@ -69,9 +69,24 @@ We combine financial econometrics, unsupervised learning, and risk analysis:
 - Tracking error 
 - ETF vs basket performance plots
 
-### Chapter 5 — Sector Proxy
-- Evaluation of single-stock representativeness for sectors
-- Tracking error and intra-sector heterogeneity analysis
+### Chapter 5 — Sector Proxy: Is One Stock Enough?
+
+This chapter examines whether a single stock can reliably represent a sector, or whether investors need a basket of stocks to avoid idiosyncratic risk.
+
+For each sector, we construct a **sector proxy** as a volume-weighted basket of liquid stocks, used as a reference for true sector behavior. Individual stocks are evaluated based on **rolling correlations** between their returns and the sector proxy, after filtering out illiquid names.
+
+Representative candidates are selected using a **lifetime-aware ranking rule**, which favors stocks that maintain high representativeness consistently over long periods, rather than those that rank highly only during short or favorable windows.
+
+We then assess the quality of these candidates through **tracking error analysis**, which measures the volatility of the return difference between a stock (or basket) and the sector proxy over time. Lower tracking error indicates closer and more stable sector replication.
+
+The results show that:
+- Some sectors are cohesive enough to be well approximated by one carefully chosen stock.
+- Other sectors display strong internal heterogeneity, making single-stock exposure unreliable.
+- In most cases, a small basket captures most diversification benefits with limited added complexity.
+
+This chapter provides practical guidance on when sector exposure can be simplified and when intra-sector diversification is essential.
+
+
 
 ### Strategy Builder
 In the final part we create an interactive strategy builder where users can select sectors, market categories and type of portfolios to create custom portfolios and see their performance. They will see the average return their portfolio gives and how volatile it is. They will then get a description of how well the portfolio is diversified based on the sectors and market categories selected.
