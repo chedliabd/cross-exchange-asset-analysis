@@ -62,13 +62,16 @@ We combine financial econometrics, unsupervised learning, and risk analysis:
 - Comparison of sector behavior across market categories
 - Cross-category correlation and volatility analysis
 
-### Chapter 4 — Sector Proxy
+### Chapter 4 — ETF vs Sector Basket
+- Volume-weighted sector basket returns
+- ETF–basket correlation
+- Rolling correlation
+- Tracking error 
+- ETF vs basket performance plots
+
+### Chapter 5 — Sector Proxy
 - Evaluation of single-stock representativeness for sectors
 - Tracking error and intra-sector heterogeneity analysis
-
-### Chapter 5 — ETF vs Sector Basket
-- Comparison of sector ETFs with DIY sector baskets
-- Performance, correlation, and tracking error assessment
 
 ### Chapter 6 — Investor Profile Mapping
 - Mapping analytical results to investor risk profiles
