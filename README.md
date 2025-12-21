@@ -1,49 +1,74 @@
 
 # An Investor’s Guide to Building a Smarter Portfolio
 
-Data Story : put the link 
-
 ## Abstract
 
 This project is built around one practical goal: help investors get the biggest market understanding and risk control with the least effort. Instead of giving abstract statistics, we build a step-by-step guide that answers real portfolio questions:
 
 - Do sectors actually diversify each other, or is it fake diversification?
+- How do market regimes affect the risk–return profiles of equities?
+- Do market categories (NASDAQ Global Select, Global Market, Capital Market) exhibit distinct behavior across sectors?
 - Within a sector, is one representative stock enough, or do you need a basket?
 - Should you buy the sector ETF, or is it worth recreating the exposure yourself?
-- How do all of these answers change in bull vs bear markets?
-- Given my risk tolerance, what is a sensible way to allocate today?
-
-
-To do that, our analysis follows a logical pipeline: sector relationships, market regimes, sector representation (single stocks vs baskets), ETF versus DIY exposure, and finally investor-specific portfolio guidance. The website will be a portfolio decision toolkit. The objective is to make sector investing more transparent, avoid misleading shortcuts, and provide investors with a simple way to choose between market exposure, sector exposure, ETFs, or DIY baskets, depending on both their risk tolerance and the market environment.
-
-## Research Questions
-
-1. How can investors truly diversify their portfolio across sectors in the short term and the long term ?
-2. Is investing in one stock enough to represent a sector, or do investors need to diversify among multiple stocks within the same sector to reduce risk?
-3. Should an investor buy the sector ETF, or construct a sector basket manually to obtain similar exposure with better cost/precision?
-4. When do bull/bear/neutral regimes occur, and which sectors perform best (or worst) inside each regime?
-5. Given my risk tolerance and today’s market conditions, what exposure should I take: market-wide, sector rotation, ETFs, or a DIY basket?
 
 
 
-## Additional Datasets
-
-- **NASDAQ Metadata:** Market category enrichment for NASDAQ-traded symbols (Global Select, Global Market, Capital Market).  
-- **Sector Classification Data:** Sector and industry tags for each ticker retrieved from Yahoo Finance using their yfinance python library.
+To do that, our analysis follows a logical pipeline: sector relationships, market regimes and categories, sector representation (single stocks vs baskets), ETF versus DIY exposure, and finally investor-specific portfolio guidance. The website will be a portfolio decision toolkit. The objective is to make sector investing more transparent, avoid misleading shortcuts, and provide investors with a simple way to choose between market exposure, sector exposure, ETFs, or DIY baskets, depending on both their risk tolerance and the market environment.
 
 
 
-## Data Cleaning and Preprocessing 
 
-## Methods 
+## Data Preparation & Cleaning Policy (For Both Stocks And ETFs)
 
-We combine financial econometrics, unsupervised learning, and risk analysis:
+This project relies on **time-consistent financial time series**.  
+Because downstream analyses (rolling statistics, regimes, clustering) depend on
+continuous timelines, the cleaning strategy prioritizes **symbol-level consistency**
+over row-level fixes.
 
-- Volume-weighted sector log returns
-- Pearson and rolling correlations
-- Rolling volatility
-- Clustering
-- PCA
+The same policy is applied to both **stocks** and **ETFs**.
+
+### Core Principle
+> If a symbol is structurally broken, it is removed.  
+> If a value can be safely repaired without breaking time consistency, it is fixed.
+
+As a result:
+- Rows are not dropped blindly.
+- Gaps inside time series are avoided.
+- When issues are systematic, the **entire symbol** is removed.
+- Visual diagnostics guide all major decisions.
+
+### Main Cleaning Rules
+- Dates are validated (ordering, coverage, trading days).
+- Missing values are inspected globally, per symbol, and over time.
+- If NaNs or zeros coincide across multiple columns within the same symbols,
+  those symbols are removed.
+- Zeros in price columns are treated as invalid.
+- `Open` prices may be repaired using the previous day’s `Adj Close`.
+- `Close` prices may be repaired using same-day `Adj Close`.
+- Volume is handled separately (trim early zeros, repair conservatively, remove if unresolved).
+
+Cleaning is **iterative**, with diagnostics repeated after each step.
+
+---
+
+## Metadata Cleaning & Enrichment
+
+Metadata links price dynamics to structural attributes (sector, exchange,
+market category, financial status). The goal is **correctness**, not completeness.
+
+### Policy
+- Metadata is never blindly trusted.
+- Existing valid values are never overwritten.
+- Missing values are filled only from reliable external sources.
+- When information cannot be safely inferred, it is left missing.
+
+### Cleaning & Enrichment
+- Non-essential columns (e.g. `cqs_symbol`) are removed.
+- Symbols and strings are normalized.
+- Empty strings are converted to missing values.
+- Market category and financial status are enriched using:
+
+---
 
 
 ## Project Structure & Analysis Pipeline
@@ -54,15 +79,85 @@ We combine financial econometrics, unsupervised learning, and risk analysis:
 - Rolling correlations 
 - Sector clustering 
 
-### Chapter 2 — Market Regimes
-- Identification of bull, bear, and neutral regimes
-- Analysis of sector behavior conditional on regimes
+### Chapter 2 — Market Regimes and Sector Behavior
 
-### Chapter 3 — Market Categories
-- Comparison of sector behavior across market categories
-- Cross-category correlation and volatility analysis
+**Goal:**  
+Understand how **sector returns, volatility, and correlations change across market regimes**.
 
-### Chapter 4 — ETF vs Sector Basket
+In this chapter, we define market regimes using **SPY drawdowns** (Bull, Neutral, Bear) and study how sector behavior depends on the prevailing market environment. Instead of looking at sectors in aggregate, we condition all analyses on the regime to capture how risk and return evolve over time.
+
+
+### What is analyzed
+- **Sector returns** computed as weighted averages of stock returns
+- **Sector volatility** using rolling volatility measures
+- **Correlation structure** between sectors
+- **Stability of sector rankings** across regimes
+
+### Key outputs
+- Static sector correlation matrix
+- Rolling average correlation over time
+- Average sector returns by regime (Bear / Neutral / Bull)
+- Clustered correlation heatmaps for each regime
+- Sector volatility comparisons across regimes
+- Statistical tests (Kruskal-Wallis, Spearman rank correlations)
+
+### Why it matters
+Sector behavior is not constant.  
+The same sector can have very different risk–return profiles depending on whether markets are stressed, neutral, or expanding. This chapter shows that:
+- diversification benefits vary across regimes,
+- volatility concentrates differently in stress periods,
+- sector attractiveness is regime-dependent.
+
+**All final plots are generated from `results.ipynb`.**  
+Development notebooks: `Chapter2_returns.ipynb`, `Chapter2_volat.ipynb`  
+Helper modules: `chapter2/returns.py`, `chapter2/volatilities.py`
+
+---
+
+### Chapter 3 — Market Categories Within Sectors
+
+**Goal:**  
+Answer a practical question:  
+**Within a given sector, does choosing a market category really change risk and return?**
+
+Market categories are often treated as independent performance drivers. In this chapter, we test whether those distinctions remain meaningful **once sector exposure is fixed**, and whether they are stable through time.
+
+### Market categories studied
+- **Growth (G)** — a style dimension linked to high expected growth
+- **Quality (Q)** — a style dimension linked to financial strength and stability
+- **Size (S)** — a firm characteristic (not a style), reflecting firm scale and liquidity
+
+### What is analyzed
+- Average returns by category within each sector
+- Average volatility by category within each sector
+- Joint return–volatility behavior through time
+- Interaction between sector structure and category choice
+
+### Key outputs
+- Static bar plots comparing categories inside sectors
+- Feature tables combining return and volatility
+- **Final animated return–volatility map** tracking  
+  *Sector × Market Category* through time
+
+The animation shows:
+- when category distinctions collapse (sector dominates),
+- when they separate (category choice matters),
+- how these dynamics evolve across market conditions.
+
+### Why it matters
+Category effects are **not constant**:
+- they can disappear during market stress,
+- re-emerge in calmer periods,
+- and behave very differently across sectors.
+
+This chapter shows that category-based allocation only makes sense when considered **together with sector structure and market conditions**.
+
+**All final outputs are generated from `results.ipynb`.**  
+Development notebooks: `Chapter3_discovering.ipynb`, `Chapter3_final.ipynb`  
+Helper modules: `chapter3/discovering.py`, `chapter3/final_clustering.py`
+
+---
+### Chapter 4 — ETF vs Sector Baskets 
 - Volume-weighted sector basket returns
 - ETF–basket correlation
 - Rolling correlation
@@ -117,12 +212,19 @@ python src/preprocessing/preparing_dataset.py
 
 ## Contributions within the team
 
-Chedly: Worked on initial data cleaning and preprocessing; worked on Chapter 2 (Market Regimes), Chapter 3 (Market Categories) and contributed to README.
+Chedly: worked on data inspection, did all of the data cleaning, worked on Chapter 2 (Market Regimes), Chapter 3 (Market Categories) and contributed to README, created the the website and added my part on it.
 
-İrem: Contributed to data preprocessing and worked on Chapter 1, focusing on sector–sector relationships. Prepared the README.
+İrem: Worked on Chapter 1, focusing on sector–sector relationships. Prepared the README, added my part on the website
 
-Efe: Worked on Chapter 4 (ETF analysis) and contributed to data preprocessing and README.
+Efe: Worked on Chapter 4 (ETF analysis) and contributed to README.
 
-Hugo: Worked on Chapter 5, analyzing sector proxy representativeness and contributed to data preprocessing and README.
+Hugo: Worked on Chapter 5, analyzing sector proxy representativeness and contributed to data prepocessing and README.
 
-Ozan: Worked on Chapter 6, developing the interactive investor profile mapping, and contributed to data preprocessing and README.
+Ozan: Worked on Chapter 6, developing the interactive investor profile mapping, and contributed to data preprocessing(added the secotrs) and README.
+
+
+## Additional Datasets
+
+- **NASDAQ Metadata:** Market category enrichment for NASDAQ-traded symbols (Global Select, Global Market, Capital Market).  
+- **Sector Classification Data:** Sector and industry tags for each ticker retrieved from Yahoo Finance.
+- **SPY data:**: [SPY Historical Prices on Kaggle](https://www.kaggle.com/datasets/benjaminbtang/spy-historical-prices)
