@@ -73,9 +73,8 @@ We combine financial econometrics, unsupervised learning, and risk analysis:
 - Evaluation of single-stock representativeness for sectors
 - Tracking error and intra-sector heterogeneity analysis
 
-### Chapter 6 — Investor Profile Mapping
-- Mapping analytical results to investor risk profiles
-- Regime-aware exposure and implementation recommendations
+### Strategy Builder
+In the final part we create an interactive strategy builder where users can select sectors, market categories and type of portfolios to create custom portfolios and see their performance. They will see the average return their portfolio gives and how volatile it is. They will then get a description of how well the portfolio is diversified based on the sectors and market categories selected.
 
 
 ## Repository Structure 
