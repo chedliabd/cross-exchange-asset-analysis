@@ -34,19 +34,20 @@
         <h1>Stop guessing. Discover which market features truly drive returns and risk.</h1>
         <p class="subtitle">
           We turn raw market behavior into a decision toolkit:
-          <strong>diversification of sectors</strong> → <strong>influence of regimes</strong> → <strong>representative stocks</strong> →
-          <strong>ETF vs DIY</strong> → a final <strong>strategy picker</strong>.
+          <strong>diversification of sectors</strong> → <strong>influence of regimes</strong> → 
+          <strong>market categories</strong> → <strong>ETF vs DIY</strong> →
+          <strong>representative stocks</strong> → a final <strong>strategy picker</strong>.
         </p>
         <div class="hero__actions">
           <a class="btn" href="#mission">Start the story</a>
-          <a class="btn btn--ghost" href="#analysis">Jump to the 5 chapters</a>
+          <a class="btn btn--ghost" href="#analysis">Jump to the 5 chapters</a>     
         </div>
       </div>
 
       <div class="hero__viz">
         <div class="card">
           <div class="card__header">
-            <h3>One chart, may look simple,</h3>
+            <h3>One chart may look simple,</h3>
             <p>Until you ask what lies beneath. </p>
           </div>
           <div class="card__body">
@@ -99,19 +100,15 @@
     <section class="section" id="map">
       <div class="section__header">
         <h2>Roadmap: 5 chapters</h2>
-        <p>
-          Same fintech layout, but now the story is cleaner: five big chapters, each with subparts.
-          You can read it top-to-bottom like a product guide.
-        </p>
       </div>
 
       <div class="card">
         <ol class="roadmap">
           <li><a href="#c1">Chapter 1 — Sector Diversification (Correlation + Structure)</a></li>
           <li><a href="#c2">Chapter 2 — Influence Of The Regimes On the Sectors</a></li>
-          <li><a href="#c3">Chapter 3 — ETF vs DIY Basket</a></li>
-          <li><a href="#c4">Chapter 4 — Inside a Sector (Proxy Stock vs Basket)</a></li>
-          <li><a href="#c5">Chapter 5 — Investor Profile Mapping (Final Synthesis)</a></li>
+          <li><a href="#c4">Chapter 3 — Market Categories Inside Sectors</a></li>
+          <li><a href="#c3">Chapter 4 — ETF vs DIY Basket</a></li>
+          <li><a href="#c5">Chapter 5 — Inside a Sector (Proxy Stock vs Basket)</a></li>
         </ol>
       </div>
     </section>
@@ -120,43 +117,173 @@
     <section class="section" id="analysis">
       <div class="section__header">
         <h2>Chapters</h2>
-        <p>
-          Each chapter has subparts: (1) what we show, (2) why it matters, and (3) chart placeholders you’ll fill from <code>script.js</code>.
-        </p>
       </div>
+
+
+      
 
       <!-- CHAPTER 1 -->
       <section class="block" id="c1">
+
         <div class="block__title">
-          <h3>Chapter 1) Sector Diversification (Correlation + Structure)</h3>
+          <h3>Chapter 1: Sector Diversification</h3>
           <p class="muted">
-            Start with the foundation: which sectors truly diversify each other — and when that breaks.
+            Instinctly, spreading investments across sectors can feel like the best move. 
+            A diversified portfolio is often seen as safer: even if one sector crashes, you won’t lose everything, 
+            because you haven’t put all your eggs in one basket. This is what most investors believe. In reality, however,
+            you might simply be putting your eggs in different baskets tied together. Sector diversification can create a 
+            false sense of protection. Let's examine whether sector diversification truly reduces risk or merely leads to 
+            fake diversification that fails when it matters most.
           </p>
         </div>
 
-        <div class="grid grid--2">
-          <div class="card">
-            <h4>Subparts</h4>
-            <ul>
-              <li><strong>1.1 Correlation heatmaps</strong> — full sample vs last 20y vs last 5y</li>
-              <li><strong>1.2 Rolling correlations</strong> — 60d vs 120d, so “diversification failure” is visible</li>
-              <li><strong>1.3 Sector map (UMAP)</strong> — sectors close together behave similarly (often redundant)</li>
-            </ul>
-            <h4>Why it matters</h4>
-            <ul>
-              <li>Stops “fake diversification” early</li>
-              <li>Shows regime dependence (correlations often rise in stress)</li>
-              <li>Gives a clean structure you build on later</li>
-            </ul>
+      <div class="grid">
+
+        <!-- LEFT: TEXT (static) -->
+        <div class="card">
+          <p>
+            Diversification sounds easy, but markets don’t stand still. We study sector relationships across long-term (1973-2020), medium-term (2000-2020),
+            and recent market (2015-2020) periods to see whether diversification survives changing conditions.
+          </p>
+
+          <p>
+            We start by looking at sector return correlations to understand which sectors move together. This gives a first clue about diversification, 
+            but it’s only half the story. Sectors can move differently and still become risky at the same time. So we go one step further and analyze rolling 
+            volatility correlations, asking a more uncomfortable question: when markets get nervous, do sectors get nervous together? High volatility co-movement 
+            reveals hidden links and shared exposure to market stress—exactly when diversification is supposed to protect you.
+
+          </p>
+
+          <hr />
+
+          <h4>Sector Diversifier Funnel</h4>
+          <p>
+            Instead of overwhelming you with heatmaps, we compress all this information into funnel plots below with thresholds. The funnel shows which sectors truly diversify across time.
+             Check it out! and don't forget what both metrics show :
+          </p>
+
+          <ul>
+            <li><strong>Returns</strong> capture co-movement in performance</li>
+            <li><strong>Volatility</strong> captures shared risk during stress</li>
+          </ul>
+
+          <p class="muted">
+          </p>
+        </div>
+
+        <!-- RIGHT: FUNNEL TOGGLE + PANELS -->
+        <div class="card" id="c1_right">
+          <div class="card" id="c1_right">
+          
+          <div class="toggle" role="tablist" aria-label="Metric selector">
+            <button class="toggle__btn is-active" data-funnel-metric="returns" type="button">Returns</button>
+            <button class="toggle__btn" data-funnel-metric="volatility" type="button">Volatility</button>
           </div>
 
-          <div class="card">
-            <div class="viz" id="viz_c1_heatmap" aria-label="Sector correlation heatmap"></div>
-            <div class="viz" id="viz_c1_rollcorr" aria-label="Rolling correlation lines"></div>
-            <div class="viz" id="viz_c1_umap" aria-label="UMAP sector map"></div>
+          <div class="funnel-panel" id="c1_funnel_returns">
+            <div class="viz" aria-label="Sector diversifier funnel (returns)">
+              <iframe
+                src="chapter1_plots/diversifier_funnel_returns.html"
+                title="Sector Diversifier Funnel — Returns"
+                style="width:100%; height:600px; border:0;"
+              ></iframe>
+            </div>
+            
+            <div class="note">
+              <p><strong>Interpretation:</strong></p>
+              <p>
+                Healthcare, Industrials, Real Estate, and Utilities are consistent return-based diversifiers, as they exhibit low average correlations with other sectors across all three windows. This indicates that, in terms of returns, these sectors have historically moved more independently from the broader market and have therefore provided diversification benefits for investor's portfolios over time.
+              </p>
+              <p>
+                Consumer Cyclical qualifies as a mostly consistent diversifier, maintaining low correlations for two windows but it lost this property in the most recent 5-year window. This suggests that its diversification benefits have weakened in recent years.
+              </p>
+              <p>
+                In contrast, Basic Materials, Energy, Financial Services, and Technology never qualify as return-based diversifiers. Their consistently high correlations indicate strong co-movement with the market, implying limited diversification value despite apparent sectoral differences.
+              </p>
+            </div>
+          </div>
+
+          <div class="funnel-panel hidden" id="c1_funnel_volatility">
+            <div class="viz" aria-label="Sector diversifier funnel (volatility)">
+              <iframe
+                src="chapter1_plots/diversifier_funnel_volatility.html"
+                title="Sector Diversifier Funnel — Volatility"
+                style="width:100%; height:600px; border:0;"
+              ></iframe>
+            </div>
+
+            <div class="note">
+              <p><strong>Interpretation:</strong></p>
+              <p>
+                Consumer Cyclical, Industrials, and Real Estate consistently qualify as diversifiers across the full sample, 20-year, and 5-year windows, indicating stable and persistent independence in their volatility dynamics.
+              </p>
+              <p>
+                Healthcare emerges as a mostly consistent diversifier: it exhibits very low volatility correlations over the full sample and 20-year window, but only qualifies in the most recent 5-year period. This loss of diversification may partly reflect increased recent market integration, but it may also be driven by the shorter window length, which makes volatility correlations more sensitive to transient shocks, sector reclassification effects, and episodic events. As a result, the 5-year window may understate Healthcare’s longer-term diversification properties.
+              </p>
+              <p>
+                In contrast, Basic Materials, Communication Services, Consumer Defensive, and Utilities display only short-term, window-specific diversification suggesting they might be better portfolio diversifiers on the long run. Energy, Financial Services, and Technology never qualify as diversifiers, reflecting their strong and persistent integration with system-wide volatility.
+              </p>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+      <div class="grid grid" style="margin-top: 40px; border-top: 1px solid var(--line); padding-top: 40px;">
+        
+        <div class="grid grid" style="margin-top: 40px; border-top: 1px solid var(--line); padding-top: 40px;">
+  
+      <div class="card">
+        <p class="kicker">Big Picture View</p>
+        <h3>The Sector Map (PCA)</h3>
+        <p>So far we looked at how sectors move together on a pairwise basis. But markets don’t move in pairs. They move together.</p>
+
+        <p style="margin-bottom: 8px; font-size: 0.8rem; color: var(--faint); text-transform: uppercase;">Select Metric</p>
+        <div class="toggle" style="margin-bottom: 20px;">
+          <button class="toggle__btn is-active" data-pca-metric="returns">Return PCA</button>
+          <button class="toggle__btn" data-pca-metric="volatility">Volatility PCA</button>
+        </div>
+
+        <p style="margin-bottom: 8px; font-size: 0.8rem; color: var(--faint); text-transform: uppercase;">Select Window</p>
+        <div class="toggle">
+          <button class="toggle__btn is-active" data-pca-window="full">Full Sample</button>
+          <button class="toggle__btn" data-pca-window="20y">20 Years</button>
+          <button class="toggle__btn" data-pca-window="5y">5 Years</button>
+        </div>
+      </div>
+
+      <div class="card" id="c1_pca_right">
+        
+        <div class="pca-panel" id="pca_returns_full">
+          <img src="chapter1_plots/return_full.jpeg" alt="Returns Full" style="width:100%; border-radius: 8px;">
+        </div>
+        <div class="pca-panel hidden" id="pca_returns_20y">
+          <img src="chapter1_plots/return_20y.jpeg" alt="Returns 20y" style="width:100%; border-radius: 8px;">
+        </div>
+        <div class="pca-panel hidden" id="pca_returns_5y">
+          <img src="chapter1_plots/return_5y.jpeg" alt="Returns 5y" style="width:100%; border-radius: 8px;">
+        </div>
+        <div class="pca-panel hidden" id="pca_volatility_full">
+          <img src="chapter1_plots/vol_full.jpeg" alt="Volatility Full" style="width:100%; border-radius: 8px;">
+        </div>
+        <div class="pca-panel hidden" id="pca_volatility_20y">
+          <img src="chapter1_plots/vol_20y.jpeg" alt="Volatility 20y" style="width:100%; border-radius: 8px;">
+        </div>
+        <div class="pca-panel hidden" id="pca_volatility_5y">
+          <img src="chapter1_plots/vol_5y.jpeg" alt="Volatility 5y" style="width:100%; border-radius: 8px;">
+        </div>
+
+        <div id="pca_interp_returns" class="note">
+          <p><strong>Return PCA Interpretation:</strong></p>
+          <p>Utilities and Healthcare consistently appear separated from the main market cluster in PCA space, indicating return dynamics that differ from the core market-driven sectors. This structural separation suggests strong diversification potential. This is coherent with the tunnel graph.</p>
+        </div>
+
+        <div id="pca_interp_volatility" class="note hidden">
+          <p><strong>Volatility PCA Interpretation:</strong></p>
+          <p>Consumer Cyclical, Industrials consistently appear separated from the main market cluster in PCA space, indicating persistent differences in how their volatilities evolve relative to other sectors. Because these sectors sit apart from the main volatility cluster, their volatility does not randomly synchronize with the rest of the market, making them strong diversifiers. Healthcare is a strong diversifier in the medium and short horizons, despite not exhibiting this property over the full sample. This is coherent with the tunnel graphs.</p>
+        </div>
+      </div>
+
+    </section>
+
 
       <!-- CHAPTER 2 -->
       <section class="block" id="c2">
@@ -171,60 +298,22 @@
           <!-- LEFT: narrative -->
           <div class="card">
             <p> 
-              In the previous chapter, we focused on sectors themselves, treating the market environment as fixed 
-              and comparing returns, volatility, and co-movement across sectors in a static way. 
-              While this approach highlights structural differences between sectors, it implicitly assumes that 
-              these relationships remain stable over time.
+              Sector analysis in isolation assumes that the market environment is stable, yet in practice market conditions 
+              evolve continuously. To capture these shifts, we define market regimes using the S&P 500 (SPY) as a proxy for 
+              overall market behavior, classifying each period into Bear, Neutral, or Bull regimes.
+            </p>
+
+
+            <p>
+              This framework allows sector returns, volatility, and correlations to be analyzed conditionally on the prevailing 
+              market environment rather than in aggregate. The results show that the same sectors can exhibit very different 
+              risk–return profiles depending on the regime, highlighting that diversification and sector attractiveness are 
+              not static properties but depend strongly on broader market conditions.
             </p>
 
             <p>
-              In reality, market conditions change. Periods of stress, recovery, and expansion do not affect all 
-              sectors in the same way, nor do they preserve the same levels of risk or diversification. 
-              Ignoring these shifts can lead to misleading conclusions about sector performance and risk exposure.
-            </p>
-
-            <p>
-              In this chapter, we introduce market regimes as a way to capture these changing conditions. 
-              Using the S&amp;P 500 index (SPY) as a proxy for the overall market, each point in time is classified 
-              into one of three regimes: Bear, Neutral, or Bull. Sector returns, correlations, and volatilities are 
-              then analyzed conditionally on the prevailing regime, allowing us to observe how sector behavior 
-              adapts to different market environments.
-            </p>
-
-            <p>
-              By moving from a static sector view to a regime-aware perspective, this chapter explores how the same 
-              sectors can exhibit very different risk and return profiles depending on the broader market context.
-            </p>
-
-            <p>
-              Bear markets are marked by high correlations and elevated volatility, which strongly limit diversification 
-              benefits. Risk tends to concentrate in tightly correlated cyclical sectors, amplifying market stress. While some 
-              sectors still achieve positive returns, higher performance is usually associated with higher volatility. Sectors 
-              combining positive returns with lower volatility and weaker correlations appear more resilient during this regime.
-            </p>
-
-            <p>
-              Neutral markets are characterized by positive returns for most sectors and lower overall volatility compared to 
-              Bear regimes. Correlations remain high, but risk is less concentrated, allowing clearer differentiation between 
-              stable and cyclical sectors. Sectors that combine strong returns with lower volatility and looser correlation to 
-              the cyclical core appear best positioned, while highly volatile sectors remain sensitive despite the absence of 
-              strong market stress.
-            </p>
-
-            <p>
-              Bull markets are characterized by broad-based positive returns and strong sector co-movement. Correlations are 
-              high, reflecting a unified upward market dynamic, while volatility is relatively contained compared to Bear 
-              regimes. Performance differences are driven more by sector exposure to growth than by risk isolation. In this 
-              environment, sectors aligned with expansion benefit the most, while diversification across sectors provides 
-              limited additional protection.
-            </p>
-
-            <p>
-              Across all regimes, one key insight stands out: there is no universally “best” sector in absolute terms. Sector 
-              attractiveness depends on the market environment, and a sector that performs well in one regime can underperform 
-              or become excessively risky in another. By defining regimes using market-wide information and conditioning sector 
-              analysis on those regimes, this framework provides a structured way to think about risk, return, and 
-              diversification dynamically rather than statically. Overall, regimes play a key role in your strategy.
+              For an investor, this means there is no universally “best” sector: performance and risk shift with the market 
+              regime, making regime awareness essential for dynamic allocation and risk management.
             </p>
           </div>
 
@@ -277,20 +366,11 @@
 
               <div class="note">
                 <p>                    
-                  During the Bear regime, sector performance is very uneven. Consumer Cyclical delivers the highest average 
-                  returns by a large margin, followed by Communication Services. Healthcare and Basic Materials also remain 
-                  positive, while Energy, Technology, Real Estate, and Financial Services hover close to zero. Consumer 
-                  Defensive and Utilities are the only sectors with clearly negative returns. Volatility is high overall, 
-                  but not evenly distributed. Financial Services is the most volatile sector, followed by Real Estate and Basic 
-                  Materials. Consumer Cyclical also shows elevated volatility, meaning its strong returns come with substantial 
-                  risk. Communication Services offers a better balance, combining relatively high returns with lower volatility 
-                  than most cyclical sectors. Healthcare stands out with positive returns and among the lowest volatility levels 
-                  in this regime. Correlations between sectors are strong during Bear markets. Most sectors move together, 
-                  especially Financial Services, Real Estate, Technology, Consumer Cyclical, Industrials, and Basic Materials, 
-                  forming a tightly correlated high-risk cluster. Energy is strongly linked to this group as well. Healthcare 
-                  and Communication Services remain positively correlated but slightly less tightly, which helps explain their 
-                  more stable behavior. Defensive sectors sit at the edge of the correlation structure but do not fully decouple 
-                  from the market.
+                  In bear markets, performance is highly dispersed across sectors: Consumer Cyclical and Communication Services 
+                  deliver the strongest returns, while Defensive sectors are the only ones clearly negative. Volatility is 
+                  elevated and concentrated in Financials, Real Estate, and Cyclicals, whereas Healthcare combines positive 
+                  returns with comparatively low risk. Correlations are strong across most sectors, forming a tightly linked 
+                  high-risk cluster, with defensives remaining only partially insulated.
                 </p>
               </div>
             </div>
@@ -310,22 +390,11 @@
 
               <div class="note">
                 <p>                    
-                  In the Neutral regime, sector returns are more balanced, but clear leaders still emerge. Healthcare delivers 
-                  the highest average return, followed by Basic Materials and Energy. Consumer Defensive also performs well, 
-                  while Communication Services sits in the middle with moderate positive returns. Utilities, Technology, and 
-                  Real Estate show smaller but still positive returns. Industrials and Financial Services are close to zero, 
-                  while Consumer Cyclical is the only sector with clearly negative average returns in this regime. Volatility is 
-                  lower than in Bear markets but remains differentiated across sectors. Basic Materials is the most volatile 
-                  sector, followed by Energy and Consumer Cyclical. Communication Services and Technology show moderate 
-                  volatility, while Healthcare, Financial Services, and Consumer Defensive are among the least volatile sectors. 
-                  This places Healthcare and Consumer Defensive in a favorable position, combining strong or moderate returns 
-                  with relatively low risk. Correlations remain high across sectors, but the structure is more organized than 
-                  in Bear markets. Most sectors are positively correlated, forming a broad common cluster. Cyclical sectors 
-                  such as Basic Materials, Energy, Industrials, Consumer Cyclical, Financial Services, and Real Estate are 
-                  tightly linked, indicating shared dynamics. Healthcare, Consumer Defensive, and Utilities are still positively 
-                  correlated with the rest of the market but sit slightly apart from the cyclical core, suggesting more stable 
-                  behavior. The sectors offering the best risk-return profiles, notably Healthcare, are also less exposed to 
-                  the most volatile correlation clusters.
+                  In neutral markets, returns are more balanced, with Healthcare clearly leading, followed by Basic Materials 
+                  and Energy, while Consumer Cyclical is the only sector with negative performance. Volatility is lower than 
+                  in bear markets and favors Healthcare and Consumer Defensive, which combine solid returns with low risk. 
+                  Correlations remain broadly positive, but cyclical sectors form a tighter core, leaving defensive sectors 
+                  slightly more detached and structurally more stable.
                 </p>
               </div>
             </div>
@@ -345,22 +414,11 @@
 
               <div class="note">
                 <p>                    
-                  In the Bull regime, all sectors deliver positive average returns, but leadership is very clear. Healthcare 
-                  dominates by a wide margin, showing the highest returns in this regime. Technology and Communication Services 
-                  follow, both with strong positive performance. Industrials also perform well, while Real Estate, Basic 
-                  Materials, and Financial Services form a middle group with moderate returns. Consumer Cyclical, Utilities, 
-                  Energy, and Consumer Defensive lag behind but still remain positive. Volatility is generally lower and more 
-                  evenly distributed than in Bear markets. Healthcare and Basic Materials are the most volatile sectors, 
-                  followed by Energy and Consumer Cyclical. Technology and Communication Services show moderate volatility, 
-                  while Consumer Defensive and Financial Services are among the least volatile sectors. This means that some of 
-                  the strongest performers, such as Healthcare, also carry higher risk, while others like Technology offer a 
-                  more balanced return–volatility profile. Correlations remain high across sectors in the Bull regime, 
-                  indicating a strong common market driver. Cyclical and growth-oriented sectors such as Technology, Financial 
-                  Services, Energy, Basic Materials, and Consumer Cyclical are tightly correlated, forming a coherent expansion
-                  cluster. Defensive sectors like Healthcare and Consumer Defensive remain positively correlated with the rest 
-                  of the market but are slightly less embedded in the core cyclical cluster. The highest-return sectors tend to 
-                  remain strongly correlated with the broader market, meaning performance is driven by overall market strength 
-                  rather than isolated sector behavior.
+                  In bull markets, all sectors post positive returns, with Healthcare clearly leading, followed by Technology 
+                  and Communication Services. Volatility is generally lower and more evenly spread, though Healthcare and 
+                  Basic Materials remain among the most volatile, while Technology offers a more balanced return–risk profile. 
+                  Correlations are high across sectors, with cyclical and growth sectors forming a tight expansion cluster, 
+                  indicating that performance is largely driven by broad market strength rather than isolated sector effects.
                 </p>
               </div>
             </div>
@@ -368,21 +426,84 @@
         </div>
       </section>
 
+<!-- CHAPTER 3: Market Categories Inside Sectors -->
+<section class="block" id="c4">
 
 
-<!-- CHAPTER 3 -->
+  <div class="block__title">
+    <h3>Chapter 3: Market Categories Inside Sectors</h3>
+    <p class="muted">
+      Within a sector, does choosing the market category really change risk and return?
+    </p>
+  </div>
+
+  <div class="grid grid--full">
+
+
+    
+    <div class="card">
+      <p>
+        Market categories describe how stocks are grouped <strong>within a given sector</strong>, based either on firm 
+        characteristics or on style-related signals. In this chapter, we focus on three commonly used categories: 
+        <strong>Growth</strong>, <strong>Quality</strong>, and <strong>Size</strong>. Growth and Quality represent style 
+        dimensions: Growth stocks are firms whose revenues or earnings are expected to expand faster than the sector average, 
+        often accompanied by higher valuation sensitivity and volatility, while Quality stocks are characterized by stronger 
+        balance sheets, more stable profitability, and lower financial risk. Size, by contrast, is a direct firm characteristic 
+        rather than a style preference, typically reflecting market capitalization and capturing differences in liquidity, risk 
+        exposure, and sensitivity to macroeconomic conditions. These categories are frequently discussed as “drivers” of 
+        performance, yet they interact strongly with sector structure. The purpose of this chapter is therefore not to assess 
+        whether Growth, Quality, or Size outperform in absolute terms, but to examine whether market-category distinctions 
+        still produce meaningful risk–return differences <strong>once the sector is fixed</strong>, and whether those 
+        differences remain stable over time.
+      </p>
+
+      <p>
+        Static comparisons can be misleading for investors because they average very different market environments into a single 
+        number. What matters in practice is how risk and return <strong>evolve through time</strong>, especially when conditions 
+        change. The following visualization tracks market categories inside sectors as they move through a return–volatility 
+        space. When categories cluster together, they offer similar risk–return trade-offs; when they separate, category choices 
+        become meaningful. More importantly, this view shows when category distinctions break down, such as during periods of 
+        market stress, and when they re-emerge in calmer phases. The goal is not to label a “best” category, but to understand 
+        <strong>when category tilts are likely to help — and when they are unlikely to matter at all</strong>.
+      </p>
+      
+
+
+    </div>
+
+    
+    <div class="card">
+
+
+      <div class="viz">
+        <iframe
+          src="ch3/sector_market_category_map.html"
+          title="Time-dependent clustering of market categories"
+          class="viz__frame"
+          loading="lazy">
+        </iframe>
+      </div>     
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+<!-- CHAPTER 4 -->
 <section class="block" id="c3">
   <div class="block__title">
-    <h3>Chapter 3) ETF vs DIY Basket</h3>
+    <h3>Chapter 4: ETF vs DIY Basket</h3>
     <p class="muted">
-      The practical question: should you buy the sector ETF, or recreate exposure yourself?
+      Should you buy the sector ETF, or recreate exposure yourself?
     </p>
   </div>
 
   <div class="grid grid--2">
     <!-- LEFT: TEXT (static) -->
     <div class="card">
-      <h4>Intro</h4>
       <p>
         This section compares a <strong>sector ETF</strong> (e.g., XLK) with a <strong>DIY sector proxy (“basket”)</strong>
         built from the sector’s underlying stocks using a <strong>volume-weighted</strong> construction. The goal is to check
@@ -393,7 +514,7 @@
       <hr />
 
       <div class="note" id="c3_interpretation">
-        <p><strong>Interpretation:</strong></p>
+        <p><strong>For this sector:</strong></p>
         <p>Loading…</p>
       </div>
 
@@ -631,73 +752,639 @@
     </div>
   </div>
 </section>
-
-
-
-
-      <!-- CHAPTER 4 -->
-      <section class="block" id="c4">
-        <div class="block__title">
-          <h3>Chapter 4) Regime Analysis (Bull / Bear / Neutral)</h3>
-          <p class="muted">
-            Markets change. We label regimes and recompute sector behavior inside each one.
-          </p>
-        </div>
-
-        <div class="grid grid--2">
-          <div class="card">
-            <h4>Subparts</h4>
-            <ul>
-              <li><strong>4.1 Market index with regime shading</strong> — when bull/bear happens</li>
-              <li><strong>4.2 Winners/losers by regime</strong> — which sectors hold up in bear markets</li>
-            </ul>
-            <h4>Why it matters</h4>
-            <ul>
-              <li>Explains why diversification fails when it matters most</li>
-              <li>Identifies defensive sectors empirically</li>
-              <li>Feeds directly into the strategy picker</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <div class="viz" id="viz_c4_spy_regimes" aria-label="SPY index with regime shading"></div>
-            <div class="viz" id="viz_c4_winners" aria-label="Regime winners/losers chart"></div>
-          </div>
-        </div>
-      </section>
+      
 
       <!-- CHAPTER 5 -->
       <section class="block" id="c5">
         <div class="block__title">
-          <h3>Chapter 5) Investor Profile Mapping (Final Synthesis)</h3>
+          <h3>Chapter 5 — Sector Proxy vs Stock Representativeness</h3>
           <p class="muted">
-            Convert everything into a simple framework: what to buy depends on your risk tolerance and the current regime.
+            Within each sector, which single stock or small basket best stands in for the whole? We balance representativeness
+            with stability so the proxy works beyond short windows.
           </p>
         </div>
 
         <div class="grid grid--2">
-          <div class="card">
-            <h4>Subparts</h4>
-            <ul>
-              <li><strong>5.1 Profiles</strong> — conservative / balanced / aggressive</li>
-              <li><strong>5.2 Regime-aware choices</strong> — bull vs bear changes what “sensible” means</li>
-              <li><strong>5.3 Final output</strong> — strategy picker chooses between ETF vs basket vs category</li>
-            </ul>
-            <h4>Why it matters</h4>
-            <ul>
-              <li>Turns analysis into a product</li>
-              <li>Gives a clear decision rule, not a long report</li>
-              <li>Lets you tailor recommendations to the user</li>
-            </ul>
+          <!-- LEFT: narrative filled from JSON -->
+          <div class="card" id="c5_story">
+
+            <p>
+              This chapter addresses a practical portfolio question: if you want <em>sector exposure</em>, is a single representative stock sufficient, or is a small basket needed to
+              control idiosyncratic risk? Using the Chapter 2 pipeline, we construct sector proxies, filter illiquid stocks, score representativeness via rolling correlations, and validate
+              candidates using tracking error.
+            </p>
+            
+            <p>
+              We first examine sector structure. Stocks are embedded using pairwise-overlap correlations and clustered to assess whether sector dynamics are dominated by a common factor
+              or split across multiple subgroups. Strong structural cohesion suggests simplification may be feasible, while fragmented sectors signal a need for diversification.
+            </p>
+            
+            <p>
+              Representativeness is then evaluated dynamically. Stocks are ranked by their persistent alignment with the sector proxy over time, with lifetime and liquidity constraints
+              ensuring robustness and investability. For each sector, we select both a single representative and a Top-5 basket.
+            </p>
+            
+            <p>
+              Comparing normalized indices shows that some sectors, such as Energy, can be accurately represented by a single stock, while others benefit materially from a small basket,
+              which improves stability and reduces drift relative to the proxy.
+            </p>
+            
+            <p>
+              Tracking error provides the final validation. Where sector simplification works, single-stock and basket tracking error are similar; where it fails, diversification
+              meaningfully reduces risk. The key takeaway is conditional simplification: some sectors can be owned through one name, but many require a small basket because the data—not
+              theory—demands it.
+            </p>
+            
+            
           </div>
 
-          <div class="card">
-            <div class="viz" id="viz_c5_risk_spectrum" aria-label="Risk spectrum chart"></div>
-            <div class="viz" id="viz_c5_scenario_table" aria-label="Scenario table (profile × regime)"></div>
+          <!-- RIGHT: sector selector + plots -->
+          <div class="card" id="c5_right">
+            <h4>Choose a sector</h4>
+
+            <div class="toggle" role="tablist" aria-label="Sector selector (Chapter 5)">
+              <button class="toggle__btn is-active" data-sector="technology">Technology</button>
+              <button class="toggle__btn" data-sector="basic_materials">Basic Materials</button>
+              <button class="toggle__btn" data-sector="communication_services">Communication Services</button>
+              <button class="toggle__btn" data-sector="consumer_cyclical">Consumer Cyclical</button>
+              <button class="toggle__btn" data-sector="consumer_defensive">Consumer Defensive</button>
+              <button class="toggle__btn" data-sector="energy">Energy</button>
+              <button class="toggle__btn" data-sector="financial_services">Financial Services</button>
+              <button class="toggle__btn" data-sector="healthcare">Healthcare</button>
+              <button class="toggle__btn" data-sector="industrials">Industrials</button>
+              <button class="toggle__btn" data-sector="real_estate">Real Estate</button>
+              <button class="toggle__btn" data-sector="utilities">Utilities</button>
+            </div>
+
+            <div class="c5_fallback note hidden" id="c5_fallback">
+              <p><strong>Note:</strong> Unable to load Chapter 5 content. Please retry later or check the plot exports.</p>
+            </div>
+
+            <!-- technology -->
+            <div class="sector-panel" id="c5_sector_technology" data-sector-panel="technology">
+              <div class="viz" aria-label="technology umap">
+                <iframe
+                  src="chapter_5_plots/plots/technology/technology_umap.html"
+                  title="Technology — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="technology proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/technology/technology_index.html"
+                  title="Technology — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="technology tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/technology/technology_te.html"
+                  title="Technology — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Technology</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>325 stocks</strong>. The structure is extremely concentrated: the largest
+                  cluster (<strong>Cluster 1 (316 stocks)</strong>) contains <strong>316 stocks</strong>, i.e. <strong>97.2%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>HPQ</strong>) reaches a return correlation to the proxy of <strong>0.612</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.328</strong>. The <strong>basket</strong> (<strong>(HPQ, IBM, INTC, AAPL, TER)</strong>) increases correlation to
+                  <strong>0.802</strong> and reduces annualized tracking error to <strong>0.228</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms this: the single has a <strong>p95 TE</strong> of <strong>0.033</strong> (max <strong>0.078</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.023</strong> (max <strong>0.059</strong>).
+                </p>
+                <p>
+                  The tracking error confirms that a single stock cannot stably represent the sector: deviations remain large and persistent relative to the proxy. A small basket
+                  significantly reduces normalized tracking error, indicating that Technology is diversified internally and requires intra-sector diversification to capture its
+                  aggregate behavior.
+                </p>
+              </div>
+            </div>
+
+            <!-- basic_materials -->
+            <div class="sector-panel hidden" id="c5_sector_basic_materials" data-sector-panel="basic_materials">
+              <div class="viz" aria-label="basic_materials umap">
+                <iframe
+                  src="chapter_5_plots/plots/basic_materials/basic_materials_umap.html"
+                  title="Basic Materials — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="basic_materials proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/basic_materials/basic_materials_index.html"
+                  title="Basic Materials — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="basic_materials tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/basic_materials/basic_materials_te.html"
+                  title="Basic Materials — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Basic Materials</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>128 stocks</strong>. The structure is less collapsed than most sectors: the largest
+                  cluster (<strong>Cluster 1 (94 stocks)</strong>) contains <strong>94 stocks</strong>, i.e. <strong>73.4%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>AA</strong>) reaches a return correlation to the proxy of <strong>0.681</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.262</strong>. The <strong>basket</strong> (<strong>(AA, DD, OLN, NUE, PPG)</strong>) increases correlation to
+                  <strong>0.801</strong> and reduces annualized tracking error to <strong>0.174</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms the improvement: the single has a <strong>p95 TE</strong> of <strong>0.028</strong> (max <strong>0.047</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.021</strong> (max <strong>0.035</strong>).
+                </p>
+                <p>
+                  The single stock shows substantially higher tracking error than the basket. This confirms strong internal diversification driven by different materials and value
+                  chains, making single-stock representation inadequate.
+                </p>
+              </div>
+            </div>
+
+            <!-- communication_services -->
+            <div class="sector-panel hidden" id="c5_sector_communication_services" data-sector-panel="communication_services">
+              <div class="viz" aria-label="communication_services umap">
+                <iframe
+                  src="chapter_5_plots/plots/communication_services/communication_services_umap.html"
+                  title="Communication Services — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="communication_services proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/communication_services/communication_services_index.html"
+                  title="Communication Services — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="communication_services tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/communication_services/communication_services_te.html"
+                  title="Communication Services — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Communication Services</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>117 stocks</strong>. The structure is concentrated: the largest cluster
+                  (<strong>Cluster 1 (105 stocks)</strong>) contains <strong>105 stocks</strong>, i.e. <strong>89.7%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>DIS</strong>) reaches a return correlation to the proxy of <strong>0.674</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.277</strong>. The <strong>basket</strong> (<strong>(DIS, CMCSA, NYT, IPG, OMC)</strong>) reaches a correlation of
+                  <strong>0.665</strong> with an annualized tracking error of <strong>0.271</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) is very close: the single has a <strong>p95 TE</strong> of <strong>0.032</strong> (max <strong>0.074</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.029</strong> (max <strong>0.074</strong>).
+                </p>
+                <p>
+                  Tracking error is similar for the single stock and the basket, with only marginal improvement from diversification. This suggests that sector dynamics are already
+                  largely captured by the representative stock in this configuration.
+                </p>
+              </div>
+            </div>
+
+            <!-- consumer_cyclical -->
+            <div class="sector-panel hidden" id="c5_sector_consumer_cyclical" data-sector-panel="consumer_cyclical">
+              <div class="viz" aria-label="consumer_cyclical umap">
+                <iframe
+                  src="chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_umap.html"
+                  title="Consumer Cyclical — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="consumer_cyclical proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_index.html"
+                  title="Consumer Cyclical — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="consumer_cyclical tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_te.html"
+                  title="Consumer Cyclical — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Consumer Cyclical</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>277 stocks</strong>. The structure is very concentrated: the largest cluster
+                  (<strong>Cluster 1 (265 stocks)</strong>) contains <strong>265 stocks</strong>, i.e. <strong>95.7%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>IP</strong>) reaches a return correlation to the proxy of <strong>0.583</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.295</strong>. The <strong>basket</strong> (<strong>(IP, MCD, GT, F, HD)</strong>) increases correlation to
+                  <strong>0.786</strong> and reduces annualized tracking error to <strong>0.226</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms this: the single has a <strong>p95 TE</strong> of <strong>0.060</strong> (max <strong>0.370</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.054</strong> (max <strong>0.368</strong>).
+                </p>
+                <p>
+                  The Tracking error highlights large and volatile deviations for a single stock, reflecting strong regime dependence. Although a basket improves representativeness,
+                  residual deviations remain high, indicating a highly diversified and cyclical sector where single-stock exposure is inadequate.
+                </p>
+              </div>
+            </div>
+
+            <!-- consumer_defensive -->
+            <div class="sector-panel hidden" id="c5_sector_consumer_defensive" data-sector-panel="consumer_defensive">
+              <div class="viz" aria-label="consumer_defensive umap">
+                <iframe
+                  src="chapter_5_plots/plots/consumer_defensive/consumer_defensive_umap.html"
+                  title="Consumer Defensive — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="consumer_defensive proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/consumer_defensive/consumer_defensive_index.html"
+                  title="Consumer Defensive — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="consumer_defensive tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/consumer_defensive/consumer_defensive_te.html"
+                  title="Consumer Defensive — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Consumer Defensive</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>116 stocks</strong>. The structure is strongly concentrated: the largest cluster
+                  (<strong>Cluster 1 (105 stocks)</strong>) contains <strong>105 stocks</strong>, i.e. <strong>90.5%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>PG</strong>) reaches a return correlation to the proxy of <strong>0.598</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.207</strong>. The <strong>basket</strong> (<strong>(PG, WMT, PEP, TGT, CL)</strong>) increases correlation to
+                  <strong>0.789</strong> and reduces annualized tracking error to <strong>0.152</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms this: the single has a <strong>p95 TE</strong> of <strong>0.029</strong> (max <strong>0.104</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.025</strong> (max <strong>0.105</strong>).
+                </p>
+                <p>
+                  The single stock performs reasonably well, but the basket still provides lower and more stable tracking error. This suggests limited but non-negligible internal
+                  diversification: a single stock is usable, but diversification improves robustness.
+                </p>
+              </div>
+            </div>
+
+            <!-- energy -->
+            <div class="sector-panel hidden" id="c5_sector_energy" data-sector-panel="energy">
+              <div class="viz" aria-label="energy umap">
+                <iframe
+                  src="chapter_5_plots/plots/energy/energy_umap.html"
+                  title="Energy — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="energy proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/energy/energy_index.html"
+                  title="Energy — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="energy tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/energy/energy_te.html"
+                  title="Energy — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Energy</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>3 clusters</strong> over <strong>133 stocks</strong>. The structure is concentrated: the largest cluster
+                  (<strong>Cluster 1 (118 stocks)</strong>) contains <strong>118 stocks</strong>, i.e. <strong>88.7%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>XOM</strong>) reaches a return correlation to the proxy of <strong>0.725</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.169</strong>. The <strong>basket</strong> (<strong>(XOM, CVX, BP, SLB, NBR)</strong>) reaches a correlation of
+                  <strong>0.751</strong> with an annualized tracking error of <strong>0.168</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) is nearly unchanged: the single has a <strong>p95 TE</strong> of <strong>0.026</strong> (max <strong>0.078</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.027</strong> (max <strong>0.074</strong>).
+                </p>
+                <p>
+                  Tracking error shows very similar behavior for the single stock and the basket. This indicates that Energy is dominated by a common factor, making a well-chosen
+                  single stock sufficient to represent the sector.
+                </p>
+              </div>
+            </div>
+
+            <!-- financial_services -->
+            <div class="sector-panel hidden" id="c5_sector_financial_services" data-sector-panel="financial_services">
+              <div class="viz" aria-label="financial_services umap">
+                <iframe
+                  src="chapter_5_plots/plots/financial_services/financial_services_umap.html"
+                  title="Financial Services — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="financial_services proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/financial_services/financial_services_index.html"
+                  title="Financial Services — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="financial_services tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/financial_services/financial_services_te.html"
+                  title="Financial Services — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Financial Services</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>6 clusters</strong> over <strong>598 stocks</strong>. The structure is concentrated but less collapsed than many other
+                  sectors: the largest cluster (<strong>Cluster 1 (508 stocks)</strong>) contains <strong>508 stocks</strong>, i.e. <strong>84.9%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>WFC</strong>) reaches a return correlation to the proxy of <strong>0.545</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.263</strong>. The <strong>basket</strong> (<strong>(WFC, C, MMC, CNA, PNC)</strong>) increases correlation to
+                  <strong>0.696</strong> and reduces annualized tracking error to <strong>0.178</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms this: the single has a <strong>p95 TE</strong> of <strong>0.032</strong> (max <strong>0.114</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.023</strong> (max <strong>0.113</strong>).
+                </p>
+                <p>
+                  Tracking error remains elevated for the single stock, especially during stress periods, while the basket consistently lowers deviations. This confirms strong
+                  internal diversification within the sector and the need for a basket to represent overall financial sector dynamics.
+                </p>
+              </div>
+            </div>
+
+            <!-- healthcare -->
+            <div class="sector-panel hidden" id="c5_sector_healthcare" data-sector-panel="healthcare">
+              <div class="viz" aria-label="healthcare umap">
+                <iframe
+                  src="chapter_5_plots/plots/healthcare/healthcare_umap.html"
+                  title="Healthcare — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="healthcare proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/healthcare/healthcare_index.html"
+                  title="Healthcare — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="healthcare tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/healthcare/healthcare_te.html"
+                  title="Healthcare — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Healthcare</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>442 stocks</strong>. The structure is extremely concentrated: the largest cluster
+                  (<strong>Cluster 1 (432 stocks)</strong>) contains <strong>432 stocks</strong>, i.e. <strong>97.7%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>JNJ</strong>) reaches a return correlation to the proxy of <strong>0.605</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.284</strong>. The <strong>basket</strong> (<strong>(JNJ, MRK, PFE, LLY, MDT)</strong>) increases correlation to
+                  <strong>0.800</strong> and reduces annualized tracking error to <strong>0.199</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms this: the single has a <strong>p95 TE</strong> of <strong>0.043</strong> (max <strong>0.074</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.034</strong> (max <strong>0.073</strong>).
+                </p>
+                <p>
+                  The single stock exhibits systematically higher tracking error than the basket. This shows that Healthcare is not well represented by one name and that
+                  diversification across subsectors is necessary to approximate the sector proxy.
+                </p>
+              </div>
+            </div>
+
+            <!-- industrials -->
+            <div class="sector-panel hidden" id="c5_sector_industrials" data-sector-panel="industrials">
+              <div class="viz" aria-label="industrials umap">
+                <iframe
+                  src="chapter_5_plots/plots/industrials/industrials_umap.html"
+                  title="Industrials — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="industrials proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/industrials/industrials_index.html"
+                  title="Industrials — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="industrials tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/industrials/industrials_te.html"
+                  title="Industrials — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Industrials</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>307 stocks</strong>. The structure is very concentrated: the largest cluster
+                  (<strong>Cluster 1 (295 stocks)</strong>) contains <strong>295 stocks</strong>, i.e. <strong>96.1%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>GE</strong>) reaches a return correlation to the proxy of <strong>0.531</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.171</strong>. The <strong>basket</strong> (<strong>(GE, BA, MMM, HON, EMR)</strong>) increases correlation to
+                  <strong>0.591</strong> and reduces annualized tracking error to <strong>0.131</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms lower typical deviations: the single has a <strong>p95 TE</strong> of <strong>0.025</strong> (max <strong>0.236</strong>), while the basket has a
+                  <strong>p95 TE</strong> of <strong>0.018</strong> (max <strong>0.236</strong>).
+                </p>
+                <p>
+                  The tracking error of the single stock remains consistently higher than that of the basket, although differences are moderate. This reflects a sector with shared
+                  dynamics but meaningful internal diversification, for which a basket offers more reliable representation.
+                </p>
+              </div>
+            </div>
+
+            <!-- real_estate -->
+            <div class="sector-panel hidden" id="c5_sector_real_estate" data-sector-panel="real_estate">
+              <div class="viz" aria-label="real_estate umap">
+                <iframe
+                  src="chapter_5_plots/plots/real_estate/real_estate_umap.html"
+                  title="Real Estate — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="real_estate proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/real_estate/real_estate_index.html"
+                  title="Real Estate — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="real_estate tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/real_estate/real_estate_te.html"
+                  title="Real Estate — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Real Estate</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>2 clusters</strong> over <strong>152 stocks</strong>. The structure is concentrated: the largest cluster
+                  (<strong>Cluster 1 (134 stocks)</strong>) contains <strong>134 stocks</strong>, i.e. <strong>88.2%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>WY</strong>) reaches a return correlation to the proxy of <strong>0.431</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.243</strong>. The <strong>basket</strong> (<strong>(WY, HST, FRT, VNO, PCH)</strong>) increases correlation to
+                  <strong>0.578</strong> and reduces annualized tracking error to <strong>0.173</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms the reduction in typical deviations: the single has a <strong>p95 TE</strong> of <strong>0.041</strong> (max <strong>0.199</strong>), while the
+                  basket has a <strong>p95 TE</strong> of <strong>0.032</strong> (max <strong>0.199</strong>).
+                </p>
+                <p>
+                  The tracking error clearly favors the basket over the single stock, which deviates strongly from the proxy. This reflects heterogeneous sensitivities across real
+                  estate subsectors, requiring diversification to represent the sector.
+                </p>
+              </div>
+            </div>
+
+            <!-- utilities -->
+            <div class="sector-panel hidden" id="c5_sector_utilities" data-sector-panel="utilities">
+              <div class="viz" aria-label="utilities umap">
+                <iframe
+                  src="chapter_5_plots/plots/utilities/utilities_umap.html"
+                  title="Utilities — UMAP"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="utilities proxy vs reps">
+                <iframe
+                  src="chapter_5_plots/plots/utilities/utilities_index.html"
+                  title="Utilities — Sector proxy vs reps"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="viz" aria-label="utilities tracking error">
+                <iframe
+                  src="chapter_5_plots/plots/utilities/utilities_te.html"
+                  title="Utilities — Tracking error"
+                  style="width:100%; height:250px; border:0;"
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div class="sector-writeup">
+                <h5>Utilities</h5>
+                <p>
+                  In the UMAP, the sector splits into <strong>3 clusters</strong> over <strong>28 stocks</strong>. The structure is the least concentrated among the sectors in this
+                  export: the largest cluster (<strong>Cluster 1 (16 stocks)</strong>) contains <strong>16 stocks</strong>, i.e. <strong>57.1%</strong> of the sector.
+                </p>
+                <p>
+                  On the index comparison, the <strong>single representative</strong> (<strong>ED</strong>) reaches a return correlation to the proxy of <strong>0.549</strong> with an
+                  <strong>annualized tracking error</strong> of <strong>0.206</strong>. The <strong>basket</strong> (<strong>(ED, DTE, AEP, CNP, NEE)</strong>) increases correlation to
+                  <strong>0.673</strong> and reduces annualized tracking error to <strong>0.170</strong>.
+                </p>
+                <p>
+                  The rolling TE (60d) confirms improved typical tracking: the single has a <strong>p95 TE</strong> of <strong>0.026</strong> (max <strong>0.069</strong>), while the basket has
+                  a <strong>p95 TE</strong> of <strong>0.020</strong> (max <strong>0.070</strong>).
+                </p>
+                <p>
+                  The basket consistently lowers tracking error relative to the single stock. Although Utilities are relatively defensive, the results show sufficient internal
+                  diversification that a basket provides a more faithful sector representation.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-    </section>
+
 
     <!-- Final interactive -->
     <section class="section" id="strategy">
@@ -769,6 +1456,9 @@
       </div>
     </section>
 
+
+
+    
     <!-- Footer -->
     <footer class="footer">
       <div class="footer__left">
@@ -788,3 +1478,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

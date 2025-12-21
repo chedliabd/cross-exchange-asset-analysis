@@ -466,3 +466,298 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
   
+
+// ----------------------------
+// Chapter 5: load story + plots + sector toggle (scoped)
+// ----------------------------
+// Embedded fallback so the page still works when opened via file://
+const c5EmbeddedData = {
+  chapter_title: "Chapter 5 — Sector Proxy vs Stock Representativeness",
+  chapter_story: [
+    "# Sector Proxy vs Stock Representativeness",
+    "If an investor wants sector exposure, is one representative stock enough, or do we need a small basket to avoid idiosyncratic risk? We test this directly: build a sector proxy from weighted stock returns, filter illiquid names, score representativeness with rolling correlations, apply a lifetime-aware ranking rule, and validate with tracking error through time.",
+    "2.1 Intra-Sector Structure: We compute pairwise-overlap correlations (no forced common window), transform to distances, run UMAP and agglomerative clustering, and explicitly tag Missing Data. Most sectors collapse into a dominant cluster (e.g., Technology 2 clusters/325 stocks; main cluster 97.2%), while some show real segmentation (Financial Services 6 clusters/598; Basic Materials main cluster 73.4%; Utilities 3 clusters/28 with only 57% in the largest). Structure tells us where simplification is plausible.",
+    "2.2 From Structure to Candidates: Representativeness = average rolling correlation to the sector proxy (60d), after liquidity filtering. We weight by lifetime coverage: effective_score = rep_score × lifetime_fraction^alpha (alpha=2) so short-lived tickers are penalized. Volatility breaks ties. Output: one top representative and a Top-5 basket per sector.",
+    "2.3 Return Path Check: We compare normalized indices (base=100) for proxy vs single vs basket. Some sectors are well represented by one stock (e.g., Energy single XOM corr 0.725 vs basket 0.751; TE similar). Others need the basket (Technology single HPQ corr 0.612 / TE 0.328 vs basket corr 0.802 / TE 0.228; Healthcare single 0.605 / TE 0.284 vs basket 0.800 / TE 0.199). Communication Services shows marginal basket benefit (DIS vs basket nearly identical).",
+    "2.4 Tracking Error: TE_t = rolling std(active return). Energy and Communication Services show nearly identical TE single vs basket. Basic Materials and Technology show meaningful TE reduction with the basket (e.g., Basic Materials single p95 0.028 → basket 0.021; Tech single p95 0.033 → basket 0.023). Consumer Cyclical shows large spikes even with a basket (single p95 0.060, max 0.370; basket p95 0.054, max 0.368).",
+    "2.5 Takeaways: Energy (and close to it Communication Services) can be represented by a single stock. Technology, Healthcare, Financial Services, Industrials, Consumer Defensive, Utilities, Basic Materials are safer with a basket. Consumer Cyclical is highly regime-dependent; a basket helps but cannot fully tame deviations.",
+    "2.6 Investor Lens: Simplification is conditional. Use a single-stock proxy only where TE stays close to the basket; otherwise a small basket is not optional. The Top-5 basket, lifetime-weighted and equal-weighted, captures most diversification while staying implementable."
+  ],
+  sectors: {
+    basic_materials: {
+      plot1: { src: "chapter_5_plots/plots/basic_materials/basic_materials_umap.html", alt: "Basic Materials – UMAP", interpretation: "2 clusters / 128 stocks; largest cluster 94 (73.4%). Structure less collapsed than most, signaling internal diversification (metals vs chemicals/value chains)." },
+      plot2: { src: "chapter_5_plots/plots/basic_materials/basic_materials_index.html", alt: "Basic Materials – Sector proxy vs reps", interpretation: "Single AA corr 0.681, TE 0.262; basket (AA, DD, OLN, NUE, PPG) corr 0.801, TE 0.174. Basket clearly improves alignment." },
+      plot3: { src: "chapter_5_plots/plots/basic_materials/basic_materials_te.html", alt: "Basic Materials – Tracking error", interpretation: "TE(60d): single p95 0.028 (max 0.047) vs basket p95 0.021 (max 0.035). Basket materially lowers TE; single is inadequate." }
+    },
+    communication_services: {
+      plot1: { src: "chapter_5_plots/plots/communication_services/communication_services_umap.html", alt: "Communication Services – UMAP", interpretation: "2 clusters / 117 stocks; largest cluster 105 (89.7%). Concentrated structure (telcos vs platforms) but mostly one dominant cluster." },
+      plot2: { src: "chapter_5_plots/plots/communication_services/communication_services_index.html", alt: "Communication Services – Sector proxy vs reps", interpretation: "Single DIS corr 0.674, TE 0.277; basket (DIS, CMCSA, NYT, IPG, OMC) corr 0.665, TE 0.271. Basket adds little." },
+      plot3: { src: "chapter_5_plots/plots/communication_services/communication_services_te.html", alt: "Communication Services – Tracking error", interpretation: "TE(60d): single p95 0.032 (max 0.074) vs basket p95 0.029 (max 0.074). Nearly identical; single stock largely sufficient here." }
+    },
+    consumer_cyclical: {
+      plot1: { src: "chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_umap.html", alt: "Consumer Cyclical – UMAP", interpretation: "2 clusters / 277 stocks; largest cluster 265 (95.7%). Highly collapsed structure." },
+      plot2: { src: "chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_index.html", alt: "Consumer Cyclical – Sector proxy vs reps", interpretation: "Single IP corr 0.583, TE 0.295; basket (IP, MCD, GT, F, HD) corr 0.786, TE 0.226. Basket improves alignment but drift remains." },
+      plot3: { src: "chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_te.html", alt: "Consumer Cyclical – Tracking error", interpretation: "TE(60d): single p95 0.060 (max 0.370) vs basket p95 0.054 (max 0.368). Large spikes persist; single stock inadequate, basket only partially tames volatility." }
+    },
+    consumer_defensive: {
+      plot1: { src: "chapter_5_plots/plots/consumer_defensive/consumer_defensive_umap.html", alt: "Consumer Defensive – UMAP", interpretation: "2 clusters / 116 stocks; largest cluster 105 (90.5%). Strongly concentrated staples core." },
+      plot2: { src: "chapter_5_plots/plots/consumer_defensive/consumer_defensive_index.html", alt: "Consumer Defensive – Sector proxy vs reps", interpretation: "Single PG corr 0.598, TE 0.207; basket (PG, WMT, PEP, TGT, CL) corr 0.789, TE 0.152. Basket improves path stability." },
+      plot3: { src: "chapter_5_plots/plots/consumer_defensive/consumer_defensive_te.html", alt: "Consumer Defensive – Tracking error", interpretation: "TE(60d): single p95 0.029 (max 0.104) vs basket p95 0.025 (max 0.105). Basket modestly lowers TE; single is usable but basket more robust." }
+    },
+    energy: {
+      plot1: { src: "chapter_5_plots/plots/energy/energy_umap.html", alt: "Energy – UMAP", interpretation: "3 clusters / 133 stocks; largest cluster 118 (88.7%). Mostly one dominant group." },
+      plot2: { src: "chapter_5_plots/plots/energy/energy_index.html", alt: "Energy – Sector proxy vs reps", interpretation: "Single XOM corr 0.725, TE 0.169; basket (XOM, CVX, BP, SLB, NBR) corr 0.751, TE 0.168. Basket adds little." },
+      plot3: { src: "chapter_5_plots/plots/energy/energy_te.html", alt: "Energy – Tracking error", interpretation: "TE(60d): single p95 0.026 (max 0.078) vs basket p95 0.027 (max 0.074). Nearly identical; single stock sufficient here." }
+    },
+    financial_services: {
+      plot1: { src: "chapter_5_plots/plots/financial_services/financial_services_umap.html", alt: "Financial Services – UMAP", interpretation: "6 clusters / 598 stocks; largest cluster 508 (84.9%). Rich segmentation (banks/insurers/fintech)." },
+      plot2: { src: "chapter_5_plots/plots/financial_services/financial_services_index.html", alt: "Financial Services – Sector proxy vs reps", interpretation: "Single WFC corr 0.545, TE 0.263; basket (WFC, C, MMC, CNA, PNC) corr 0.696, TE 0.178. Basket clearly better." },
+      plot3: { src: "chapter_5_plots/plots/financial_services/financial_services_te.html", alt: "Financial Services – Tracking error", interpretation: "TE(60d): single p95 0.032 (max 0.114) vs basket p95 0.023 (max 0.113). Basket lowers TE, especially in stress." }
+    },
+    healthcare: {
+      plot1: { src: "chapter_5_plots/plots/healthcare/healthcare_umap.html", alt: "Healthcare – UMAP", interpretation: "2 clusters / 442 stocks; largest cluster 432 (97.7%). Extremely concentrated structure." },
+      plot2: { src: "chapter_5_plots/plots/healthcare/healthcare_index.html", alt: "Healthcare – Sector proxy vs reps", interpretation: "Single JNJ corr 0.605, TE 0.284; basket (JNJ, MRK, PFE, LLY, MDT) corr 0.800, TE 0.199. Basket improves path." },
+      plot3: { src: "chapter_5_plots/plots/healthcare/healthcare_te.html", alt: "Healthcare – Tracking error", interpretation: "TE(60d): single p95 0.043 (max 0.074) vs basket p95 0.034 (max 0.073). Basket consistently lowers TE; single not sufficient." }
+    },
+    industrials: {
+      plot1: { src: "chapter_5_plots/plots/industrials/industrials_umap.html", alt: "Industrials – UMAP", interpretation: "In the UMAP, the sector splits into 2 clusters over 307 stocks. The largest cluster (Cluster 1, 295 stocks) contains 96% of the sector." },
+      plot2: { src: "chapter_5_plots/plots/industrials/industrials_index.html", alt: "Industrials – Sector proxy vs reps", interpretation: "Single representative (GE) corr 0.531 with annualized TE 0.171; Top-5 basket improves stability." },
+      plot3: { src: "chapter_5_plots/plots/industrials/industrials_te.html", alt: "Industrials – Tracking error", interpretation: "Basket keeps TE lower and steadier; single name spikes during volatility shocks." }
+    },
+    real_estate: {
+      plot1: { src: "chapter_5_plots/plots/real_estate/real_estate_umap.html", alt: "Real Estate – UMAP", interpretation: "2 clusters / 152 stocks; largest cluster 134 (88.2%)." },
+      plot2: { src: "chapter_5_plots/plots/real_estate/real_estate_index.html", alt: "Real Estate – Sector proxy vs reps", interpretation: "Single WY corr 0.431, TE 0.243; basket (WY, HST, FRT, VNO, PCH) corr 0.578, TE 0.173. Basket improves tracking." },
+      plot3: { src: "chapter_5_plots/plots/real_estate/real_estate_te.html", alt: "Real Estate – Tracking error", interpretation: "TE(60d): single p95 0.041 (max 0.199) vs basket p95 0.032 (max 0.199). Basket clearly better." }
+    },
+    technology: {
+      plot1: { src: "chapter_5_plots/plots/technology/technology_umap.html", alt: "Technology – UMAP", interpretation: "2 clusters / 325 stocks; largest cluster 316 (97.2%). Extremely collapsed structure." },
+      plot2: { src: "chapter_5_plots/plots/technology/technology_index.html", alt: "Technology – Sector proxy vs reps", interpretation: "Single HPQ corr 0.612, TE 0.328; basket (HPQ, IBM, INTC, AAPL, TER) corr 0.802, TE 0.228. Basket markedly better." },
+      plot3: { src: "chapter_5_plots/plots/technology/technology_te.html", alt: "Technology – Tracking error", interpretation: "TE(60d): single p95 0.033 (max 0.078) vs basket p95 0.023 (max 0.059). Basket significantly reduces TE." }
+    },
+    utilities: {
+      plot1: { src: "chapter_5_plots/plots/utilities/utilities_umap.html", alt: "Utilities – UMAP", interpretation: "3 clusters / 28 stocks; largest cluster 16 (57.1%). Least concentrated structure." },
+      plot2: { src: "chapter_5_plots/plots/utilities/utilities_index.html", alt: "Utilities – Sector proxy vs reps", interpretation: "Single ED corr 0.549, TE 0.206; basket (ED, DTE, AEP, CNP, NEE) corr 0.673, TE 0.170. Basket improves stability." },
+      plot3: { src: "chapter_5_plots/plots/utilities/utilities_te.html", alt: "Utilities – Tracking error", interpretation: "TE(60d): single p95 0.026 (max 0.069) vs basket p95 0.020 (max 0.070). Basket consistently lowers TE." }
+    }
+  }
+};
+
+let c5Data = null;
+
+async function c5LoadData() {
+  // If opened via file://, fetch is often blocked; fall back to embedded data.
+  if (window.location.protocol === "file:") {
+    c5Data = c5EmbeddedData;
+    return c5Data;
+  }
+  const res = await fetch("./chapter_5_plots/chapter5_text.json");
+  if (!res.ok) throw new Error(`Failed to load chapter5_text.json (${res.status})`);
+  c5Data = await res.json();
+  return c5Data;
+}
+
+function c5PopulateStory() {
+  const storyCard = document.getElementById("c5_story");
+  if (!storyCard || !c5Data) return;
+
+  storyCard.innerHTML = "";
+  const h4 = document.createElement("h4");
+  h4.textContent = "Story";
+  storyCard.appendChild(h4);
+
+  const story = Array.isArray(c5Data.chapter_story) ? c5Data.chapter_story : [c5Data.chapter_story || ""];
+  story.forEach((para) => {
+    if (!para) return;
+    const p = document.createElement("p");
+    p.textContent = para;
+    storyCard.appendChild(p);
+  });
+}
+
+function c5PopulateSector(sector) {
+  if (!c5Data || !c5Data.sectors) return;
+  const sectorData = c5Data.sectors[sector];
+  if (!sectorData) return;
+
+  const panel = document.querySelector(`#c5 [data-sector-panel="${sector}"]`);
+  if (!panel) return;
+
+  ["plot1", "plot2", "plot3"].forEach((key) => {
+    const plotInfo = sectorData[key];
+    const img = panel.querySelector(`img[data-plot="${key}"]`);
+    const note = panel.querySelector(`.note[data-note="${key}"]`);
+
+    if (img && plotInfo) {
+      const viz = img.parentElement;
+      const src = plotInfo.src || "";
+      const alt = plotInfo.alt || `${sector} ${key}`;
+      if (src.toLowerCase().endsWith(".html") && viz) {
+        viz.innerHTML = `<iframe src="${src}" title="${alt}" style="width:100%; height:260px; border:0;" loading="lazy"></iframe>`;
+      } else {
+        img.src = src;
+        img.alt = alt;
+      }
+    }
+
+    if (note) {
+      const txt = plotInfo && plotInfo.interpretation;
+      note.innerHTML = txt ? `<p>${txt}</p>` : "<p>Interpretation coming soon.</p>";
+    }
+  });
+}
+
+function c5ShowSector(sector) {
+  const root = document.getElementById("c5_right");
+  if (!root) return;
+
+  const panels = root.querySelectorAll("[data-sector-panel]");
+  panels.forEach((p) => p.classList.add("hidden"));
+
+  const target = root.querySelector(`[data-sector-panel="${sector}"]`);
+  if (target) {
+    target.classList.remove("hidden");
+    c5PopulateSector(sector);
+  }
+
+  const buttons = root.querySelectorAll(".toggle__btn");
+  buttons.forEach((b) => b.classList.toggle("is-active", b.dataset.sector === sector));
+}
+
+function c5WireButtons() {
+  const root = document.getElementById("c5_right");
+  if (!root) return;
+  const buttons = root.querySelectorAll(".toggle__btn[data-sector]");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const sector = btn.dataset.sector;
+      if (!sector) return;
+      c5ShowSector(sector);
+    });
+  });
+}
+
+async function c5Init() {
+  const fallback = document.getElementById("c5_fallback");
+  try {
+    await c5LoadData();
+    if (c5Data?.chapter_title) {
+      const titleEl = document.querySelector("#c5 .block__title h3");
+      if (titleEl) titleEl.textContent = c5Data.chapter_title;
+    }
+    c5WireButtons();
+    c5ShowSector("technology");
+    if (fallback) fallback.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    if (fallback) fallback.classList.remove("hidden");
+  }
+}
+// ----------------------------
+// Chapter 1: funnel metric toggle
+// ----------------------------
+function c1ShowMetric(metric) {
+  // Toggle panels
+  document
+    .querySelectorAll("#c1_right .funnel-panel")
+    .forEach((p) => p.classList.add("hidden"));
+
+  const panel = document.getElementById(`c1_funnel_${metric}`);
+  if (panel) panel.classList.remove("hidden");
+
+  // Update active button
+  document
+    .querySelectorAll("#c1_right .toggle__btn")
+    .forEach((b) =>
+      b.classList.toggle("is-active", b.dataset.funnelMetric === metric)
+    );
+}
+
+function c1WireButtons() {
+  const root = document.getElementById("c1_right");
+  if (!root) return;
+
+  const buttons = root.querySelectorAll(".toggle__btn[data-funnel-metric]");
+  if (!buttons.length) return;
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const metric = btn.dataset.funnelMetric;
+      if (!metric) return;
+      c1ShowMetric(metric);
+    });
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  // --- Chapter 1 Init ---
+  c1WireButtons();
+
+  const activeBtn =
+    document.querySelector("#c1_right .toggle__btn.is-active") ||
+    document.querySelector("#c1_right .toggle__btn[data-funnel-metric]");
+
+  const defaultMetric = activeBtn
+    ? activeBtn.dataset.funnelMetric
+    : "returns";
+
+  c1ShowMetric(defaultMetric);
+
+  // --- Chapter 5 Init (The Fix) ---
+  // This was missing!
+  c5Init(); 
+});
+
+function c1WirePCAButtons() {
+  const root = document.getElementById("c1_pca_right");
+  if (!root) return;
+
+  // Track current selections
+  let currentMetric = "returns";
+  let currentWindow = "full";
+
+  const metricBtns = document.querySelectorAll("[data-pca-metric]");
+  const windowBtns = document.querySelectorAll("[data-pca-window]");
+
+  function updatePCAView() {
+    // 1. Hide ALL image panels
+    document.querySelectorAll(".pca-panel").forEach(p => p.classList.add("hidden"));
+    
+    // 2. Show the specific image for the combination (e.g., pca_returns_5y)
+    const targetId = `pca_${currentMetric}_${currentWindow}`;
+    const targetPanel = document.getElementById(targetId);
+    if (targetPanel) targetPanel.classList.remove("hidden");
+
+    // 3. Toggle Interpretation (Only dependent on Metric)
+    document.getElementById("pca_interp_returns").classList.toggle("hidden", currentMetric !== "returns");
+    document.getElementById("pca_interp_volatility").classList.toggle("hidden", currentMetric !== "volatility");
+  }
+
+  // Metric Click Logic
+  metricBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentMetric = btn.dataset.pcaMetric;
+      metricBtns.forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      updatePCAView();
+    });
+  });
+
+  // Window Click Logic
+  windowBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentWindow = btn.dataset.pcaWindow;
+      windowBtns.forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      updatePCAView();
+    });
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  c1WireButtons();    // Existing Funnel buttons
+  c1WirePCAButtons(); // New PCA buttons
+  c5Init();           // Chapter 5
+});
+
+
+
