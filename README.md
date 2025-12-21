@@ -29,7 +29,7 @@ To do that, our analysis follows a logical pipeline: sector relationships, marke
 ## Additional Datasets
 
 - **NASDAQ Metadata:** Market category enrichment for NASDAQ-traded symbols (Global Select, Global Market, Capital Market).  
-- **Sector Classification Data:** Sector and industry tags for each ticker retrieved from Yahoo Finance.
+- **Sector Classification Data:** Sector and industry tags for each ticker retrieved from Yahoo Finance using their yfinance python library.
 
 
 
