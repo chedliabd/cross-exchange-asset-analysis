@@ -428,3 +428,28 @@
 .toggle__btn {
   color: #ffffff;
 }
+
+
+.viz__frame{
+  width: 100%;
+  height: 560px;
+  border: 0;
+  display: block;
+}
+
+/* Full-width layout for specific chapters */
+.grid--full {
+  display: block;
+}
+
+/* Make cards take full width */
+.grid--full .card {
+  width: 100%;
+}
+
+/* Optional: make visualizations breathe more */
+.grid--full .viz {
+  margin-top: 1.5rem;
+}
+
+
