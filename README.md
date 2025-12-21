@@ -104,8 +104,8 @@ ada-2025-project-thedatacollectors/
 
 ### 1. Clone the repository
 ```console
-git clone https://github.com/epfl-ada/ada-2024-project-ooohfada.git 
-cd ada-2024-project-ooohfada
+git clone https://github.com/epfl-ada/ada-2025-project-thedatacollectors.git
+cd ada-2025-project-thedatacollectors
 ```
 ## 2. Create/activate a virtual environment and install the requirements
 ```console
@@ -126,12 +126,12 @@ python src/preprocessing/preparing_dataset.py
 
 ## Contributions within the team
 
-Chedly: Worked on initial data cleaning and preprocessing; worked on Chapter 2 (Market Regimes) and Chapter 3 (Market Categories).
+Chedly: Worked on initial data cleaning and preprocessing; worked on Chapter 2 (Market Regimes), Chapter 3 (Market Categories) and contributed to README.
 
-İrem: Contributed to data preprocessing and worked on Chapter 1, focusing on sector–sector relationships.
+İrem: Contributed to data preprocessing and worked on Chapter 1, focusing on sector–sector relationships. Prepared the README.
 
-Efe: Worked on Chapter 4 (ETF analysis) and contributed to data preprocessing.
+Efe: Worked on Chapter 4 (ETF analysis) and contributed to data preprocessing and README.
 
-Hugo: Worked on Chapter 5, analyzing sector proxy representativeness and contributed to data preprocessing.
+Hugo: Worked on Chapter 5, analyzing sector proxy representativeness and contributed to data preprocessing and README.
 
-Ozan: Worked on Chapter 6, developing the interactive investor profile mapping, and contributed to data preprocessing.
+Ozan: Worked on Chapter 6, developing the interactive investor profile mapping, and contributed to data preprocessing and README.
