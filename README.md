@@ -1,6 +1,8 @@
 
 # An Investor’s Guide to Building a Smarter Portfolio
 
+Data link: https://epfl-ada.github.io/ada-2025-project-thedatacollectors/
+
 ## Abstract
 
 This project is built around one practical goal: help investors get the biggest market understanding and risk control with the least effort. Instead of giving abstract statistics, we build a step-by-step guide that answers real portfolio questions:
