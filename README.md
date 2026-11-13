@@ -1,8 +1,8 @@
 
 # An Investor's Guide to Building a Smarter Portfolio
 
-**Live website:** https://epfl-ada.github.io/ada-2025-project-thedatacollectors/
-(The `website/` folder is also deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`.)
+**Live website:** https://chedliabd.github.io/cross-exchange-asset-analysis/
+(The `website/` folder is deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. The original EPFL course version, without Chapter 6 and the redesigned Chapter 1, is at https://epfl-ada.github.io/ada-2025-project-thedatacollectors/.)
 
 ---
 
