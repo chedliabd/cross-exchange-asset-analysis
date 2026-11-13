@@ -15,7 +15,7 @@
 5. [Data preparation & cleaning (stocks and ETFs)](#data-preparation--cleaning-stocks-and-etfs)
 6. [Metadata cleaning & enrichment](#metadata-cleaning--enrichment)
 7. [Feature engineering: returns, volatility, sector aggregation](#feature-engineering-returns-volatility-sector-aggregation)
-8. [Chapter 1: Sector–sector structure (correlation, volatility, PCA)](#chapter-1--sectorsector-structure)
+8. [Chapter 1: Sector–sector structure (correlation, volatility, clustering)](#chapter-1--sectorsector-structure)
 9. [Chapter 2: Market regimes and sector behaviour](#chapter-2--market-regimes-and-sector-behaviour)
 10. [Chapter 3: Market categories within sectors](#chapter-3--market-categories-within-sectors)
 11. [Chapter 4: Sector ETF vs DIY basket](#chapter-4--sector-etf-vs-diy-basket)
@@ -236,27 +236,41 @@ Three horizons are used to separate long-run structure from recent behaviour:
 ### 1.1 Return correlation (Pearson)
 - Sector–sector **Pearson correlation** matrices on volume-weighted sector log returns, for each window.
 - **Minimum overlap of 2 years (504 trading days)** per pair, so that unstable estimates are not reported.
-- **Diversifier rule:** a sector is a "return diversifier" in a window if its **mean correlation with the other sectors is < 0.25**. A **Sankey diagram** shows how sectors move between "diversifier / not" across the three windows.
+- **Diversifier rule:** a sector is a "return diversifier" in a window if its **mean correlation with the other 10 sectors is < 0.25**.
 
 **Findings**
-- Full sample: correlations are mostly **0.2–0.4**, so sectors are never independent.
-- They **rise over time**: the 5Y window has several pairs > 0.5. Diversification has become weaker and more fragile.
-- **Consistent return diversifiers:** Healthcare, Industrials, Real Estate, Utilities. **Consumer Cyclical** lost this status in the last 5Y. **Never diversifiers:** Basic Materials, Energy, Financial Services, Technology.
+- Full sample: correlations are mostly **0.15–0.40**, so sectors are never independent.
+- **Diversification is polarizing, not disappearing.** The *average* pair correlation barely changes (0.27 → 0.25 → 0.24), but its spread widens:
+  - **the cyclical core tightens:** Financials–Consumer Cyclical goes 0.21 → 0.58, Financials–Energy 0.37 → 0.56, Financials–Technology 0.35 → 0.52;
+  - **the defensives decouple:** Healthcare–Utilities goes 0.17 → 0.02.
+- **Consistent return diversifiers:** Healthcare, Industrials, Real Estate, Utilities. Healthcare's average correlation falls from 0.22 to 0.12.
+- **Consumer Cyclical** was the best diversifier for decades (0.17, then 0.13) but lost this status in the last 5Y (0.32).
+- **Never diversifiers:** Basic Materials, Energy, Financial Services, Technology. Financial Services becomes the most connected sector in 2015-2020 (average 0.40).
 
 ### 1.2 Volatility correlation (do sectors become risky together?)
 - Rolling **60-day volatility** per sector, then the correlation of those volatility series.
 - Return correlation tells you whether sectors **move in the same direction**. Volatility correlation tells you whether they **become risky at the same time**, which is the systemic-risk view.
 - A stricter threshold (**< 0.15**) defines volatility diversifiers.
-- **Findings:** volatility correlations are **higher** than return correlations. **Consumer Cyclical, Industrials and Real Estate** are consistent volatility diversifiers. **Financial Services** is the most interconnected risk hub, and the Tech–Financials risk coupling increased in the last 5Y.
+- **Findings:**
+  - volatility correlations are *lower* than return correlations on average (full sample 0.22 vs 0.27), but more extreme for a few pairs: Energy–Basic Materials is 0.79 / 0.75 / 0.68.
+  - **Consumer Cyclical, Industrials and Real Estate** are consistent volatility diversifiers.
+  - In the last 5Y, Financials' risk is tied to Energy (0.59) and Technology (0.54, up from 0.21).
+  - Caveat: average volatility correlation drops to 0.09 in the 5Y window, partly because 5 years hold few volatility cycles, so "5Y-only" diversifiers are weak evidence.
 
 ### 1.3 Rolling correlations
-- **60-day** (reactive) and **120-day** (smoother) rolling Pearson correlations for selected pairs: a high-correlation pair (Energy–Financial Services), a low one (Consumer Cyclical–Utilities) and a "surprise" pair (Communication Services–Real Estate). The website lets users explore **any** pair.
+- **60-day** (reactive) and **120-day** (smoother) rolling Pearson correlations for selected pairs: a high-correlation pair (Energy–Financial Services), a low one (Consumer Cyclical–Utilities) and a "surprise" pair (Communication Services–Real Estate). (Notebook only.)
 - **Finding:** correlations are strongly **time-varying** and spike in crises. A single static number hides exactly the moments when diversification fails.
 
 ### 1.4 PCA sector map
 - **PCA** on each correlation matrix (returns and volatility, three windows), projecting the 11 sectors on **PC1/PC2** with **shared axis limits** across windows so the maps are comparable.
 - PC1 typically captures the **common market factor**. Sectors far from the main cluster have distinct behaviour.
 - **Findings:** **Utilities and Healthcare** are consistently isolated (return-based diversifiers). **Consumer Cyclical and Industrials** are isolated in volatility space.
+- **Caveat:** a 2-D projection keeps only about 25-35 % of the structure of these matrices, because sector correlations are fairly uniform. The website therefore uses a clustered heatmap instead (see 1.5).
+
+### 1.5 Website version
+The raw data and the `chapter1/` helper package are not in this repository. So the website charts are rebuilt from the six correlation matrices saved in the `results` notebook outputs, using `src/chapter1_site_data.py` → `website/content/chapter1.json`. That script checks the transcription in two ways: each matrix must be symmetric, and re-applying the diversifier rule must reproduce the notebook's saved diversifier tables exactly. The site (`website/chapter1.js`, interactive SVG) shows two charts:
+- a **dot plot** of each sector's average correlation in the 3 windows, against the threshold. It replaces the unlabeled Sankey diagram.
+- a **clustered lower-triangle heatmap** with Full / 20Y / 5Y views and a "5Y minus Full" change view. Returns use a sequential scale (all positive); volatility and change use a diverging scale.
 
 ---
 
@@ -536,8 +550,8 @@ A prototype "find stocks similar to my portfolio":
 - **Diagnostics first:** time-series plots of missing/zero counts and start-date histograms drove the cleaning decisions.
 - **Heatmaps** (custom diverging colour maps, fixed range −1 to 1) for correlation matrices. **Clustered heatmaps** reorder rows by dendrogram leaves so that blocks become visible.
 - **Dendrograms** truncated to the last p merges for readability, with a shared y-scale when comparing regimes.
-- **Sankey diagrams** for how a sector's "diversifier" status changes across time windows.
-- **PCA maps** with shared axis limits across windows, so the eye compares like with like.
+- **Dot plot** (website) of each sector's average correlation per window against the diversifier threshold. It replaced the notebook's Sankey diagram, which could not show *which* sector was in each band.
+- **PCA maps** (notebook) with shared axis limits across windows. On the website they are replaced by a clustered heatmap, because 2-D maps kept only ~25-35 % of the structure.
 - **Regime-shaded timelines** (SPY index with a Bull/Neutral/Bear background).
 - **Boxplots and ranked bar charts** for return distributions per regime.
 - **Animated Plotly scatter** for the Sector × Category return–volatility map (Ch. 3).
@@ -598,6 +612,7 @@ A prototype "find stocks similar to my portfolio":
 │   ├── sector_rotation.py            # regimes, signals, backtest engine, metrics, block bootstrap
 │   └── profiles.py                   # corrected Strategy Builder (return-compounded baskets, regime stats)
 ├── tests/test_strategy.py            # no-look-ahead, costs, execution lag, builder bug regressions
+├── src/chapter1_site_data.py         # (Ch. 1) website data: verified correlation matrices → website/content/chapter1.json
 ├── exploration.ipynb                 # content-based stock recommender prototype
 ├── results.ipynb.zip                 # consolidated results notebook (all chapters + Strategy Builder)
 ├── plots/, plots_ch2/, plots_ch6/    # exported figures

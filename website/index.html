@@ -125,166 +125,135 @@
 
       <!-- CHAPTER 1 -->
       <section class="block" id="c1">
-
         <div class="block__title">
           <h3>Chapter 1: Sector Diversification</h3>
           <p class="muted">
-            Instinctly, spreading investments across sectors can feel like the best move. 
-            A diversified portfolio is often seen as safer: even if one sector crashes, you won’t lose everything, 
-            because you haven’t put all your eggs in one basket. This is what most investors believe. In reality, however,
-            you might simply be putting your eggs in different baskets tied together. Sector diversification can create a 
-            false sense of protection. Let's examine whether sector diversification truly reduces risk or merely leads to 
-            fake diversification that fails when it matters most.
+            Spreading money across sectors feels safe: if one crashes, the others should hold. But you might just be putting
+            your eggs in different baskets that are tied together. Is sector diversification real, or does it fail when it matters most?
           </p>
         </div>
 
-      <div class="grid">
-
-        <!-- LEFT: TEXT (static) -->
         <div class="card">
           <p>
-            Diversification sounds easy, but markets don’t stand still. We study sector relationships across long-term (1973-2020), medium-term (2000-2020),
-            and recent market (2015-2020) periods to see whether diversification survives changing conditions.
+            We build one return series per sector (volume-weighted daily log returns of its stocks) and compare sectors over three
+            horizons: the <strong>full sample</strong> (1973–2020), the <strong>last 20 years</strong> (2000–2020) and the
+            <strong>last 5 years</strong> (2015–2020). We ask two questions:
           </p>
-
-          <p>
-            We start by looking at sector return correlations to understand which sectors move together. This gives a first clue about diversification, 
-            but it’s only half the story. Sectors can move differently and still become risky at the same time. So we go one step further and analyze rolling 
-            volatility correlations, asking a more uncomfortable question: when markets get nervous, do sectors get nervous together? High volatility co-movement 
-            reveals hidden links and shared exposure to market stress—exactly when diversification is supposed to protect you.
-
-          </p>
-
-          <hr />
-
-          <h4>Sector Diversifier Funnel</h4>
-          <p>
-            Instead of overwhelming you with heatmaps, we compress all this information into funnel plots below with thresholds. The funnel shows which sectors truly diversify across time.
-             Check it out! and don't forget what both metrics show :
-          </p>
-
           <ul>
-            <li><strong>Returns</strong> capture co-movement in performance</li>
-            <li><strong>Volatility</strong> captures shared risk during stress</li>
+            <li><strong>Returns:</strong> do two sectors go up and down on the same days?</li>
+            <li><strong>Volatility:</strong> do they become <em>risky</em> at the same time? (correlation of 60-day rolling volatility)</li>
           </ul>
-
           <p class="muted">
+            A sector counts as a <strong>diversifier</strong> in a window when its average correlation with the 10 other sectors is
+            below <strong>0.25</strong> for returns, or below the stricter <strong>0.15</strong> for volatility.
           </p>
         </div>
 
-        <!-- RIGHT: FUNNEL TOGGLE + PANELS -->
-        <div class="card" id="c1_right">
-          <div class="card" id="c1_right">
-          
-          <div class="toggle" role="tablist" aria-label="Metric selector">
-            <button class="toggle__btn is-active" data-funnel-metric="returns" type="button">Returns</button>
-            <button class="toggle__btn" data-funnel-metric="volatility" type="button">Volatility</button>
-          </div>
-
-          <div class="funnel-panel" id="c1_funnel_returns">
-            <div class="viz" aria-label="Sector diversifier funnel (returns)">
-              <iframe
-                src="chapter1_plots/diversifier_funnel_returns.html"
-                title="Sector Diversifier Funnel — Returns"
-                style="width:100%; height:600px; border:0;"
-              ></iframe>
+        <!-- Chart 1: who diversifies -->
+        <div class="card c1-card" id="c1_dots">
+          <div class="c1-head">
+            <div>
+              <p class="kicker">Step 1</p>
+              <h4>Which sectors actually diversify, and does it last?</h4>
             </div>
-            
-            <div class="note">
-              <p><strong>Interpretation:</strong></p>
-              <p>
-                Healthcare, Industrials, Real Estate, and Utilities are consistent return-based diversifiers, as they exhibit low average correlations with other sectors across all three windows. This indicates that, in terms of returns, these sectors have historically moved more independently from the broader market and have therefore provided diversification benefits for investor's portfolios over time.
-              </p>
-              <p>
-                Consumer Cyclical qualifies as a mostly consistent diversifier, maintaining low correlations for two windows but it lost this property in the most recent 5-year window. This suggests that its diversification benefits have weakened in recent years.
-              </p>
-              <p>
-                In contrast, Basic Materials, Energy, Financial Services, and Technology never qualify as return-based diversifiers. Their consistently high correlations indicate strong co-movement with the market, implying limited diversification value despite apparent sectoral differences.
-              </p>
+            <div class="toggle" role="tablist" aria-label="Metric">
+              <button class="toggle__btn is-active" data-key="dotMetric" data-value="returns" type="button">Returns</button>
+              <button class="toggle__btn" data-key="dotMetric" data-value="volatility" type="button">Volatility</button>
             </div>
           </div>
+          <div class="c1-keys" aria-hidden="true">
+            <span><i style="background:#3987e5"></i>Full sample</span>
+            <span><i style="background:#d95926"></i>Last 20 years</span>
+            <span><i style="background:#199e70"></i>Last 5 years</span>
+            <span class="muted">· each dot = average correlation with the other 10 sectors (lower = better diversifier)</span>
+          </div>
+          <div class="c1-chart"></div>
 
-          <div class="funnel-panel hidden" id="c1_funnel_volatility">
-            <div class="viz" aria-label="Sector diversifier funnel (volatility)">
-              <iframe
-                src="chapter1_plots/diversifier_funnel_volatility.html"
-                title="Sector Diversifier Funnel — Volatility"
-                style="width:100%; height:600px; border:0;"
-              ></iframe>
+          <div class="note c1-dot-note" data-metric="returns">
+            <p>
+              <strong>Healthcare, Industrials, Real Estate and Utilities</strong> diversify in every window, and they are getting
+              <em>better</em>: Healthcare's average correlation falls from 0.22 to 0.12.
+              <strong>Consumer Cyclical</strong> was the best diversifier for decades (0.17, then 0.13) but lost it in 2015–2020 (0.32).
+              <strong>Basic Materials, Energy, Financial Services and Technology</strong> never qualify. Financial Services
+              became the most connected sector of all in 2015–2020 (average 0.32 → 0.40).
+            </p>
+          </div>
+          <div class="note c1-dot-note hidden" data-metric="volatility">
+            <p>
+              Risk tells a different story than returns. <strong>Consumer Cyclical, Industrials and Real Estate</strong> are the
+              only sectors whose volatility stays independent in all three windows. <strong>Healthcare</strong> qualifies over the
+              last 20 and 5 years. <strong>Energy, Financial Services and Technology</strong> never do: when markets get nervous, they get nervous together.
+            </p>
+            <p class="muted">
+              Caution: volatility correlations are lower in the 5-year window for almost every sector (average 0.22 → 0.09).
+              A short window holds few volatility cycles, so a sector that passes only in the last 5 years is weak evidence.
+            </p>
+          </div>
+
+          <details class="c1-details">
+            <summary>Show the numbers</summary>
+            <div class="c1-table-wrap"><table class="c1-table"></table></div>
+          </details>
+        </div>
+
+        <!-- Chart 2: the full picture -->
+        <div class="card c1-card" id="c1_heat">
+          <div class="c1-head">
+            <div>
+              <p class="kicker">Step 2</p>
+              <h4>The full picture: every pair of sectors</h4>
             </div>
-
-            <div class="note">
-              <p><strong>Interpretation:</strong></p>
-              <p>
-                Consumer Cyclical, Industrials, and Real Estate consistently qualify as diversifiers across the full sample, 20-year, and 5-year windows, indicating stable and persistent independence in their volatility dynamics.
-              </p>
-              <p>
-                Healthcare emerges as a mostly consistent diversifier: it exhibits very low volatility correlations over the full sample and 20-year window, but only qualifies in the most recent 5-year period. This loss of diversification may partly reflect increased recent market integration, but it may also be driven by the shorter window length, which makes volatility correlations more sensitive to transient shocks, sector reclassification effects, and episodic events. As a result, the 5-year window may understate Healthcare’s longer-term diversification properties.
-              </p>
-              <p>
-                In contrast, Basic Materials, Communication Services, Consumer Defensive, and Utilities display only short-term, window-specific diversification suggesting they might be better portfolio diversifiers on the long run. Energy, Financial Services, and Technology never qualify as diversifiers, reflecting their strong and persistent integration with system-wide volatility.
-              </p>
+            <div class="c1-controls">
+              <div class="toggle" role="tablist" aria-label="Metric">
+                <button class="toggle__btn is-active" data-key="heatMetric" data-value="returns" type="button">Returns</button>
+                <button class="toggle__btn" data-key="heatMetric" data-value="volatility" type="button">Volatility</button>
+              </div>
+              <div class="toggle" role="tablist" aria-label="Window">
+                <button class="toggle__btn is-active" data-key="heatWindow" data-value="full" type="button">Full</button>
+                <button class="toggle__btn" data-key="heatWindow" data-value="20y" type="button">20Y</button>
+                <button class="toggle__btn" data-key="heatWindow" data-value="5y" type="button">5Y</button>
+                <button class="toggle__btn" data-key="heatWindow" data-value="change" type="button">Change: 5Y vs Full</button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="grid grid" style="margin-top: 40px; border-top: 1px solid var(--line); padding-top: 40px;">
-        
-        <div class="grid grid" style="margin-top: 40px; border-top: 1px solid var(--line); padding-top: 40px;">
-  
-      <div class="card">
-        <p class="kicker">Big Picture View</p>
-        <h3>The Sector Map (PCA)</h3>
-        <p>So far we looked at how sectors move together on a pairwise basis. But markets don’t move in pairs. They move together.</p>
+          <p class="muted c1-sub">
+            Sectors are ordered by hierarchical clustering, so sectors that move alike sit next to each other and form bright blocks.
+            Hover a cell for the exact value.
+          </p>
+          <div class="c1-legend">
+            <span class="c1-legend__lo"></span><span class="c1-legend__bar"></span><span class="c1-legend__hi"></span>
+          </div>
+          <div class="c1-chart"></div>
+          <p class="muted c1-heat-stat"></p>
 
-        <p style="margin-bottom: 8px; font-size: 0.8rem; color: var(--faint); text-transform: uppercase;">Select Metric</p>
-        <div class="toggle" style="margin-bottom: 20px;">
-          <button class="toggle__btn is-active" data-pca-metric="returns">Return PCA</button>
-          <button class="toggle__btn" data-pca-metric="volatility">Volatility PCA</button>
-        </div>
-
-        <p style="margin-bottom: 8px; font-size: 0.8rem; color: var(--faint); text-transform: uppercase;">Select Window</p>
-        <div class="toggle">
-          <button class="toggle__btn is-active" data-pca-window="full">Full Sample</button>
-          <button class="toggle__btn" data-pca-window="20y">20 Years</button>
-          <button class="toggle__btn" data-pca-window="5y">5 Years</button>
-        </div>
-      </div>
-
-      <div class="card" id="c1_pca_right">
-        
-        <div class="pca-panel" id="pca_returns_full">
-          <img src="chapter1_plots/return_full.jpeg" alt="Returns Full" style="width:100%; border-radius: 8px;">
-        </div>
-        <div class="pca-panel hidden" id="pca_returns_20y">
-          <img src="chapter1_plots/return_20y.jpeg" alt="Returns 20y" style="width:100%; border-radius: 8px;">
-        </div>
-        <div class="pca-panel hidden" id="pca_returns_5y">
-          <img src="chapter1_plots/return_5y.jpeg" alt="Returns 5y" style="width:100%; border-radius: 8px;">
-        </div>
-        <div class="pca-panel hidden" id="pca_volatility_full">
-          <img src="chapter1_plots/vol_full.jpeg" alt="Volatility Full" style="width:100%; border-radius: 8px;">
-        </div>
-        <div class="pca-panel hidden" id="pca_volatility_20y">
-          <img src="chapter1_plots/vol_20y.jpeg" alt="Volatility 20y" style="width:100%; border-radius: 8px;">
-        </div>
-        <div class="pca-panel hidden" id="pca_volatility_5y">
-          <img src="chapter1_plots/vol_5y.jpeg" alt="Volatility 5y" style="width:100%; border-radius: 8px;">
+          <div class="note c1-heat-note" data-metric="returns">
+            <p>
+              <strong>Diversification is polarizing, not disappearing.</strong> The average pair correlation barely moves
+              (0.27 → 0.25 → 0.24), but the market is splitting in two. The cyclical core of Financials, Energy, Materials, Technology and Consumer Cyclical
+              is tightening: Financials–Consumer Cyclical went from 0.21 to 0.58, Financials–Energy from 0.37 to 0.56, and Financials–Technology from 0.35 to 0.52.
+              Meanwhile Healthcare, Industrials and Utilities drift away from everything (Healthcare–Utilities: 0.17 → 0.02).
+              Try <em>Change: 5Y vs Full</em> to see both moves at once.
+            </p>
+          </div>
+          <div class="note c1-heat-note hidden" data-metric="volatility">
+            <p>
+              Energy and Basic Materials share their risk more than any other pair in every window (0.79, 0.75, 0.68).
+              In 2015–2020 Financials' volatility moved closely with Energy (0.59) and Technology (0.54). Industrials and Real Estate
+              barely co-move in risk with anything, which is why they top the volatility diversifier list.
+            </p>
+          </div>
         </div>
 
-        <div id="pca_interp_returns" class="note">
-          <p><strong>Return PCA Interpretation:</strong></p>
-          <p>Utilities and Healthcare consistently appear separated from the main market cluster in PCA space, indicating return dynamics that differ from the core market-driven sectors. This structural separation suggests strong diversification potential. This is coherent with the tunnel graph.</p>
+        <div class="card">
+          <p class="kicker">Takeaway</p>
+          <p>
+            Owning many sectors is not the same as being diversified. Five sectors (Financials, Energy, Materials, Technology and,
+            recently, Consumer Cyclical) increasingly move as one block. Real diversification comes from a small group: <strong>Healthcare,
+            Industrials, Real Estate and Utilities</strong> for returns, and <strong>Industrials, Real Estate and Consumer Cyclical</strong>
+            for risk. Correlations also change over time, which is what <a href="#c2"><u>Chapter 2</u></a> explores with market regimes.
+          </p>
         </div>
-
-        <div id="pca_interp_volatility" class="note hidden">
-          <p><strong>Volatility PCA Interpretation:</strong></p>
-          <p>Consumer Cyclical, Industrials consistently appear separated from the main market cluster in PCA space, indicating persistent differences in how their volatilities evolve relative to other sectors. Because these sectors sit apart from the main volatility cluster, their volatility does not randomly synchronize with the rest of the market, making them strong diversifiers. Healthcare is a strong diversifier in the medium and short horizons, despite not exhibiting this property over the full sample. This is coherent with the tunnel graphs.</p>
-        </div>
-      </div>
-
-    </section>
-
+      </section>
 
       <!-- CHAPTER 2 -->
       <section class="block" id="c2">
@@ -1773,6 +1742,7 @@
   </main>
 
   <script src="script.js"></script>
+  <script src="chapter1.js"></script>
 </body>
 </html>
 
