@@ -36,11 +36,11 @@
           We turn raw market behavior into a decision toolkit:
           <strong>diversification of sectors</strong> → <strong>influence of regimes</strong> → 
           <strong>market categories</strong> → <strong>ETF vs DIY</strong> →
-          <strong>representative stocks</strong> → a final <strong>strategy picker</strong>.
+          <strong>representative stocks</strong> → a <strong>backtested strategy</strong> → a final <strong>strategy picker</strong>.
         </p>
         <div class="hero__actions">
           <a class="btn" href="#mission">Start the story</a>
-          <a class="btn btn--ghost" href="#analysis">Jump to the 5 chapters</a>     
+          <a class="btn btn--ghost" href="#analysis">Jump to the 6 chapters</a>     
         </div>
       </div>
 
@@ -99,7 +99,7 @@
     <!-- Roadmap -->
     <section class="section" id="map">
       <div class="section__header">
-        <h2>Roadmap: 5 chapters</h2>
+        <h2>Roadmap: 6 chapters</h2>
       </div>
 
       <div class="card">
@@ -109,6 +109,7 @@
           <li><a href="#c4">Chapter 3 — Market Categories Inside Sectors</a></li>
           <li><a href="#c3">Chapter 4 — ETF vs DIY Basket</a></li>
           <li><a href="#c5">Chapter 5 — Inside a Sector (Proxy Stock vs Basket)</a></li>
+          <li><a href="#c6">Chapter 6 — A Systematic Strategy, Tested Out of Sample</a></li>
         </ol>
       </div>
     </section>
@@ -1386,6 +1387,145 @@
       </section>
 
 
+      <!-- CHAPTER 6 -->
+      <section class="block" id="c6">
+        <div class="block__title">
+          <h3>Chapter 6 — A Systematic Strategy Built From Chapters 1–5</h3>
+          <p class="muted">
+            Can the findings become trading rules that survive an honest test on data we never looked at?
+            We backtest a monthly sector-ETF strategy from 1999 to 2026, net of trading costs.
+          </p>
+        </div>
+
+        <div class="grid grid--4 c6-kpis">
+          <div class="metric">
+            <div class="metric__label">Max drawdown, 1999–2026</div>
+            <div class="metric__value">−31%</div>
+            <div class="muted c6-sub">SPY: −55%</div>
+          </div>
+          <div class="metric">
+            <div class="metric__label">Volatility, 1999–2026</div>
+            <div class="metric__value">12.4%</div>
+            <div class="muted c6-sub">SPY: 19.2%</div>
+          </div>
+          <div class="metric">
+            <div class="metric__label">Sharpe ratio, 1999–2026</div>
+            <div class="metric__value">0.46</div>
+            <div class="muted c6-sub">SPY: 0.41 (difference not significant)</div>
+          </div>
+          <div class="metric">
+            <div class="metric__label">Max drawdown, unseen 2020–2026</div>
+            <div class="metric__value">−11%</div>
+            <div class="muted c6-sub">SPY: −25%</div>
+          </div>
+        </div>
+
+        <div class="grid grid--2" style="margin-top:16px;">
+          <!-- LEFT: rules -->
+          <div class="card">
+            <h4>The rules (and where each one comes from)</h4>
+            <div class="c6-table-wrap">
+              <table class="c6-table">
+                <thead>
+                  <tr><th>Step</th><th>Rule</th><th>From</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Universe</td><td>The 11 SPDR sector ETFs, rebalanced monthly</td><td>Ch. 4–5: ETFs are cheap and less volatile than DIY baskets</td></tr>
+                  <tr><td>Weights</td><td>Inverse volatility: calmer sectors get more weight</td><td>Ch. 1: sector risk differs a lot</td></tr>
+                  <tr><td>Regime switch</td><td>When SPY falls below its 200-day average, hold only the 3 sectors that move least with the market (lowest beta)</td><td>Ch. 2: defensive sectors hold up in bad regimes</td></tr>
+                  <tr><td>Risk sizing</td><td>Scale the book to 12% volatility using the full covariance matrix; the rest sits in T-bills</td><td>Ch. 1–2: correlations and volatility spike together</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="note">
+              <p>
+                <strong>No peeking.</strong> Trades happen the day <em>after</em> each signal and pay 10 bps.
+                All choices were made on 1999–2012 only. 2013–2020 is the rest of our dataset, and
+                <strong>2020–2026 is data that did not exist when the project was built</strong>.
+              </p>
+              <p>
+                The defensive sectors are picked by the data (trailing beta), not by hand. They still turn out to be
+                Consumer Defensive, Utilities and Healthcare: the same sectors Chapter 2 found most resilient.
+              </p>
+            </div>
+          </div>
+
+          <!-- RIGHT: figure toggle -->
+          <div class="card" id="c6_right">
+            <h4>Explore the backtest</h4>
+            <div class="toggle" role="tablist" aria-label="Chapter 6 figures">
+              <button class="toggle__btn is-active" data-c6="performance" type="button">Performance</button>
+              <button class="toggle__btn" data-c6="signal" type="button">Regime signal</button>
+              <button class="toggle__btn" data-c6="holdings" type="button">Holdings</button>
+              <button class="toggle__btn" data-c6="robustness" type="button">Robustness</button>
+            </div>
+
+            <div class="c6-panel" id="c6_performance">
+              <div class="viz"><img src="chapter_6_plots/equity_drawdown.png" alt="Growth of $1 and drawdowns of the strategy, equal-weight sectors and SPY, 1999-2026" /></div>
+              <div class="note"><p>
+                The strategy grows more slowly than the market in long bull runs. But it falls much less in the
+                2000–2003 and 2008–2009 crashes, and in 2022: its worst drawdown is about half of SPY's.
+              </p></div>
+            </div>
+
+            <div class="c6-panel hidden" id="c6_signal">
+              <div class="viz"><img src="chapter_6_plots/regime_definitions.png" alt="Bear periods under the Chapter 2 drawdown definition versus the 200-day trend filter" /></div>
+              <div class="note"><p>
+                Chapter 2's regime (SPY ≥ 20% below its all-time high) describes the market well but lags as a trading signal:
+                it still says "bear" during most of the 2003–04 recovery. A 200-day trend filter reacts within weeks,
+                and it won on the design period.
+              </p></div>
+            </div>
+
+            <div class="c6-panel hidden" id="c6_holdings">
+              <div class="viz"><img src="chapter_6_plots/weights_heatmap.png" alt="Monthly sector weights of the strategy" /></div>
+              <div class="note"><p>
+                In up-trends every sector is held, weighted by inverse volatility. In bear periods (e.g. 2001–03, 2008–09, 2022)
+                the book collapses into the brightest bands: Consumer Defensive, Utilities and Healthcare.
+              </p></div>
+            </div>
+
+            <div class="c6-panel hidden" id="c6_robustness">
+              <div class="viz"><img src="chapter_6_plots/sensitivity_heatmap.png" alt="Design-period Sharpe ratio across volatility targets and number of defensive sectors" /></div>
+              <div class="note"><p>
+                All 60 parameter settings we tried beat SPY's design-period Sharpe, so the result does not hinge on one lucky setting.
+                We kept the pre-declared setting (3 sectors, 12%) instead of picking the best cell.
+              </p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h4>The honest verdict</h4>
+          <div class="c6-table-wrap">
+            <table class="c6-table c6-table--num">
+              <thead>
+                <tr><th>Period</th><th></th><th>Yearly return</th><th>Volatility</th><th>Sharpe</th><th>Max drawdown</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Design 1999–2012</td><td>Strategy</td><td>4.3%</td><td>12.4%</td><td>0.23</td><td>−31%</td></tr>
+                <tr><td></td><td>SPY</td><td>1.6%</td><td>21.6%</td><td>0.09</td><td>−55%</td></tr>
+                <tr><td>Validation 2013–2020</td><td>Strategy</td><td>7.6%</td><td>13.6%</td><td>0.55</td><td>−30%</td></tr>
+                <tr><td></td><td>SPY</td><td>10.0%</td><td>16.2%</td><td>0.62</td><td>−34%</td></tr>
+                <tr><td>Unseen 2020–2026</td><td>Strategy</td><td>12.1%</td><td>11.0%</td><td>0.82</td><td>−11%</td></tr>
+                <tr><td></td><td>SPY</td><td>20.2%</td><td>17.3%</td><td>0.98</td><td>−25%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            This is a <strong>risk-managed</strong> way to hold sectors: roughly half the market's worst loss, with a similar
+            return per unit of risk. It is <strong>not</strong> a way to beat the market. It earned less than SPY in the
+            2013–2026 bull market led by mega-cap tech, and a block-bootstrap test cannot tell its Sharpe ratio apart from SPY's.
+          </p>
+          <p class="muted">
+            Code, tests and the full analysis (ablation, volatility-matched benchmark, cost sensitivity) are in
+            <code>Chapter_6_strategy.ipynb</code> and <code>src/strategy/</code>. Past performance is not a guarantee of future results.
+          </p>
+        </div>
+      </section>
+
+
     <!-- Final interactive -->
     <section class="section" id="strategy">
       <div class="section__header">
@@ -1420,6 +1560,16 @@
 
           <div class="note">
             <p class="muted" id="out_status"></p>
+          </div>
+
+          <div class="note">
+            <p class="muted">
+              <strong>Known issue:</strong> these figures come from the original builder. ETF rows are reliable, but the
+              stock-basket rows (type <em>all</em> / <em>top5</em>) build the index from a volume-weighted <em>price</em>.
+              Stocks entering or leaving the basket create artificial jumps, which overstate their volatility and push
+              profiles toward "Gambler". See <a href="#c6"><u>Chapter 6</u></a> for the diagnosis; the corrected method is in
+              <code>src/strategy/profiles.py</code>.
+            </p>
           </div>
         </div>
 
@@ -1474,7 +1624,7 @@
 
       function formatVolatility(x) {
         if (x === null || x === undefined || Number.isNaN(Number(x))) return "—";
-        return `${Number(x).toFixed(2)}%`;
+        return `${(Number(x) * 100).toFixed(2)}%`;  // stored as a fraction, like returns
       }
 
 

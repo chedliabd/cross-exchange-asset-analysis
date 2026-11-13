@@ -453,3 +453,18 @@
 }
 
 
+
+/* Chapter 6 */
+.grid--4{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+@media (max-width: 940px){ .grid--4{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 520px){ .grid--4{ grid-template-columns: 1fr; } }
+.c6-sub{ font-size: 12px; margin-top: 2px; }
+.c6-table-wrap{ overflow-x: auto; }
+.c6-table{ width: 100%; border-collapse: collapse; font-size: 13px; }
+.c6-table th{ text-align: left; color: var(--faint); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.c6-table td{ padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--muted); }
+.c6-table td:first-child{ color: var(--text); font-weight: 600; }
+.c6-table--num td:nth-child(n+3), .c6-table--num th:nth-child(n+3){ text-align: right; font-variant-numeric: tabular-nums; }
+.c6-table--num td:nth-child(2){ color: var(--text); font-weight: 600; }
+.c6-table--num tr:nth-child(odd) td{ border-bottom: none; }
+.c6-panel .viz{ min-height: 0; }

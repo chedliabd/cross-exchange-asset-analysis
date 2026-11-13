@@ -761,3 +761,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+// Chapter 6 figure toggle
+(function () {
+  const root = document.getElementById("c6_right");
+  if (!root) return;
+  const buttons = root.querySelectorAll(".toggle__btn[data-c6]");
+  const panels = root.querySelectorAll(".c6-panel");
+  function show(name) {
+    panels.forEach(p => p.classList.toggle("hidden", p.id !== `c6_${name}`));
+    buttons.forEach(b => b.classList.toggle("is-active", b.dataset.c6 === name));
+  }
+  buttons.forEach(b => b.addEventListener("click", () => show(b.dataset.c6)));
+  show("performance");
+})();
