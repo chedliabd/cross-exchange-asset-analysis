@@ -1,46 +1,14 @@
-"""Chapter 6 figures, in a light theme (notebook / README) and a dark transparent theme (website)."""
+"""Chapter 6 figures, in the shared light (notebook) and dark transparent (website) themes of src/utils/figures.py."""
 from __future__ import annotations
-
-from contextlib import contextmanager
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from src.utils.figures import themed
+
 from .sector_rotation import drawdown
-
-# Validated categorical palettes (dataviz reference slots 1-3), one step set per surface
-THEMES = {
-    "light": {
-        "strategy": "#2a78d6", "spy": "#eb6834", "ew": "#1baf7a",
-        "text": "#0b0b0b", "muted": "#52514e", "grid": "#e6e5e1", "shade": "#e6e5e1",
-        "surface": "white", "transparent": False,
-    },
-    "dark": {  # matches the website (dark navy cards, light text)
-        "strategy": "#3987e5", "spy": "#d95926", "ew": "#199e70",
-        "text": "#E8EEFF", "muted": "#A9B3D8", "grid": "#2a3350", "shade": "#1f2942",
-        "surface": "#0E1630", "transparent": True,
-    },
-}
-
-
-@contextmanager
-def themed(theme: str):
-    t = THEMES[theme]
-    rc = {
-        "figure.dpi": 110, "savefig.dpi": 150, "font.size": 10,
-        "axes.spines.top": False, "axes.spines.right": False,
-        "axes.edgecolor": t["muted"], "axes.labelcolor": t["muted"], "axes.titlecolor": t["text"],
-        "xtick.color": t["muted"], "ytick.color": t["muted"], "text.color": t["text"],
-        "axes.grid": True, "grid.color": t["grid"], "grid.linewidth": 0.6,
-        "lines.linewidth": 1.8, "legend.frameon": False, "legend.labelcolor": t["text"],
-        "axes.facecolor": "none" if t["transparent"] else t["surface"],
-        "figure.facecolor": "none" if t["transparent"] else t["surface"],
-        "savefig.transparent": t["transparent"],
-    }
-    with plt.rc_context(rc):
-        yield t
 
 
 def _end_label(ax, series, text, color, t):

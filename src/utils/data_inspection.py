@@ -2,6 +2,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Raw price/volume columns checked by the missing- and zero-value diagnostics.
+# Helper columns such as 'Weekday' (0 = Monday) or 'Volatility' (0 when High == Low)
+# can legitimately be 0, so they are left out by default.
+PRICE_VOLUME_COLS = ["Open", "High", "Low", "Close", "Adj Close", "Volume"]
+
+
+def _select_columns(df: pd.DataFrame, columns) -> pd.DataFrame:
+    cols = PRICE_VOLUME_COLS if columns is None else columns
+    return df[[c for c in cols if c in df.columns]]
+
 def dates_in_increasing_order(df, date_column="Date"):
     """
     Check if the dates in a DataFrame are in increasing order.
@@ -78,6 +88,24 @@ def ends_before(data_dict, label, cutoff_date="2020-04-01", date_column="Date"):
 
 
 
+def symbols_with_unsorted_dates(data_dict, date_column="Date"):
+    """
+    Return the symbols whose dates are NOT in increasing order.
+    """
+    return [s for s, df in data_dict.items() if not dates_in_increasing_order(df, date_column)]
+
+
+def date_range_table(data_dict, date_column="Date") -> pd.DataFrame:
+    """
+    One row per symbol with its first date, last date and number of rows.
+    """
+    rows = []
+    for symbol, df in data_dict.items():
+        first, last = get_date_range(df, date_column)
+        rows.append({"symbol": symbol, "first_date": first, "last_date": last, "n_rows": len(df)})
+    return pd.DataFrame(rows).set_index("symbol")
+
+
 def get_start_dates(all_stocks, date_column="Date"):
     """
     Returns a DataFrame with the first date for each stock.
@@ -94,7 +122,9 @@ def get_start_dates(all_stocks, date_column="Date"):
 
 
 
-def missing_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def missing_rates_from_dict(
+    all_data: dict[str, pd.DataFrame], columns: list[str] | None = None
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compute missing value rates per column for each symbol,
     and overall missing rates across all symbols.
@@ -103,6 +133,8 @@ def missing_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataF
     ----------
     all_data : dict[str, pd.DataFrame]
         Dictionary where key = symbol, value = DataFrame of that symbol.
+    columns : list[str], optional
+        Columns to check. Defaults to PRICE_VOLUME_COLS.
 
     Returns
     -------
@@ -117,6 +149,8 @@ def missing_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataF
     total_rows = 0
 
     for symbol, df in all_data.items():
+        df = _select_columns(df, columns)
+
         # per-symbol rates
         per_symbol[symbol] = df.isna().mean() * 100
 
@@ -138,7 +172,9 @@ def missing_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataF
     return per_symbol, overall
 
 
-def zero_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def zero_rates_from_dict(
+    all_data: dict[str, pd.DataFrame], columns: list[str] | None = None
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compute 0.0 value rates per column for each symbol,
     and overall 0.0 rates across all symbols.
@@ -147,6 +183,9 @@ def zero_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFram
     ----------
     all_data : dict[str, pd.DataFrame]
         Dictionary where key = symbol, value = DataFrame of that symbol.
+    columns : list[str], optional
+        Columns to check. Defaults to PRICE_VOLUME_COLS, so helper columns
+        such as 'Weekday' or 'Volatility' (which can legitimately be 0) are ignored.
 
     Returns
     -------
@@ -160,8 +199,8 @@ def zero_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFram
     total_rows = 0
 
     for symbol, df in all_data.items():
-        # mask numeric columns only (to avoid issues with strings/dates)
-        numeric_df = df.select_dtypes(include=[np.number])
+        # selected columns, numeric only (to avoid issues with strings/dates)
+        numeric_df = _select_columns(df, columns).select_dtypes(include=[np.number])
 
         # compute per-symbol zero percentage
         zero_pct = (numeric_df == 0).mean() * 100
@@ -185,9 +224,32 @@ def zero_rates_from_dict(all_data: dict[str, pd.DataFrame]) -> tuple[pd.DataFram
     return per_symbol, overall
 
 
+def get_symbols_with_missing(all_data: dict[str, pd.DataFrame], column: str) -> list[str]:
+    """
+    Return the sorted list of symbols that have at least one NaN in `column`.
+    """
+    symbols = []
+    for symbol, df in all_data.items():
+        if column not in df.columns:
+            raise ValueError(f"Column '{column}' not found in DataFrame for {symbol}")
+        if df[column].isna().any():
+            symbols.append(symbol)
+    return sorted(symbols)
+
+
+def get_symbols_with_negatives(all_data: dict[str, pd.DataFrame], column: str) -> list[str]:
+    """
+    Return the sorted list of symbols that have at least one negative value in `column`.
+    """
+    return sorted(
+        symbol for symbol, df in all_data.items()
+        if column in df.columns and (df[column] < 0).any()
+    )
+
+
 def get_symbols_with_zeros(all_data: dict[str, pd.DataFrame], column: str):
     """
-    Return a list of symbols that have at least one 0.0 or NaN value
+    Return a list of symbols that have at least one 0.0 value
     in the specified column.
 
     Parameters
@@ -200,7 +262,7 @@ def get_symbols_with_zeros(all_data: dict[str, pd.DataFrame], column: str):
     Returns
     -------
     list[str]
-        List of symbols with 0.0 or NaN values in the given column.
+        List of symbols with 0.0 values in the given column.
     """
     symbols_with_issues = []
 
@@ -254,25 +316,4 @@ def get_symbols_with_zeros_or_nans(all_data: dict[str, pd.DataFrame], column: st
         if (series == 0).any() or series.isna().any():
             symbols_with_issues.append(symbol)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return symbols_with_issues

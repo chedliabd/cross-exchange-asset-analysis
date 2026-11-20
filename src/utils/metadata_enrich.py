@@ -1,109 +1,33 @@
-# src/utils/metadata_enrich.py
+"""
+Metadata helpers for `preparing_metadata.ipynb`.
+
+- NASDAQ symbol directory: load `nasdaqlisted.txt` and fill missing
+  `market_category` / `financial_status`.
+- Readable labels for the exchange, market category and financial status codes.
+- Sector and industry from Yahoo Finance, fetched once into a resumable cache,
+  with a check that each ticker still belongs to the same company.
+"""
+
 from __future__ import annotations
-import pandas as pd
-from pathlib import Path
-import yfinance as yf
-import os
-from tqdm import tqdm
-import numpy as np
+
+import re
 import time
+from datetime import date
+from pathlib import Path
 
+import pandas as pd
 
+# ---------- Code definitions ----------
+# Source: https://www.nasdaqtrader.com/trader.aspx?id=symboldirdefs
 
-
-def drop_cqs_symbol(df: pd.DataFrame) :
-    """
-    Drop the 'cqs_symbol' column from the metadata DataFrame if it exists.
-
-    Returns a new DataFrame (does not modify the input in place).
-    """
-    if "cqs_symbol" in df.columns:
-        df = df.drop(columns=["cqs_symbol"])
-    return df
-
-def load_nasdaq_symbol_directory(path: str | Path) -> pd.DataFrame:
-    """
-    Load NASDAQ Trader 'nasdaqlisted.txt' (pipe-delimited).
-    Returns a normalized DataFrame with snake_case columns.
-    """
-    df = pd.read_csv(
-        path,
-        sep="|",
-        dtype=str,
-        keep_default_na=False,
-        na_values=[],
-        engine="python"
-    )
-
-    # Remove footer rows (keep rows with non-empty 'Symbol')
-    if "Symbol" in df.columns:
-        df = df[df["Symbol"].str.len() > 0].copy()
-
-    # Trim
-    for c in df.columns:
-        df[c] = df[c].str.strip()
-
-    # Select + rename to snake_case
-    keep = {
-        "Symbol": "symbol",
-        "Security Name": "security_name",
-        "Market Category": "market_category",
-        "Test Issue": "test_issue",
-        "Financial Status": "financial_status",
-        "Round Lot Size": "round_lot_size",
-        "NASDAQ Symbol": "nasdaq_symbol",
-        "NextShares": "nextshares",
-    }
-    present = [c for c in keep.keys() if c in df.columns]
-    df = df[present].rename(columns=keep)
-
-    # Types
-    df["round_lot_size"] = pd.to_numeric(df.get("round_lot_size"), errors="coerce")
-
-    def _yn(x: str):
-        if x is None: return pd.NA
-        s = str(x).strip().upper()
-        if s == "Y": return True
-        if s == "N": return False
-        return pd.NA
-
-    for c in ("test_issue", "nextshares"):
-        if c in df.columns:
-            df[c] = df[c].map(_yn).astype("boolean")
-
-    # Empty strings -> NA
-    for c in df.columns:
-        if c not in ("round_lot_size", "test_issue", "nextshares"):
-            df[c] = df[c].replace({"": pd.NA})
-
-    return df
-
-# ---------- Enrichment ----------
-
-def enrich_market_category_and_fin_status(meta: pd.DataFrame,
-                                          nasdaq_dir_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Fill missing 'market_category' and 'financial_status' in `meta`
-    using `nasdaq_dir_df` (join on symbol, case-insensitive).
-    Existing non-missing values in `meta` are preserved.
-    """
-    left = meta.copy()
-    left["symbol_key"] = left["symbol"].str.upper()
-
-    right = nasdaq_dir_df.copy()
-    right["symbol_key"] = right["symbol"].str.upper()
-
-    right_small = right[["symbol_key", "market_category", "financial_status"]]
-
-    merged = left.merge(right_small, on="symbol_key", how="left", suffixes=("", "_from_dir"))
-
-    for col in ("market_category", "financial_status"):
-        merged[col] = merged[col].where(~merged[col].isna(), merged[f"{col}_from_dir"])
-        merged = merged.drop(columns=[f"{col}_from_dir"])
-
-    return merged.drop(columns=["symbol_key"])
-
-# ---------- Readable labels (optional but handy) ----------
+LISTING_EXCHANGE_MAP = {
+    "Q": "NASDAQ",
+    "N": "NYSE",
+    "A": "NYSE American",
+    "P": "NYSE Arca",
+    "Z": "Cboe BZX (BATS)",
+    "V": "IEX",
+}
 
 MARKET_CATEGORY_MAP = {
     "Q": "NASDAQ Global Select Market",
@@ -116,362 +40,242 @@ FINANCIAL_STATUS_MAP = {
     "D": "Deficient",
     "E": "Delinquent",
     "Q": "Bankrupt",
-    "G": "Deficient & Delinquent",
-    "H": "Deficient & Bankrupt",
+    "G": "Deficient & Bankrupt",
+    "H": "Deficient & Delinquent",
     "J": "Delinquent & Bankrupt",
     "K": "Deficient, Delinquent & Bankrupt",
 }
 
+
+# ---------- NASDAQ symbol directory ----------
+
+def drop_cqs_symbol(df: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy of the metadata without the 'cqs_symbol' column."""
+    return df.drop(columns=["cqs_symbol"], errors="ignore")
+
+
+def load_nasdaq_symbol_directory(path: str | Path) -> pd.DataFrame:
+    """
+    Load NASDAQ Trader 'nasdaqlisted.txt' (pipe-delimited).
+    Returns a normalized DataFrame with snake_case columns.
+    """
+    df = pd.read_csv(path, sep="|", dtype=str, keep_default_na=False, na_values=[], engine="python")
+
+    for c in df.columns:
+        df[c] = df[c].str.strip()
+
+    # Drop empty rows and the "File Creation Time: ..." footer line
+    df = df[(df["Symbol"].str.len() > 0) & ~df["Symbol"].str.startswith("File Creation Time")].copy()
+
+    keep = {
+        "Symbol": "symbol",
+        "Security Name": "security_name",
+        "Market Category": "market_category",
+        "Test Issue": "test_issue",
+        "Financial Status": "financial_status",
+        "Round Lot Size": "round_lot_size",
+        "NASDAQ Symbol": "nasdaq_symbol",
+        "NextShares": "nextshares",
+    }
+    df = df[[c for c in keep if c in df.columns]].rename(columns=keep)
+
+    df["round_lot_size"] = pd.to_numeric(df.get("round_lot_size"), errors="coerce")
+
+    def _yn(x):
+        s = str(x).strip().upper()
+        return True if s == "Y" else False if s == "N" else pd.NA
+
+    for c in ("test_issue", "nextshares"):
+        if c in df.columns:
+            df[c] = df[c].map(_yn).astype("boolean")
+
+    for c in df.columns:
+        if c not in ("round_lot_size", "test_issue", "nextshares"):
+            df[c] = df[c].replace({"": pd.NA})
+
+    return df
+
+
+def enrich_market_category_and_fin_status(meta: pd.DataFrame, nasdaq_dir_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Fill missing 'market_category' and 'financial_status' in `meta`
+    using `nasdaq_dir_df` (join on symbol, case-insensitive).
+    Existing non-missing values in `meta` are preserved.
+    """
+    left = meta.copy()
+    left["symbol_key"] = left["symbol"].str.upper()
+
+    right = nasdaq_dir_df.copy()
+    right["symbol_key"] = right["symbol"].str.upper()
+    right = right[["symbol_key", "market_category", "financial_status"]].drop_duplicates("symbol_key")
+
+    merged = left.merge(right, on="symbol_key", how="left", suffixes=("", "_from_dir"))
+    for col in ("market_category", "financial_status"):
+        merged[col] = merged[col].astype("string").fillna(merged[f"{col}_from_dir"].astype("string"))
+        merged = merged.drop(columns=[f"{col}_from_dir"])
+
+    return merged.drop(columns=["symbol_key"])
+
+
 def add_readable_labels(df: pd.DataFrame) -> pd.DataFrame:
     """
     Add human-readable columns:
-      - market_category_label
+      - listing_exchange_label  (e.g. "NASDAQ", "NYSE")
+      - market_category_label   (NASDAQ tier, only for NASDAQ-listed symbols)
       - financial_status_label
     """
     out = df.copy()
+    out["listing_exchange_label"] = out["listing_exchange"].map(LISTING_EXCHANGE_MAP)
     out["market_category_label"] = out["market_category"].map(MARKET_CATEGORY_MAP)
     out["financial_status_label"] = out["financial_status"].map(FINANCIAL_STATUS_MAP)
     return out
 
+
 # ---------- Diagnostics ----------
 
 def missing_values_meta(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Return a summary of missing (NaN) values per column in the metadata DataFrame.
-
-    Columns:
-      - column: name of the column
-      - missing_count: number of missing (NaN) entries
-      - missing_percentage: % of missing values relative to total rows
-    """
-    total_rows = len(df)
-    missing_counts = df.isna().sum()
-    missing_perc = (missing_counts / total_rows) * 100
-
-    summary = pd.DataFrame({
-        "column": missing_counts.index,
-        "missing_count": missing_counts.values,
-        "missing_percentage": missing_perc.round(2)
+    """Missing count and percentage per column."""
+    missing = df.isna().sum()
+    return pd.DataFrame({
+        "missing_count": missing,
+        "missing_percentage": (missing / len(df) * 100).round(2),
     })
 
-    return summary
 
-def exchange_missing_breakdown(meta: pd.DataFrame) -> pd.DataFrame:
+def exchange_missing_breakdown(meta: pd.DataFrame, by: str = "listing_exchange") -> pd.DataFrame:
+    """For each exchange, the number of symbols and of missing market_category / financial_status."""
+    return (
+        meta.assign(
+            mc_missing=meta["market_category"].isna(),
+            fs_missing=meta["financial_status"].isna(),
+        )
+        .groupby(by, dropna=False)
+        .agg(rows=("mc_missing", "size"), mc_missing=("mc_missing", "sum"), fs_missing=("fs_missing", "sum"))
+        .sort_values("rows", ascending=False)
+    )
+
+
+# ---------- Sector & industry (Yahoo Finance) ----------
+
+PROFILE_COLUMNS = ["symbol", "yf_name", "Sector", "Industry", "status", "fetched_on"]
+
+
+def to_yahoo_symbol(symbol: str) -> str:
+    """Kaggle/NASDAQ ticker -> Yahoo ticker (share classes use '-' on Yahoo: BRK.B -> BRK-B)."""
+    return symbol.replace(".", "-")
+
+
+def fetch_yfinance_profiles(
+    symbols,
+    cache_csv: str | Path,
+    pause: float = 0.2,
+    save_every: int = 100,
+) -> pd.DataFrame:
     """
-    For each listing_exchange, show missing counts of market_category and financial_status.
+    Fetch the company name, sector and industry of each symbol from Yahoo Finance.
+
+    Results are cached in `cache_csv` (columns: PROFILE_COLUMNS). The function is
+    resumable: symbols already in the cache are skipped (failed lookups are
+    retried), and progress is saved every `save_every` symbols. Delete the cache
+    to fetch everything again.
+
+    `status` is "ok", "no data" (Yahoo returned nothing) or "error: ...".
+    `fetched_on` records the date of the lookup: Yahoo returns the CURRENT
+    profile of a ticker, not the one at the time of the price data.
     """
-    cols = ["listing_exchange", "market_category", "financial_status"]
-    existing = [c for c in cols if c in meta.columns]
-    df = meta[existing].copy()
-    return (df.assign(
-                mc_missing=df["market_category"].isna(),
-                fs_missing=df["financial_status"].isna())
-              .groupby("listing_exchange", dropna=False)
-              .agg(mc_missing=("mc_missing", "sum"),
-                   fs_missing=("fs_missing", "sum"),
-                   rows=("mc_missing", "size"))
-              .reset_index()
-              .sort_values("rows", ascending=False))
-    
-    
-def check_valid_securities(data_dir, output_csv):
-    
-    # load exsiting results if exists
-    if os.path.exists(output_csv):
-        existing_df = pd.read_csv(output_csv)
-        processed_tickers = set(existing_df["Ticker"])
-        results = existing_df.to_dict("records")
-        print(f"Resuming... {len(processed_tickers)} tickers already processed.")
+    import yfinance as yf
+    from tqdm import tqdm
+
+    cache_csv = Path(cache_csv)
+    if cache_csv.exists():
+        cached = pd.read_csv(cache_csv, dtype=str)
+        # failed lookups (network errors, rate limits) are retried on the next run
+        cached = cached[~cached["status"].fillna("").str.startswith("error")]
+        rows = cached.to_dict("records")
+        done = set(cached["symbol"])
     else:
-        processed_tickers = set()
-        results = []
-    
-    # process new files
-    all_files = [f for f in os.listdir(data_dir) if f.endswith(".csv")]
-    new_files = [f for f in all_files if os.path.splitext(f)[0] not in processed_tickers]
-    
-    valid_count = sum(1 for r in results if r["Status"] == "Valid")
-    total_count = len(all_files)
-    
-    for file in tqdm(new_files, desc="Checking tickers", ncols=100):
-        ticker = os.path.splitext(file)[0]
+        rows, done = [], set()
+
+    todo = [s for s in dict.fromkeys(symbols) if s not in done]
+    print(f"{len(done)} symbols already cached, {len(todo)} to fetch")
+
+    def _save():
+        cache_csv.parent.mkdir(parents=True, exist_ok=True)
+        pd.DataFrame(rows, columns=PROFILE_COLUMNS).to_csv(cache_csv, index=False)
+
+    today = date.today().isoformat()
+    for i, symbol in enumerate(tqdm(todo, desc="Fetching Yahoo profiles", ncols=100), start=1):
         try:
-            data = yf.Ticker(ticker).history(period="1d")
-            if not data.empty:
-                status = "Valid"
-                valid_count += 1
-            else:
-                status = "Invalid or no data"
-        except Exception as e:
-            status = f"Error: {str(e)[:60]}"
-        results.append({"Ticker": ticker, "Status": status})
-    
-    # save updated results
-    df = pd.DataFrame(results)
-    df.to_csv(output_csv, index=False)
-    
-    # summary
-    percent = (valid_count / total_count) * 100 if total_count > 0 else 0
-    
-    print(f"Total tickers: {total_count}")
-    print(f"Valid tickers: {valid_count}")
-    print(f"Yahoo Finance coverage: {percent:.2f}%")
-    print(f"Results saved to: {output_csv}")
+            info = yf.Ticker(to_yahoo_symbol(symbol)).info or {}
+            name = info.get("longName") or info.get("shortName")
+            status = "ok" if (name or info.get("sector")) else "no data"
+            rows.append({
+                "symbol": symbol, "yf_name": name, "Sector": info.get("sector"),
+                "Industry": info.get("industry"), "status": status, "fetched_on": today,
+            })
+        except Exception as e:  # network errors, unknown tickers, rate limits
+            rows.append({
+                "symbol": symbol, "yf_name": None, "Sector": None, "Industry": None,
+                "status": f"error: {str(e)[:60]}", "fetched_on": today,
+            })
+        if i % save_every == 0:
+            _save()
+        time.sleep(pause)
 
-def create_update_sector_csv(valid_securities, output_csv):
-    
-    # load valid tickers
-    df = pd.read_csv(valid_securities)
-    valid_tickers = df[df["Status"] == "Valid"]["Ticker"].tolist()
-    print(f" Found {len(valid_tickers)} valid tickers to enrich with sector data.")
-    
-    # load existing
-    if os.path.exists(output_csv):
-        existing = pd.read_csv(output_csv)
-        processed = set(existing["Ticker"])
-        results = existing.to_dict("records")
-        print(f"🔁 Resuming... {len(processed)} already processed.")
-    else:
-        processed = set()
-        results = []
-    
-    # fetch sectors
-    for ticker in tqdm(valid_tickers, desc="Fetching sector info", ncols=100):
-        if ticker in processed:
-            continue
-        try:
-            info = yf.Ticker(ticker).info
-            sector = info.get("sector", None)
-            industry = info.get("industry", None)
-            results.append({"Ticker": ticker, "Sector": sector, "Industry": industry})
-            time.sleep(0.2)
-        except Exception as e:
-            results.append({"Ticker": ticker, "Sector": None, "Industry": None})
-    
-    # save updated results
-    out_df = pd.DataFrame(results)
-    out_df.to_csv(output_csv, index=False)
-    
-    print(f"\nEnriched data saved to {output_csv}")
-    print(out_df["Sector"].value_counts(dropna=False).head(10))
+    _save()
+    return pd.DataFrame(rows, columns=PROFILE_COLUMNS)
 
-def summarize_sector_market_distribution(csv_path):
+
+_NAME_STOPWORDS = {
+    "inc", "incorporated", "corp", "corporation", "co", "company", "companies", "ltd", "limited",
+    "plc", "llc", "lp", "holdings", "holding", "group", "the", "class", "common", "stock", "shares",
+    "share", "ordinary", "depositary", "depository", "american", "ads", "adr", "sa", "ag", "nv",
+    "se", "de", "of", "and", "new", "units", "unit", "warrants", "warrant", "rights", "series",
+    "preferred", "par", "value",
+}
+
+
+def _name_tokens(name) -> set[str]:
+    """Significant words of a company name ("Apple Inc. - Common Stock" -> {"apple"})."""
+    if not isinstance(name, str):
+        return set()
+    name = name.split(" - ")[0].lower().replace("&", "")
+    words = re.sub(r"[^a-z0-9 ]", " ", name).split()
+    return {w for w in words if len(w) > 1 and w not in _NAME_STOPWORDS}
+
+
+def names_match(name_a, name_b) -> bool:
+    """True if the two company names share at least one significant word."""
+    return bool(_name_tokens(name_a) & _name_tokens(name_b))
+
+
+def add_sector_industry(meta: pd.DataFrame, profiles: pd.DataFrame) -> pd.DataFrame:
     """
-    Summarize counts and percentages of stocks per (Sector, Market Category)
-    from a metadata CSV file.
+    Merge Yahoo's Sector / Industry into the metadata.
 
-    Args:
-        csv_path (str): Path to the metadata CSV file.
-    
-    Returns:
-        counts (DataFrame): Raw counts per (Sector, Market Category)
-        percents (DataFrame): Normalized percentages (row-wise)
+    A Yahoo profile is only trusted if its company name matches the
+    `security_name` of the 2020 metadata (`yf_name_match`). Otherwise the ticker
+    may have been reused by another company since 2020, so Sector and Industry
+    are left missing.
     """
-    # --- LOAD CSV ---
-    meta_df = pd.read_csv(csv_path)
+    prof = profiles.drop_duplicates("symbol")[["symbol", "yf_name", "Sector", "Industry", "fetched_on"]]
+    out = meta.drop(columns=["Sector", "Industry"], errors="ignore").merge(prof, on="symbol", how="left")
 
-    # --- STANDARDIZE COLUMN NAMES (in case of case differences) ---
-    meta_df.columns = [c.strip().lower() for c in meta_df.columns]
+    # Yahoo sometimes returns an empty string instead of no sector
+    out[["Sector", "Industry"]] = out[["Sector", "Industry"]].replace(r"^\s*$", pd.NA, regex=True)
 
-    if not {"Sector", "market_category"}.issubset(meta_df.columns):
-        raise ValueError("CSV must contain 'sector' and 'market_category' columns.")
+    out["yf_name_match"] = [names_match(a, b) for a, b in zip(out["security_name"], out["yf_name"])]
+    out.loc[~out["yf_name_match"], ["Sector", "Industry"]] = pd.NA
+    return out
 
-    # --- GROUP AND SUMMARIZE ---
-    counts = (
-        meta_df.groupby(["sector", "market_category"])
-        .size()
-        .unstack(fill_value=0)
-        .sort_index()
+
+def sector_coverage(meta: pd.DataFrame, by: str = "listing_exchange_label") -> pd.DataFrame:
+    """Number of stocks (non-ETF) per group, and how many have a sector."""
+    stocks = meta[~meta["etf"].fillna(False).astype(bool)]
+    out = stocks.groupby(by, dropna=False).agg(
+        stocks=("symbol", "size"),
+        with_sector=("Sector", lambda s: s.notna().sum()),
     )
-    percents = counts.div(counts.sum(axis=1), axis=0) * 100
-
-    return counts, percents
-
-
-def filter_metadata_by_valid_tickers(
-    metadata_path,
-    valid_tickers_path,
-    output_path="nasdaq_metadata_filtered.csv"
-):
-    """
-    Filter the NASDAQ metadata file to include only securities whose tickers
-    are marked as 'Valid' in the ticker validation results.
-
-    Args:
-        metadata_path (str): Path to the original NASDAQ metadata CSV.
-        valid_tickers_path (str): Path to the CSV with validation results.
-        output_path (str, optional): Path to save the filtered metadata CSV.
-
-    Returns:
-        pd.DataFrame: Filtered metadata DataFrame.
-    """
-    # load files
-    meta = pd.read_csv(metadata_path)
-    valid = pd.read_csv(valid_tickers_path)
-
-    # clean and filter
-    valid_tickers = set(
-        valid[valid["Status"] == "Valid"]["Ticker"].astype(str).str.upper()
-    )
-
-    meta["Symbol"] = meta["Symbol"].astype(str).str.upper()
-    filtered = meta[meta["Symbol"].isin(valid_tickers)].copy()
-
-    # save result
-    filtered.to_csv(output_path, index=False)
-
-    # summary
-    print(f"Filtered metadata saved to: {output_path}")
-    print(f"Original rows: {len(meta)}")
-    print(f"Kept: {len(filtered)} ({len(filtered) / len(meta) * 100:.2f}%)")
-    print(f"Removed: {len(meta) - len(filtered)}")
-
-    return filtered
-
-import pandas as pd
-
-def enrich_metadata_with_sectors(metadata_path, sectors_path, output_path, ticker_col="Ticker"):
-    """
-    Enrich a metadata CSV with sector information based on ticker matches.
-
-    Parameters
-    ----------
-    metadata_path : str
-        Path to the metadata CSV file.
-    sectors_path : str
-        Path to the sectors CSV file.
-    output_path : str
-        Path to save the enriched metadata CSV.
-    ticker_col : str, optional
-        Column name for ticker symbols (default: "ticker").
-    """
-
-    # Load both CSVs
-    metadata = pd.read_csv(metadata_path)
-    sectors = pd.read_csv(sectors_path)
-
-    # Merge on ticker column
-    enriched = metadata.merge(sectors, on=ticker_col, how="left")
-
-    # Save to file
-    enriched.to_csv(output_path, index=False)
-    print(f"Enriched metadata saved to {output_path}")
-    print(f"{enriched['Sector'].isna().sum()} tickers have no matching sector")
-
-    return enriched
-
-import pandas as pd
-
-def add_sector_column(file_main, file_with_sector, output_file=None, fill_missing=None):
-    """
-    Adds a 'Sector' column to a CSV that has tickers but no sector info.
-    
-    Parameters:
-    ----------
-    file_main : str
-        Path to the CSV file that contains 'Ticker' but no 'Sector'.
-    file_with_sector : str
-        Path to the CSV file that contains 'Ticker' and 'Sector'.
-    output_file : str, optional
-        Path to save the merged file. If None, the merged DataFrame is returned.
-    fill_missing : str or None, default "Unknown"
-        Value to fill missing sectors. Use None to keep NaN.
-    
-    Returns:
-    -------
-    pandas.DataFrame
-        The merged DataFrame (also saved to CSV if output_file is provided).
-    """
-    
-    # Read CSVs
-    df_main = pd.read_csv(file_main, dtype={"symbol": str})
-    df_sec = pd.read_csv(file_with_sector, dtype={"symbol": str, "Sector": str})
-    
-    # Clean ticker formatting
-    df_main["symbol"] = df_main["symbol"].str.strip().str.upper()
-    df_sec["symbol"] = df_sec["symbol"].str.strip().str.upper()
-    
-    # Remove duplicates in the sector file
-    df_sec = df_sec.drop_duplicates(subset=["symbol"], keep="first")
-    
-    # Merge on Ticker
-    merged = df_main.merge(df_sec[["symbol", "Sector"]], on="symbol", how="left")
-    
-    # Fill missing values if requested
-    if fill_missing is not None:
-        merged["Sector"] = merged["Sector"].fillna(fill_missing)
-    
-    # Save or return
-    if output_file:
-        merged.to_csv(output_file, index=False)
-        print(f"Saved merged file to: {output_file}")
-    else:
-        return merged
-
-
-def summarize_sector_market_distribution(csv_path):
-    """
-    Summarize counts and percentages of stocks per (Sector, Market Category)
-    from a metadata CSV file.
-
-    Args:
-        csv_path (str): Path to the metadata CSV file.
-    
-    Returns:
-        counts (DataFrame): Raw counts per (Sector, Market Category)
-        percents (DataFrame): Normalized percentages (row-wise)
-    """
-    # --- LOAD CSV ---
-    meta_df = pd.read_csv(csv_path)
-
-    if not {"Sector", "market_category_label"}.issubset(meta_df.columns):
-        raise ValueError("CSV must contain 'sector' and 'market_category' columns.")
-
-    # --- GROUP AND SUMMARIZE ---
-    counts = (
-        meta_df.groupby(["Sector", "market_category_label"])
-        .size()
-        .unstack(fill_value=0)
-        .sort_index()
-    )
-    percents = counts.div(counts.sum(axis=1), axis=0) * 100
-
-    return counts, percents
-
-# Calculating log returns
-def compute_log_return(df: pd.DataFrame, symbol) -> pd.DataFrame:
-    df = df.sort_values("Date").copy()
-    df["Adj Close"] = pd.to_numeric(df["Adj Close"], errors="coerce")
-
-    # Replace zeros or negatives with previous valid value (forward fill)
-    df.loc[df["Adj Close"] <= 0, "Adj Close"] = np.nan
-    df["Adj Close"] = df["Adj Close"].ffill()
-
-    # Compute log returns
-    df["log_return"] = np.log(df["Adj Close"] / df["Adj Close"].shift(1))
-    df = df.dropna(subset=["log_return"]).reset_index(drop=True)
-
-    # Print a small sample for inspection
-    print(f"\n✅ {symbol}: computed log returns for {len(df)} rows")
-    print(df[["Date", "Adj Close", "lag_adj_close", "log_return"]].head(5))
-    
-    return df
-
-# Calculating volatility
-def compute_volatility(df: pd.DataFrame, window: int = 30) -> pd.DataFrame:
-    """
-    Compute rolling volatility (standard deviation of log returns).
-    Default window: 20 trading days (~1 month)
-    """
-    df = df.sort_values("Date").copy()
-
-    if "log_return" not in df.columns:
-        raise ValueError("log_return column not found. Compute it first.")
-
-    df["volatility"] = df["log_return"].rolling(window=window, min_periods=30).std()
-
-    print(f"✅ Computed rolling volatility with window={window}")
-    print(df[["Date", "log_return", "volatility"]].head(10))
-
-    return df
-
+    out.loc["Total"] = out.sum()
+    out["coverage_%"] = (out["with_sector"] / out["stocks"] * 100).round(1)
+    return out

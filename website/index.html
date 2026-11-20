@@ -106,8 +106,8 @@
         <ol class="roadmap">
           <li><a href="#c1">Chapter 1 — Sector Diversification (Correlation + Structure)</a></li>
           <li><a href="#c2">Chapter 2 — Influence Of The Regimes On the Sectors</a></li>
-          <li><a href="#c4">Chapter 3 — Market Categories Inside Sectors</a></li>
-          <li><a href="#c3">Chapter 4 — ETF vs DIY Basket</a></li>
+          <li><a href="#c3">Chapter 3 — Market Categories Inside Sectors</a></li>
+          <li><a href="#c4">Chapter 4 — ETF vs DIY Basket</a></li>
           <li><a href="#c5">Chapter 5 — Inside a Sector (Proxy Stock vs Basket)</a></li>
           <li><a href="#c6">Chapter 6 — A Systematic Strategy, Tested Out of Sample</a></li>
         </ol>
@@ -135,17 +135,17 @@
 
         <div class="card">
           <p>
-            We build one return series per sector (volume-weighted daily log returns of its stocks) and compare sectors over three
-            horizons: the <strong>full sample</strong> (1973–2020), the <strong>last 20 years</strong> (2000–2020) and the
-            <strong>last 5 years</strong> (2015–2020). We ask two questions:
+            We build one return series per sector (the daily returns of its stocks, weighted by how much money trades in each)
+            and compare sectors over three horizons: the <strong>full sample</strong> (from the first year where every sector has
+            at least 5 stocks), the <strong>last 20 years</strong> and the <strong>last 5 years</strong>. We ask two questions:
           </p>
           <ul>
             <li><strong>Returns:</strong> do two sectors go up and down on the same days?</li>
             <li><strong>Volatility:</strong> do they become <em>risky</em> at the same time? (correlation of 60-day rolling volatility)</li>
           </ul>
           <p class="muted">
-            A sector counts as a <strong>diversifier</strong> in a window when its average correlation with the 10 other sectors is
-            below <strong>0.25</strong> for returns, or below the stricter <strong>0.15</strong> for volatility.
+            Each sector is summarised by its <strong>average correlation with the 10 other sectors</strong>: the lower it is,
+            the more independently the sector moves, so the better it diversifies a portfolio.
           </p>
         </div>
 
@@ -171,22 +171,22 @@
 
           <div class="note c1-dot-note" data-metric="returns">
             <p>
-              <strong>Healthcare, Industrials, Real Estate and Utilities</strong> diversify in every window, and they are getting
-              <em>better</em>: Healthcare's average correlation falls from 0.22 to 0.12.
-              <strong>Consumer Cyclical</strong> was the best diversifier for decades (0.17, then 0.13) but lost it in 2015–2020 (0.32).
-              <strong>Basic Materials, Energy, Financial Services and Technology</strong> never qualify. Financial Services
-              became the most connected sector of all in 2015–2020 (average 0.32 → 0.40).
+              <strong>Healthcare, Industrials, Real Estate and Utilities</strong> stay among the least connected sectors in every
+              window, and they are getting <em>more</em> independent: Healthcare's average correlation falls from 0.22 to 0.12.
+              <strong>Consumer Cyclical</strong> was the most independent sector for decades (0.17, then 0.13) but not in 2015–2020 (0.32).
+              <strong>Basic Materials, Energy, Financial Services and Technology</strong> are always among the most connected.
+              Financial Services became the most connected sector of all in 2015–2020 (average 0.32 → 0.40).
             </p>
           </div>
           <div class="note c1-dot-note hidden" data-metric="volatility">
             <p>
-              Risk tells a different story than returns. <strong>Consumer Cyclical, Industrials and Real Estate</strong> are the
-              only sectors whose volatility stays independent in all three windows. <strong>Healthcare</strong> qualifies over the
-              last 20 and 5 years. <strong>Energy, Financial Services and Technology</strong> never do: when markets get nervous, they get nervous together.
+              Risk tells a different story than returns. <strong>Consumer Cyclical, Industrials and Real Estate</strong> have the
+              most independent volatility in all three windows, and <strong>Healthcare</strong> joins them over the last 20 and 5 years.
+              <strong>Energy, Financial Services and Technology</strong> stay among the most connected: when markets get nervous, they get nervous together.
             </p>
             <p class="muted">
               Caution: volatility correlations are lower in the 5-year window for almost every sector (average 0.22 → 0.09).
-              A short window holds few volatility cycles, so a sector that passes only in the last 5 years is weak evidence.
+              A short window holds few volatility cycles, so a sector that looks independent only in the last 5 years is weak evidence.
             </p>
           </div>
 
@@ -239,7 +239,7 @@
             <p>
               Energy and Basic Materials share their risk more than any other pair in every window (0.79, 0.75, 0.68).
               In 2015–2020 Financials' volatility moved closely with Energy (0.59) and Technology (0.54). Industrials and Real Estate
-              barely co-move in risk with anything, which is why they top the volatility diversifier list.
+              barely co-move in risk with anything, which is why they sit at the left of the volatility chart.
             </p>
           </div>
         </div>
@@ -260,7 +260,7 @@
         <div class="block__title">
           <h3>Chapter 2: Influence Of The Regimes On the Sectors' Returns And Volatilities</h3>
           <p class="muted">
-            Do sectors behave the same way in bull, neutral, and bear markets — or does the regime reshape everything?
+            Do sectors behave the same way in bull, neutral, bear and recovering markets — or does the regime reshape everything?
           </p>
         </div>
 
@@ -270,7 +270,17 @@
             <p> 
               Sector analysis in isolation assumes that the market environment is stable, yet in practice market conditions 
               evolve continuously. To capture these shifts, we define market regimes using the S&P 500 (SPY) as a proxy for 
-              overall market behavior, classifying each period into Bear, Neutral, or Bull regimes.
+              overall market behavior. Each day is labelled from SPY's distance to its highest price so far:
+            </p>
+            <ul>
+              <li><strong>Bull:</strong> less than 5% below its peak;</li>
+              <li><strong>Neutral:</strong> 5% to 20% below its peak;</li>
+              <li><strong>Bear:</strong> 20% or more below its peak and still falling (from the peak to the bottom of the crash);</li>
+              <li><strong>Recovery:</strong> still 20% or more below its peak, but rising again after the bottom.</li>
+            </ul>
+            <p class="muted">
+              Bear and Recovery are separated because about two thirds of the days 20% below the peak come after the bottom,
+              when the market is rebounding: mixing them would hide both the crash and the rebound.
             </p>
 
 
@@ -295,6 +305,7 @@
             <div class="toggle" role="tablist" aria-label="Regime selector">
               <button class="toggle__btn is-active" data-regime="static" type="button">Static (no regime)</button>
               <button class="toggle__btn" data-regime="bear" type="button">Bear</button>
+              <button class="toggle__btn" data-regime="recovery" type="button">Recovery</button>
               <button class="toggle__btn" data-regime="neutral" type="button">Neutral</button>
               <button class="toggle__btn" data-regime="bull" type="button">Bull</button>
             </div>
@@ -302,13 +313,13 @@
             <!-- STATIC -->
             <div class="regime-panel" id="regime_static">
               <div class="viz">
-                <img src="chapter_2_plots/corr_static.png" alt="Static sector correlation heatmap" />
+                <img src="figures/chapter2/static_correlation.png" alt="Static sector correlation heatmap" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/avg_corr_rol.png" alt="Average correlation over time (static)" />
+                <img src="figures/chapter2/rolling_avg_correlation.png" alt="Average correlation over time (static)" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/sect_vola_regimes.png" alt="Sectors volatility acroos regimes" />
+                <img src="figures/chapter2/volatility_by_regime.png" alt="Sectors volatility acroos regimes" />
               </div>
 
               <div class="note">
@@ -325,13 +336,13 @@
             <!-- BEAR -->
             <div class="regime-panel" id="regime_bear">
               <div class="viz">
-                <img src="chapter_2_plots/sect_return_bear.png" alt="Sectors returns Bear regime" />
+                <img src="figures/chapter2/returns_bear.png" alt="Sectors returns Bear regime" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/sect_corr_bear.png" alt="Clustered sectors correlation Bear regime" />
+                <img src="figures/chapter2/correlation_bear.png" alt="Clustered sectors correlation Bear regime" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/volat_bear.png" alt="Most volatile sectors during Bear markets" />
+                <img src="figures/chapter2/top_volatility_bear.png" alt="Most volatile sectors during Bear markets" />
               </div>
 
               <div class="note">
@@ -346,16 +357,36 @@
             </div>
                 
 
+            <!-- RECOVERY -->
+            <div class="regime-panel" id="regime_recovery">
+              <div class="viz">
+                <img src="figures/chapter2/returns_recovery.png" alt="Sectors returns Recovery regime" />
+              </div>
+              <div class="viz">
+                <img src="figures/chapter2/correlation_recovery.png" alt="Clustered sectors correlation Recovery regime" />
+              </div>
+              <div class="viz">
+                <img src="figures/chapter2/top_volatility_recovery.png" alt="Most volatile sectors during Recovery markets" />
+              </div>
+
+              <div class="note">
+                <p>
+                  After the bottom of a crash, the market rebounds while still far below its old peak.
+                </p>
+              </div>
+            </div>
+
+
             <!-- NEUTRAL -->
             <div class="regime-panel" id="regime_neutral">
               <div class="viz">
-                <img src="chapter_2_plots/sect_return_neutral.png" alt="Sectors returns Neutral regime" />
+                <img src="figures/chapter2/returns_neutral.png" alt="Sectors returns Neutral regime" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/sect_corr_neutral.png" alt="Clustered sectors correlation Neutral regime" />
+                <img src="figures/chapter2/correlation_neutral.png" alt="Clustered sectors correlation Neutral regime" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/volat_neutral.png" alt="Most volatile sectors during Neutral markets" />
+                <img src="figures/chapter2/top_volatility_neutral.png" alt="Most volatile sectors during Neutral markets" />
               </div>
 
               <div class="note">
@@ -373,13 +404,13 @@
             <!-- BULL -->
             <div class="regime-panel" id="regime_bull">
               <div class="viz">
-                <img src="chapter_2_plots/sect_return_bull.png" alt="Sectors returns Bull regime" />
+                <img src="figures/chapter2/returns_bull.png" alt="Sectors returns Bull regime" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/sect_corr_bull.png" alt="Clustered sectors correlation Bull regime" />
+                <img src="figures/chapter2/correlation_bull.png" alt="Clustered sectors correlation Bull regime" />
               </div>
               <div class="viz">
-                <img src="chapter_2_plots/volat_bull.png" alt="Most volatile sectors during Bull markets" />
+                <img src="figures/chapter2/top_volatility_bull.png" alt="Most volatile sectors during Bull markets" />
               </div>
 
               <div class="note">
@@ -397,7 +428,7 @@
       </section>
 
 <!-- CHAPTER 3: Market Categories Inside Sectors -->
-<section class="block" id="c4">
+<section class="block" id="c3">
 
 
   <div class="block__title">
@@ -413,18 +444,13 @@
     
     <div class="card">
       <p>
-        Market categories describe how stocks are grouped <strong>within a given sector</strong>, based either on firm 
-        characteristics or on style-related signals. In this chapter, we focus on three commonly used categories: 
-        <strong>Growth</strong>, <strong>Quality</strong>, and <strong>Size</strong>. Growth and Quality represent style 
-        dimensions: Growth stocks are firms whose revenues or earnings are expected to expand faster than the sector average, 
-        often accompanied by higher valuation sensitivity and volatility, while Quality stocks are characterized by stronger 
-        balance sheets, more stable profitability, and lower financial risk. Size, by contrast, is a direct firm characteristic 
-        rather than a style preference, typically reflecting market capitalization and capturing differences in liquidity, risk 
-        exposure, and sensitivity to macroeconomic conditions. These categories are frequently discussed as “drivers” of 
-        performance, yet they interact strongly with sector structure. The purpose of this chapter is therefore not to assess 
-        whether Growth, Quality, or Size outperform in absolute terms, but to examine whether market-category distinctions 
-        still produce meaningful risk–return differences <strong>once the sector is fixed</strong>, and whether those 
-        differences remain stable over time.
+        A stock's market category is its <strong>NASDAQ listing tier</strong>: <strong>Global Select</strong> (the largest
+        companies, with the strictest listing standards), <strong>Global Market</strong> (mid-sized companies) and
+        <strong>Capital Market</strong> (smaller, younger and less liquid companies). The tier is therefore a proxy for company
+        size and maturity, and it only exists for NASDAQ-listed stocks. Size is often discussed as a "driver" of performance,
+        yet it interacts strongly with sector structure. The purpose of this chapter is therefore not to find the "best" tier,
+        but to examine whether tiers still produce meaningful risk–return differences <strong>once the sector is fixed</strong>,
+        and whether those differences remain stable over time.
       </p>
 
       <p>
@@ -447,7 +473,7 @@
 
       <div class="viz">
         <iframe
-          src="ch3/sector_market_category_map.html"
+          src="figures/chapter3/sector_category_map.html"
           title="Time-dependent clustering of market categories"
           class="viz__frame"
           loading="lazy">
@@ -463,7 +489,7 @@
 
 
 <!-- CHAPTER 4 -->
-<section class="block" id="c3">
+<section class="block" id="c4">
   <div class="block__title">
     <h3>Chapter 4: ETF vs DIY Basket</h3>
     <p class="muted">
@@ -476,14 +502,14 @@
     <div class="card">
       <p>
         This section compares a <strong>sector ETF</strong> (e.g., XLK) with a <strong>DIY sector proxy (“basket”)</strong>
-        built from the sector’s underlying stocks using a <strong>volume-weighted</strong> construction. The goal is to check
+        built from the sector’s underlying stocks, each weighted by how much money trades in it (<strong>dollar volume</strong>, capped at 10% per stock). The goal is to check
         whether the ETF delivers exposure that is <strong>similar</strong> to what you would get from a transparent, rules-based
         basket, and to see how their risk evolves through time.
       </p>
 
       <hr />
 
-      <div class="note" id="c3_interpretation">
+      <div class="note" id="c4_interpretation">
         <p><strong>For this sector:</strong></p>
         <p>Loading…</p>
       </div>
@@ -491,10 +517,10 @@
     </div>
 
     <!-- RIGHT: PLOTS + SECTOR WRITEUP -->
-    <div class="card" id="c3_right">
+    <div class="card" id="c4_right">
       <h4>Choose a sector</h4>
 
-      <div class="toggle" role="tablist" aria-label="Sector selector (Chapter 3)">
+      <div class="toggle" role="tablist" aria-label="Sector selector (Chapter 4)">
         <button class="toggle__btn is-active" data-sector="basic_materials" type="button">Basic Materials</button>
         <button class="toggle__btn" data-sector="communication_services" type="button">Communication Services</button>
         <button class="toggle__btn" data-sector="consumer_cyclical" type="button">Consumer Cyclical</button>
@@ -509,10 +535,10 @@
       </div>
 
       <!-- basic_materials -->
-      <div class="sector-panel" id="c3_sector_basic_materials">
+      <div class="sector-panel" id="c4_sector_basic_materials">
         <div class="viz" aria-label="basic_materials performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/basic_materials.png"
+            src="figures/chapter4/performance_basic_materials.png"
             alt="basic_materials — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -520,7 +546,7 @@
 
         <div class="viz" aria-label="basic_materials volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/basic_materials_vol60.png"
+            src="figures/chapter4/volatility_basic_materials.png"
             alt="basic_materials — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -528,10 +554,10 @@
       </div>
 
       <!-- communication_services -->
-      <div class="sector-panel hidden" id="c3_sector_communication_services">
+      <div class="sector-panel hidden" id="c4_sector_communication_services">
         <div class="viz" aria-label="communication_services performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/communication_services.png"
+            src="figures/chapter4/performance_communication_services.png"
             alt="communication_services — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -539,7 +565,7 @@
 
         <div class="viz" aria-label="communication_services volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/communication_services_vol60.png"
+            src="figures/chapter4/volatility_communication_services.png"
             alt="communication_services — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -547,10 +573,10 @@
       </div>
 
       <!-- consumer_cyclical -->
-      <div class="sector-panel hidden" id="c3_sector_consumer_cyclical">
+      <div class="sector-panel hidden" id="c4_sector_consumer_cyclical">
         <div class="viz" aria-label="consumer_cyclical performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/consumer_cyclical.png"
+            src="figures/chapter4/performance_consumer_cyclical.png"
             alt="consumer_cyclical — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -558,7 +584,7 @@
 
         <div class="viz" aria-label="consumer_cyclical volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/consumer_cyclical_vol60.png"
+            src="figures/chapter4/volatility_consumer_cyclical.png"
             alt="consumer_cyclical — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -566,10 +592,10 @@
       </div>
 
       <!-- consumer_defensive -->
-      <div class="sector-panel hidden" id="c3_sector_consumer_defensive">
+      <div class="sector-panel hidden" id="c4_sector_consumer_defensive">
         <div class="viz" aria-label="consumer_defensive performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/consumer_defensive.png"
+            src="figures/chapter4/performance_consumer_defensive.png"
             alt="consumer_defensive — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -577,7 +603,7 @@
 
         <div class="viz" aria-label="consumer_defensive volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/consumer_defensive_vol60.png"
+            src="figures/chapter4/volatility_consumer_defensive.png"
             alt="consumer_defensive — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -585,10 +611,10 @@
       </div>
 
       <!-- energy -->
-      <div class="sector-panel hidden" id="c3_sector_energy">
+      <div class="sector-panel hidden" id="c4_sector_energy">
         <div class="viz" aria-label="energy performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/energy.png"
+            src="figures/chapter4/performance_energy.png"
             alt="energy — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -596,7 +622,7 @@
 
         <div class="viz" aria-label="energy volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/energy_vol60.png"
+            src="figures/chapter4/volatility_energy.png"
             alt="energy — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -604,10 +630,10 @@
       </div>
 
       <!-- financial_services -->
-      <div class="sector-panel hidden" id="c3_sector_financial_services">
+      <div class="sector-panel hidden" id="c4_sector_financial_services">
         <div class="viz" aria-label="financial_services performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/financial_services.png"
+            src="figures/chapter4/performance_financial_services.png"
             alt="financial_services — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -615,7 +641,7 @@
 
         <div class="viz" aria-label="financial_services volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/financial_services_vol60.png"
+            src="figures/chapter4/volatility_financial_services.png"
             alt="financial_services — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -623,10 +649,10 @@
       </div>
 
       <!-- healthcare -->
-      <div class="sector-panel hidden" id="c3_sector_healthcare">
+      <div class="sector-panel hidden" id="c4_sector_healthcare">
         <div class="viz" aria-label="healthcare performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/healthcare.png"
+            src="figures/chapter4/performance_healthcare.png"
             alt="healthcare — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -634,7 +660,7 @@
 
         <div class="viz" aria-label="healthcare volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/healthcare_vol60.png"
+            src="figures/chapter4/volatility_healthcare.png"
             alt="healthcare — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -642,10 +668,10 @@
       </div>
 
       <!-- industrials -->
-      <div class="sector-panel hidden" id="c3_sector_industrials">
+      <div class="sector-panel hidden" id="c4_sector_industrials">
         <div class="viz" aria-label="industrials performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/industrials.png"
+            src="figures/chapter4/performance_industrials.png"
             alt="industrials — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -653,7 +679,7 @@
 
         <div class="viz" aria-label="industrials volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/industrials_vol60.png"
+            src="figures/chapter4/volatility_industrials.png"
             alt="industrials — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -661,10 +687,10 @@
       </div>
 
       <!-- real_estate -->
-      <div class="sector-panel hidden" id="c3_sector_real_estate">
+      <div class="sector-panel hidden" id="c4_sector_real_estate">
         <div class="viz" aria-label="real_estate performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/real_estate.png"
+            src="figures/chapter4/performance_real_estate.png"
             alt="real_estate — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -672,7 +698,7 @@
 
         <div class="viz" aria-label="real_estate volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/real_estate_vol60.png"
+            src="figures/chapter4/volatility_real_estate.png"
             alt="real_estate — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -680,10 +706,10 @@
       </div>
 
       <!-- technology -->
-      <div class="sector-panel hidden" id="c3_sector_technology">
+      <div class="sector-panel hidden" id="c4_sector_technology">
         <div class="viz" aria-label="technology performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/technology.png"
+            src="figures/chapter4/performance_technology.png"
             alt="technology — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -691,7 +717,7 @@
 
         <div class="viz" aria-label="technology volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/technology_vol60.png"
+            src="figures/chapter4/volatility_technology.png"
             alt="technology — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -699,10 +725,10 @@
       </div>
 
       <!-- utilities -->
-      <div class="sector-panel hidden" id="c3_sector_utilities">
+      <div class="sector-panel hidden" id="c4_sector_utilities">
         <div class="viz" aria-label="utilities performance">
           <img
-            src="chapter3_sector_png_split_pretty/performance/utilities.png"
+            src="figures/chapter4/performance_utilities.png"
             alt="utilities — Performance (Index = 100)"
             style="width:100%; height:auto;"
           />
@@ -710,7 +736,7 @@
 
         <div class="viz" aria-label="utilities volatility">
           <img
-            src="chapter3_sector_png_split_pretty/volatility/utilities_vol60.png"
+            src="figures/chapter4/volatility_utilities.png"
             alt="utilities — Volatility (Rolling, Annualized)"
             style="width:100%; height:auto;"
           />
@@ -740,7 +766,7 @@
 
             <p>
               This chapter addresses a practical portfolio question: if you want <em>sector exposure</em>, is a single representative stock sufficient, or is a small basket needed to
-              control idiosyncratic risk? Using the Chapter 2 pipeline, we construct sector proxies, filter illiquid stocks, score representativeness via rolling correlations, and validate
+              control idiosyncratic risk? Using the same dollar-volume weighted sector series as the previous chapters, we construct sector proxies, filter illiquid stocks, score representativeness via rolling correlations, and validate
               candidates using tracking error.
             </p>
             
@@ -786,15 +812,12 @@
               <button class="toggle__btn" data-sector="utilities">Utilities</button>
             </div>
 
-            <div class="c5_fallback note hidden" id="c5_fallback">
-              <p><strong>Note:</strong> Unable to load Chapter 5 content. Please retry later or check the plot exports.</p>
-            </div>
 
             <!-- technology -->
             <div class="sector-panel" id="c5_sector_technology" data-sector-panel="technology">
               <div class="viz" aria-label="technology umap">
                 <iframe
-                  src="chapter_5_plots/plots/technology/technology_umap.html"
+                  src="figures/chapter5/technology_umap.html"
                   title="Technology — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -803,7 +826,7 @@
 
               <div class="viz" aria-label="technology proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/technology/technology_index.html"
+                  src="figures/chapter5/technology_index.html"
                   title="Technology — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -812,7 +835,7 @@
 
               <div class="viz" aria-label="technology tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/technology/technology_te.html"
+                  src="figures/chapter5/technology_te.html"
                   title="Technology — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -846,7 +869,7 @@
             <div class="sector-panel hidden" id="c5_sector_basic_materials" data-sector-panel="basic_materials">
               <div class="viz" aria-label="basic_materials umap">
                 <iframe
-                  src="chapter_5_plots/plots/basic_materials/basic_materials_umap.html"
+                  src="figures/chapter5/basic_materials_umap.html"
                   title="Basic Materials — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -855,7 +878,7 @@
 
               <div class="viz" aria-label="basic_materials proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/basic_materials/basic_materials_index.html"
+                  src="figures/chapter5/basic_materials_index.html"
                   title="Basic Materials — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -864,7 +887,7 @@
 
               <div class="viz" aria-label="basic_materials tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/basic_materials/basic_materials_te.html"
+                  src="figures/chapter5/basic_materials_te.html"
                   title="Basic Materials — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -897,7 +920,7 @@
             <div class="sector-panel hidden" id="c5_sector_communication_services" data-sector-panel="communication_services">
               <div class="viz" aria-label="communication_services umap">
                 <iframe
-                  src="chapter_5_plots/plots/communication_services/communication_services_umap.html"
+                  src="figures/chapter5/communication_services_umap.html"
                   title="Communication Services — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -906,7 +929,7 @@
 
               <div class="viz" aria-label="communication_services proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/communication_services/communication_services_index.html"
+                  src="figures/chapter5/communication_services_index.html"
                   title="Communication Services — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -915,7 +938,7 @@
 
               <div class="viz" aria-label="communication_services tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/communication_services/communication_services_te.html"
+                  src="figures/chapter5/communication_services_te.html"
                   title="Communication Services — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -948,7 +971,7 @@
             <div class="sector-panel hidden" id="c5_sector_consumer_cyclical" data-sector-panel="consumer_cyclical">
               <div class="viz" aria-label="consumer_cyclical umap">
                 <iframe
-                  src="chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_umap.html"
+                  src="figures/chapter5/consumer_cyclical_umap.html"
                   title="Consumer Cyclical — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -957,7 +980,7 @@
 
               <div class="viz" aria-label="consumer_cyclical proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_index.html"
+                  src="figures/chapter5/consumer_cyclical_index.html"
                   title="Consumer Cyclical — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -966,7 +989,7 @@
 
               <div class="viz" aria-label="consumer_cyclical tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/consumer_cyclical/consumer_cyclical_te.html"
+                  src="figures/chapter5/consumer_cyclical_te.html"
                   title="Consumer Cyclical — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -999,7 +1022,7 @@
             <div class="sector-panel hidden" id="c5_sector_consumer_defensive" data-sector-panel="consumer_defensive">
               <div class="viz" aria-label="consumer_defensive umap">
                 <iframe
-                  src="chapter_5_plots/plots/consumer_defensive/consumer_defensive_umap.html"
+                  src="figures/chapter5/consumer_defensive_umap.html"
                   title="Consumer Defensive — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1008,7 +1031,7 @@
 
               <div class="viz" aria-label="consumer_defensive proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/consumer_defensive/consumer_defensive_index.html"
+                  src="figures/chapter5/consumer_defensive_index.html"
                   title="Consumer Defensive — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1017,7 +1040,7 @@
 
               <div class="viz" aria-label="consumer_defensive tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/consumer_defensive/consumer_defensive_te.html"
+                  src="figures/chapter5/consumer_defensive_te.html"
                   title="Consumer Defensive — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1050,7 +1073,7 @@
             <div class="sector-panel hidden" id="c5_sector_energy" data-sector-panel="energy">
               <div class="viz" aria-label="energy umap">
                 <iframe
-                  src="chapter_5_plots/plots/energy/energy_umap.html"
+                  src="figures/chapter5/energy_umap.html"
                   title="Energy — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1059,7 +1082,7 @@
 
               <div class="viz" aria-label="energy proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/energy/energy_index.html"
+                  src="figures/chapter5/energy_index.html"
                   title="Energy — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1068,7 +1091,7 @@
 
               <div class="viz" aria-label="energy tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/energy/energy_te.html"
+                  src="figures/chapter5/energy_te.html"
                   title="Energy — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1101,7 +1124,7 @@
             <div class="sector-panel hidden" id="c5_sector_financial_services" data-sector-panel="financial_services">
               <div class="viz" aria-label="financial_services umap">
                 <iframe
-                  src="chapter_5_plots/plots/financial_services/financial_services_umap.html"
+                  src="figures/chapter5/financial_services_umap.html"
                   title="Financial Services — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1110,7 +1133,7 @@
 
               <div class="viz" aria-label="financial_services proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/financial_services/financial_services_index.html"
+                  src="figures/chapter5/financial_services_index.html"
                   title="Financial Services — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1119,7 +1142,7 @@
 
               <div class="viz" aria-label="financial_services tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/financial_services/financial_services_te.html"
+                  src="figures/chapter5/financial_services_te.html"
                   title="Financial Services — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1152,7 +1175,7 @@
             <div class="sector-panel hidden" id="c5_sector_healthcare" data-sector-panel="healthcare">
               <div class="viz" aria-label="healthcare umap">
                 <iframe
-                  src="chapter_5_plots/plots/healthcare/healthcare_umap.html"
+                  src="figures/chapter5/healthcare_umap.html"
                   title="Healthcare — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1161,7 +1184,7 @@
 
               <div class="viz" aria-label="healthcare proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/healthcare/healthcare_index.html"
+                  src="figures/chapter5/healthcare_index.html"
                   title="Healthcare — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1170,7 +1193,7 @@
 
               <div class="viz" aria-label="healthcare tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/healthcare/healthcare_te.html"
+                  src="figures/chapter5/healthcare_te.html"
                   title="Healthcare — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1203,7 +1226,7 @@
             <div class="sector-panel hidden" id="c5_sector_industrials" data-sector-panel="industrials">
               <div class="viz" aria-label="industrials umap">
                 <iframe
-                  src="chapter_5_plots/plots/industrials/industrials_umap.html"
+                  src="figures/chapter5/industrials_umap.html"
                   title="Industrials — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1212,7 +1235,7 @@
 
               <div class="viz" aria-label="industrials proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/industrials/industrials_index.html"
+                  src="figures/chapter5/industrials_index.html"
                   title="Industrials — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1221,7 +1244,7 @@
 
               <div class="viz" aria-label="industrials tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/industrials/industrials_te.html"
+                  src="figures/chapter5/industrials_te.html"
                   title="Industrials — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1254,7 +1277,7 @@
             <div class="sector-panel hidden" id="c5_sector_real_estate" data-sector-panel="real_estate">
               <div class="viz" aria-label="real_estate umap">
                 <iframe
-                  src="chapter_5_plots/plots/real_estate/real_estate_umap.html"
+                  src="figures/chapter5/real_estate_umap.html"
                   title="Real Estate — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1263,7 +1286,7 @@
 
               <div class="viz" aria-label="real_estate proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/real_estate/real_estate_index.html"
+                  src="figures/chapter5/real_estate_index.html"
                   title="Real Estate — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1272,7 +1295,7 @@
 
               <div class="viz" aria-label="real_estate tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/real_estate/real_estate_te.html"
+                  src="figures/chapter5/real_estate_te.html"
                   title="Real Estate — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1305,7 +1328,7 @@
             <div class="sector-panel hidden" id="c5_sector_utilities" data-sector-panel="utilities">
               <div class="viz" aria-label="utilities umap">
                 <iframe
-                  src="chapter_5_plots/plots/utilities/utilities_umap.html"
+                  src="figures/chapter5/utilities_umap.html"
                   title="Utilities — UMAP"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1314,7 +1337,7 @@
 
               <div class="viz" aria-label="utilities proxy vs reps">
                 <iframe
-                  src="chapter_5_plots/plots/utilities/utilities_index.html"
+                  src="figures/chapter5/utilities_index.html"
                   title="Utilities — Sector proxy vs reps"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1323,7 +1346,7 @@
 
               <div class="viz" aria-label="utilities tracking error">
                 <iframe
-                  src="chapter_5_plots/plots/utilities/utilities_te.html"
+                  src="figures/chapter5/utilities_te.html"
                   title="Utilities — Tracking error"
                   style="width:100%; height:250px; border:0;"
                   loading="lazy"
@@ -1431,7 +1454,7 @@
             </div>
 
             <div class="c6-panel" id="c6_performance">
-              <div class="viz"><img src="chapter_6_plots/equity_drawdown.png" alt="Growth of $1 and drawdowns of the strategy, equal-weight sectors and SPY, 1999-2026" /></div>
+              <div class="viz"><img src="figures/chapter6/equity_drawdown.png" alt="Growth of $1 and drawdowns of the strategy, equal-weight sectors and SPY, 1999-2026" /></div>
               <div class="note"><p>
                 The strategy grows more slowly than the market in long bull runs. But it falls much less in the
                 2000–2003 and 2008–2009 crashes, and in 2022: its worst drawdown is about half of SPY's.
@@ -1439,7 +1462,7 @@
             </div>
 
             <div class="c6-panel hidden" id="c6_signal">
-              <div class="viz"><img src="chapter_6_plots/regime_definitions.png" alt="Bear periods under the Chapter 2 drawdown definition versus the 200-day trend filter" /></div>
+              <div class="viz"><img src="figures/chapter6/regime_definitions.png" alt="Bear periods under the Chapter 2 drawdown definition versus the 200-day trend filter" /></div>
               <div class="note"><p>
                 Chapter 2's regime (SPY ≥ 20% below its all-time high) describes the market well but lags as a trading signal:
                 it still says "bear" during most of the 2003–04 recovery. A 200-day trend filter reacts within weeks,
@@ -1448,7 +1471,7 @@
             </div>
 
             <div class="c6-panel hidden" id="c6_holdings">
-              <div class="viz"><img src="chapter_6_plots/weights_heatmap.png" alt="Monthly sector weights of the strategy" /></div>
+              <div class="viz"><img src="figures/chapter6/weights_heatmap.png" alt="Monthly sector weights of the strategy" /></div>
               <div class="note"><p>
                 In up-trends every sector is held, weighted by inverse volatility. In bear periods (e.g. 2001–03, 2008–09, 2022)
                 the book collapses into the brightest bands: Consumer Defensive, Utilities and Healthcare.
@@ -1456,7 +1479,7 @@
             </div>
 
             <div class="c6-panel hidden" id="c6_robustness">
-              <div class="viz"><img src="chapter_6_plots/sensitivity_heatmap.png" alt="Design-period Sharpe ratio across volatility targets and number of defensive sectors" /></div>
+              <div class="viz"><img src="figures/chapter6/sensitivity_heatmap.png" alt="Design-period Sharpe ratio across volatility targets and number of defensive sectors" /></div>
               <div class="note"><p>
                 All 60 parameter settings we tried beat SPY's design-period Sharpe, so the result does not hinge on one lucky setting.
                 We kept the pre-declared setting (3 sectors, 12%) instead of picking the best cell.
@@ -1489,7 +1512,7 @@
           </p>
           <p class="muted">
             Code, tests and the full analysis (ablation, volatility-matched benchmark, cost sensitivity) are in
-            <code>Chapter_6_strategy.ipynb</code> and <code>src/strategy/</code>. Past performance is not a guarantee of future results.
+            <code>chapter6_sector_strategy.ipynb</code> and <code>src/strategy/</code>. Past performance is not a guarantee of future results.
           </p>
         </div>
       </section>
@@ -1500,7 +1523,7 @@
       <div class="section__header">
         <h2>Strategy Picker</h2>
         <p>
-          Pick <strong>sector</strong>, <strong>type</strong> and <strong>market category</strong>. See expected <strong>return</strong>, <strong>volatility</strong>, and your risk-return profile.
+          Pick a <strong>sector</strong> and a <strong>type</strong> (all its stocks, the 5 most traded, or the sector ETF). See expected <strong>return</strong>, <strong>volatility</strong>, and your risk-return profile.
         </p>
       </div>
 
@@ -1519,12 +1542,6 @@
               <span>Type</span>
               <select id="ctl_type"></select>
             </label>
-
-            <label class="control">
-              <span>Market category</span>
-              <select id="ctl_market_category"></select>
-              <select style="display: none;" id="ctl_regime"></select>
-            </label>
           </div>
 
           <div class="note">
@@ -1533,11 +1550,9 @@
 
           <div class="note">
             <p class="muted">
-              <strong>Known issue:</strong> these figures come from the original builder. ETF rows are reliable, but the
-              stock-basket rows (type <em>all</em> / <em>top5</em>) build the index from a volume-weighted <em>price</em>.
-              Stocks entering or leaving the basket create artificial jumps, which overstate their volatility and push
-              profiles toward "Gambler". See <a href="#c6"><u>Chapter 6</u></a> for the diagnosis; the corrected method is in
-              <code>src/strategy/profiles.py</code>.
+              Yearly return and volatility over 1999–2020. Stock baskets are weighted by the previous day's dollar volume,
+              and "top 5" uses the 5 most traded stocks of the previous day, so nothing uses future information.
+              Built in <a href="#c6"><u>Chapter 6</u></a>.
             </p>
           </div>
         </div>
@@ -1571,8 +1586,8 @@
       * Files expected:
       * 1) /data/strategy_stats.json
       *    [
-      *      { "sector":"Basic Materials", "type":"top5", "market_category":"Q", "regime":"all",
-      *        "avg_yearly_return":0.13583, "avg_yearly_volatility":2.20749, "profile":"champion", "n_days":14663 },
+      *      { "sector":"Basic Materials", "type":"top5",
+      *        "avg_yearly_return":0.0688, "avg_yearly_volatility":0.3573, "profile":"balanced", "n_days":5345 },
       *      ...
       *    ]
       *
@@ -1625,7 +1640,7 @@
       function buildIndex(rows) {
         const idx = new Map();
         for (const r of rows) {
-          const key = `${r.sector}|||${r.type}|||${r.market_category}|||${r.regime}`;
+          const key = `${r.sector}|||${r.type}`;
           idx.set(key, r);
         }
         return idx;
@@ -1636,7 +1651,7 @@
       let PROFILE_TEXT = {}; // loaded from profiles.json
 
       function selectedKey() {
-        return `${$("ctl_sector").value}|||${$("ctl_type").value}|||${$("ctl_market_category").value}|||${$("ctl_regime").value}`;
+        return `${$("ctl_sector").value}|||${$("ctl_type").value}`;
       }
 
       function setEmptyOutput(message) {
@@ -1671,13 +1686,9 @@
       function initDropdowns() {
         const sectors = uniq(ROWS.map(r => r.sector));
         const types = uniq(ROWS.map(r => r.type));
-        const markets = uniq(ROWS.map(r => r.market_category));
-        const regimes = uniq(ROWS.map(r => r.regime));
 
         populateSelect($("ctl_sector"), sectors);
         populateSelect($("ctl_type"), types);
-        populateSelect($("ctl_market_category"), markets);
-        populateSelect($("ctl_regime"), regimes, "all");
       }
 
       async function fetchJson(path) {
@@ -1696,7 +1707,8 @@
             fetchJson("content/profiles.json"),
           ]);
 
-          ROWS = rows;
+          // older files also had per-regime rows; the picker shows the whole period only
+          ROWS = rows.filter(r => r.regime === undefined || r.regime === "all");
           PROFILE_TEXT = profiles || {};
           INDEX = buildIndex(ROWS);
 
@@ -1708,7 +1720,7 @@
           initDropdowns();
 
           // Update instantly on changes
-          for (const id of ["ctl_sector", "ctl_type", "ctl_market_category", "ctl_regime"]) {
+          for (const id of ["ctl_sector", "ctl_type"]) {
             $(id).addEventListener("change", updateOutputs);
           }
 

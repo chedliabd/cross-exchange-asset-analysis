@@ -99,7 +99,7 @@ def plot_missing_counts_over_time(all_data: dict[str, pd.DataFrame], label: str 
     # Plot
     plt.figure(figsize=(12, 5))
     plt.plot(total_missing_per_date["Date"], total_missing_per_date["missing_count"], color="orange")
-    plt.title(f"🕒 Total Missing Values Over Time ({label})")
+    plt.title(f"Total Missing Values Over Time ({label})")
     plt.xlabel("Date")
     plt.ylabel("Number of Missing Values")
     plt.grid(True, linestyle="--", alpha=0.5)
@@ -168,7 +168,7 @@ def plot_zero_counts_over_time(
     plt.figure(figsize=(12, 5))
     plt.plot(total_zero_per_date["Date"], total_zero_per_date["zero_count"], color="royalblue")
     col_text = f" ({column})" if column else ""
-    plt.title(f"🕒 Total Zero Values Over Time ({label}){col_text}")
+    plt.title(f"Total Zero Values Over Time ({label}){col_text}")
     plt.xlabel("Date")
     plt.ylabel("Number of Zero Values")
     plt.grid(True, linestyle="--", alpha=0.5)

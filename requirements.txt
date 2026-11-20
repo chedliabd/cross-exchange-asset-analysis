@@ -1,16 +1,22 @@
+# data
 numpy
-pandas
-matplotlib
-seaborn
-plotly
+pandas>=2.1
+pyarrow
 
-scikit-learn
+# analysis
 scipy
-
-umap-learn
-hdbscan
-
+scikit-learn>=1.3
+umap-learn>=0.6
 yfinance
 tqdm
 
+# figures
+matplotlib
+seaborn
+plotly>=5.15
+
+# running notebooks, downloading data, tests
+ipykernel
+kaggle
+six  # used by the kaggle CLI but missing from its dependencies
 pytest

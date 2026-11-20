@@ -1,5 +1,5 @@
 // Chapter 1 — interactive charts (diversifier dot plot + clustered correlation heatmap).
-// Data: content/chapter1.json, built by src/chapter1_site_data.py.
+// Data: content/chapter1.json, built by chapter1_sector_diversification.ipynb.
 (function () {
   "use strict";
 
@@ -89,19 +89,17 @@
     const host = document.getElementById("c1_dots");
     const wrap = host.querySelector(".c1-chart");
     const m = DATA.metrics[state.dotMetric];
-    const thr = DATA.thresholds[state.dotMetric];
     const S = DATA.sectors;
 
     const rows = S.map((name, i) => {
       const vals = Object.fromEntries(WINDOW_KEYS.map(w => [w, m.avg_corr[w][i]]));
-      const passes = WINDOW_KEYS.map(w => m.diversifier[w][i]);
-      return { name, vals, passes, n: passes.reduce((a, b) => a + b, 0) };
-    }).sort((a, b) => b.n - a.n || a.vals.full - b.vals.full);
+      return { name, vals };
+    }).sort((a, b) => a.vals.full - b.vals.full);   // most independent sector first
 
     const W = wrap.clientWidth || 700;
     const narrow = W < 560;
-    const labelW = narrow ? 118 : 178, verdictW = narrow ? 42 : 112, rowH = 32, top = 34, bottom = 30;
-    const plotW = W - labelW - verdictW - 12;
+    const labelW = narrow ? 118 : 178, rowH = 32, top = 14, bottom = 30;
+    const plotW = W - labelW - 16;
     const all = rows.flatMap(r => WINDOW_KEYS.map(w => r.vals[w]));
     const lo = Math.min(0, Math.floor((Math.min(...all) - 0.02) * 20) / 20);
     const hi = Math.ceil((Math.max(...all) + 0.02) * 20) / 20;
@@ -111,14 +109,6 @@
     wrap.replaceChildren();
     const svg = el("svg", { width: W, height: H, role: "img",
       "aria-label": `Average correlation of each sector with the others, by window (${state.dotMetric})` }, wrap);
-
-    // diversifier zone + threshold
-    el("rect", { x: x(lo), y: top - 6, width: x(thr) - x(lo), height: rows.length * rowH + 6,
-      fill: "rgba(255,255,255,0.045)", rx: 6 }, svg);
-    el("line", { x1: x(thr), x2: x(thr), y1: top - 10, y2: top + rows.length * rowH,
-      stroke: INK.muted, "stroke-dasharray": "4 4", "stroke-width": 1 }, svg);
-    text(svg, x(thr) - 6, top - 14, narrow ? `< ${thr}` : `Diversifier zone (avg ρ < ${thr})`,
-      { "text-anchor": "end", fill: INK.text, "font-size": 11 });
 
     // x grid + axis
     for (let v = lo; v <= hi + 1e-9; v += 0.05) {
@@ -141,15 +131,8 @@
       WINDOW_KEYS.forEach((w) => {
         el("circle", { cx: x(r.vals[w]), cy: cy + dy[w], r: 5.5, fill: WINDOW_COLORS[w], stroke: "#0E1630", "stroke-width": 1.5 }, g);
       });
-      const verdict = ["never", "weak", "mostly", "consistent"][r.n];
-      text(g, W - 4, cy + 4, narrow ? `${r.n}/3` : `${verdict} · ${r.n}/3`,
-        { "text-anchor": "end", fill: r.n === 3 ? INK.text : INK.muted, "font-weight": r.n === 3 ? 700 : 400, "font-size": 12 });
-
-      const show = (evt) => tip.show(evt, `${r.name} — ${verdict} diversifier (${r.n}/3)`,
-        WINDOW_KEYS.map((w, i) => ({
-          color: WINDOW_COLORS[w], value: fmt(r.vals[w]),
-          label: `${WINDOW_SHORT[w]} ${r.passes[i] ? "· below threshold" : ""}`,
-        })));
+      const show = (evt) => tip.show(evt, `${r.name} — average correlation with the other sectors`,
+        WINDOW_KEYS.map((w) => ({ color: WINDOW_COLORS[w], value: fmt(r.vals[w]), label: WINDOW_SHORT[w] })));
       g.addEventListener("pointermove", show);
       g.addEventListener("pointerleave", () => tip.hide());
       g.addEventListener("focus", () => {
@@ -163,12 +146,12 @@
     const table = host.querySelector(".c1-table");
     table.replaceChildren();
     const head = table.insertRow();
-    ["Sector", ...WINDOW_KEYS.map(w => WINDOW_SHORT[w]), "Windows passed"].forEach(h => {
+    ["Sector", ...WINDOW_KEYS.map(w => WINDOW_SHORT[w])].forEach(h => {
       const th = document.createElement("th"); th.textContent = h; head.appendChild(th);
     });
     rows.forEach(r => {
       const tr = table.insertRow();
-      [r.name, ...WINDOW_KEYS.map((w, i) => fmt(r.vals[w]) + (r.passes[i] ? " ✓" : "")), `${r.n}/3`]
+      [r.name, ...WINDOW_KEYS.map(w => fmt(r.vals[w]))]
         .forEach(v => { tr.insertCell().textContent = v; });
     });
 

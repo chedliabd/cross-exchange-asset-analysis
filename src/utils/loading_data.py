@@ -42,6 +42,13 @@ def iter_symbols(root_dir: str | Path, *, ext: str = ".csv", parse_dates: bool =
     for f in sorted(root.glob(f"*{ext}")):
         sym = f.stem
         yield sym, load_symbol_csv(f, symbol=sym, parse_dates=parse_dates)
+
+
+def load_all_symbols(root_dir: str | Path, *, ext: str = ".csv", parse_dates: bool = True) -> dict[str, pd.DataFrame]:
+    """
+    Load every CSV in a folder into a dict {symbol: DataFrame}, with NO cleaning.
+    """
+    return dict(iter_symbols(root_dir, ext=ext, parse_dates=parse_dates))
         
         
 # src/utils/metadata.py

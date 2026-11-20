@@ -123,3 +123,31 @@ def test_regime_stats_and_profiles_handle_missing():
     labels = profiles.classify_profiles(df)
     assert labels.iloc[-1] == "insufficient data"
     assert "gambler" in labels.values and labels.iloc[:4].nunique() > 1
+
+
+def test_top5_basket_uses_previous_day_ranking_only():
+    dates = pd.bdate_range("2010-01-04", periods=4)
+    # stock C becomes the most traded on day 3; it may only enter the top-2 basket on day 4
+    dv = pd.DataFrame({"A": [10, 10, 10, 10], "B": [9, 9, 9, 9], "C": [1, 1, 100, 100]}, index=dates, dtype=float)
+    ret = pd.DataFrame({"A": [0, 0.01, 0.01, 0.01], "B": [0, 0.01, 0.01, 0.01], "C": [0, 0.5, 0.5, 0.5]}, index=dates)
+    r = profiles.basket_returns(ret, profiles.top_n_weights(dv, 2), lag=1)
+    assert r.loc[dates[2]] == pytest.approx(0.01)   # C not in the basket yet
+    assert r.loc[dates[3]] > 0.4                    # C (weight 100/110) is in the basket now
+
+
+def test_picker_table_rows_and_profiles():
+    rng = np.random.default_rng(0)
+    dates = pd.bdate_range("2000-01-03", periods=400)
+    rows = []
+    for sector in ["Energy", "Utilities", "Technology"]:
+        for k in range(8):
+            rows.append(pd.DataFrame({"Date": dates, "Symbol": f"{sector[:3]}{k}", "Sector": sector,
+                                      "Return": rng.normal(0, 0.01 * (1 + k), len(dates)),
+                                      "DollarVolume": rng.uniform(1, 10, len(dates))}))
+    stocks = pd.concat(rows)
+    etfs = {"Energy": pd.Series(rng.normal(0, 0.01, len(dates)), index=dates)}
+    t = profiles.picker_table(stocks, etfs, "2000-01-01", "2002-01-01")
+    assert set(t["type"]) == {"all", "top5", "etf"}
+    assert len(t) == 3 * 2 + 1                      # all + top5 per sector, one ETF row
+    assert "market_category" not in t.columns
+    assert t["profile"].isin(list(profiles.PROFILE_GRID.values()) + ["insufficient data"]).all()

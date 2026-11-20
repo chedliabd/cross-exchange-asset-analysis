@@ -1,6 +1,6 @@
 """Corrected Strategy Builder (portfolio profiling) logic.
 
-The original notebook version (results.ipynb, "Strategy Builder") had three bugs:
+The project's original "Strategy Builder" (in its first results notebook) had three bugs:
 
 1. **Basket index from a volume-weighted *price*** sum(P*V)/sum(V). When a stock
    enters or leaves the basket the average price jumps (e.g. a $500 stock joining
@@ -110,3 +110,59 @@ def classify_profiles(
         for i, row in valid.iterrows():
             labels[i] = PROFILE_GRID[(_bucket(row[ret_col], r_lo, r_hi), _bucket(row[vol_col], v_lo, v_hi))]
     return labels
+
+
+# ---------- Strategy Picker table (website/content/strategy_stats.json) ----------
+
+def top_n_weights(dollar_volume: pd.DataFrame, n: int) -> pd.DataFrame:
+    """Each day, dollar-volume weights over the `n` stocks with the highest dollar volume that day."""
+    rank = dollar_volume.rank(axis=1, ascending=False, method="first")
+    return dollar_volume.where(rank <= n)
+
+
+def annual_stats(daily_returns: pd.Series, min_days: int = 252) -> dict:
+    """Annualised return (from the mean daily log return), volatility and number of days."""
+    r = daily_returns.dropna()
+    if len(r) < min_days:
+        return {"avg_yearly_return": np.nan, "avg_yearly_volatility": np.nan, "n_days": len(r)}
+    return {
+        "avg_yearly_return": float(np.expm1(np.log1p(r).mean() * TRADING_DAYS)),
+        "avg_yearly_volatility": float(r.std() * np.sqrt(TRADING_DAYS)),
+        "n_days": len(r),
+    }
+
+
+def picker_table(
+    stocks: pd.DataFrame,
+    etf_daily_returns: dict[str, pd.Series],
+    start: str,
+    end: str,
+    top_n: int = 5,
+    min_days: int = 252,
+) -> pd.DataFrame:
+    """
+    One row per sector × type, for the website's Strategy Picker.
+
+    - `stocks`: Date, Symbol, Sector, Return, DollarVolume.
+    - type "all": every stock of the sector, dollar-volume weighted;
+      type "top5": each day, the `top_n` stocks that traded the most money the day before;
+      type "etf": the sector ETF.
+    - Weights are lagged by one day (no look-ahead) and the index compounds weighted
+      returns, so stocks joining or leaving never create jumps.
+    - Profiles: return and volatility tertiles over all rows (see `classify_profiles`).
+    """
+    d = stocks[(stocks["Date"] >= start) & (stocks["Date"] <= end)]
+    rows = []
+    for sector, sd in d.groupby("Sector"):
+        ret = sd.pivot(index="Date", columns="Symbol", values="Return").sort_index()
+        dv = sd.pivot(index="Date", columns="Symbol", values="DollarVolume").sort_index()
+        for kind, weights in [("all", dv), ("top5", top_n_weights(dv, top_n))]:
+            r = basket_returns(ret, weights, lag=1)
+            rows.append({"sector": sector, "type": kind, **annual_stats(r, min_days)})
+        if sector in etf_daily_returns:
+            r = etf_daily_returns[sector].loc[start:end]
+            rows.append({"sector": sector, "type": "etf", **annual_stats(r, min_days)})
+    table = pd.DataFrame(rows)
+    table["profile"] = classify_profiles(table.assign(_all=0), group_col="_all",
+                                         ret_col="avg_yearly_return", vol_col="avg_yearly_volatility")
+    return table

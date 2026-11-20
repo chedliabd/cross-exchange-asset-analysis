@@ -1,10 +1,15 @@
+# Data (raw downloads and prepared datasets are rebuilt by the preparing_*.ipynb notebooks)
 data/
-.DS_Store
-__pycache__stocks_dict.pkl
+data_processed/
+
+# Python
+.venv/
 __pycache__/
 *.pyc
-data_cleaned/
-data_processed/
-spy.csv
-stocks_dict.pkl
+.ipynb_checkpoints/
 
+# Editors and local tools
+.DS_Store
+.idea/
+.vscode/
+.claude/settings.local.json

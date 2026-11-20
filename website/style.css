@@ -302,18 +302,6 @@
     pointer-events: none;
   }
 
-  .viz.is-loading::after{
-    content: "Loading…";
-    position:absolute;
-    inset: 0;
-    display:grid;
-    place-items:center;
-    color: var(--faint);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
   /* Controls */
   .controls{
     display:grid;
